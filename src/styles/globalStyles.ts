@@ -1,4 +1,6 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../constants/colors';
+import { fontFamillies } from '../constants/fontFamilies';
 
 export const globalStyles = StyleSheet.create({
     container: {
@@ -16,5 +18,14 @@ export const globalStyles = StyleSheet.create({
     section: {
         marginBottom: 16,
         paddingHorizontal: 16
+    },
+    inputContainer: {
+        backgroundColor: colors.gray,
+        borderRadius: 12,
+    },
+    text: {
+        fontSize: 14,
+        fontFamily: fontFamillies.poppinsMedium,
+        color: colors.text2,
     },
 });

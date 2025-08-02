@@ -15,7 +15,8 @@ import phoneImg from '../../assests/images/phone.png'
 import shrimpImg from '../../assests/images/shrimp.png'
 import vegetableImg from '../../assests/images/vegetable.png'
 import {
-    ButtonComponent, Container, RowComponent,
+    ButtonComponent,
+    RowComponent,
     SectionComponent, SpaceComponent, TextComponent
 } from '../../components'
 import { colors } from '../../constants/colors'
@@ -45,10 +46,7 @@ const SwiperScreen = ({ navigation }: any) => {
                 loop={false}
                 onIndexChanged={num => setIndex(num)}
                 index={index}
-                dotStyle={{ bottom: index < 8 ? 90 : 20 }}
-                dotColor={colors.gray}
-                activeDotStyle={{ bottom: index < 8 ? 90 : 20 }}
-                activeDotColor={colors.primary}
+                showsPagination={false}
             >
                 <Image
                     style={localStyle.image}
@@ -96,6 +94,27 @@ const SwiperScreen = ({ navigation }: any) => {
                 />
             </Swiper>
 
+            <RowComponent styles={{
+                bottom: index < 8 ? '14%' : '6%',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                {
+                    Array.from({ length: index < 8 ? 4 : 3 }).map((_, i) => {
+                        return (
+                            <View
+                                key={i}
+                                style={[localStyle.swDot, {
+                                    backgroundColor: i === index || i === 3 && index > i || i + 8 === index
+                                        ? colors.primary : colors.gray
+                                }]
+                                }
+                            />
+                        );
+                    })
+                }
+            </RowComponent>
+
             <View style={{
                 position: 'absolute',
                 right: 0, left: 0,
@@ -111,7 +130,7 @@ const SwiperScreen = ({ navigation }: any) => {
                         <TextComponent
                             text={data[index]}
                             styles={{
-                                width: index === 4 ? '75%' : '70%',
+                                width: index === 4 ? '75%' : '65%',
                                 textAlign: 'center',
                             }}
                             font={fontFamillies.poppinsBold}
@@ -143,17 +162,18 @@ const SwiperScreen = ({ navigation }: any) => {
                 <SectionComponent>
 
                     {
-                        index < 8 ? <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[colors.primaryDark, colors.primary]} style={{ borderRadius: 5 }}>
-                            <ButtonComponent
-                                color='transparent'
-                                onPress={() => navigation.navigate('SwiperNextScreen')}
-                                text='Get started'
-                                textStyles={{ color: colors.background }} />
-                        </LinearGradient>
+                        index < 8
+                            ? <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[colors.primaryDark, colors.primary]} style={{ borderRadius: 5 }}>
+                                <ButtonComponent
+                                    color='transparent'
+                                    onPress={() => navigation.navigate('AuthHomeScreen')}
+                                    text='Get started'
+                                    textStyles={{ color: colors.background }} />
+                            </LinearGradient>
                             :
                             <RowComponent justify='space-between'>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('AuthHomeScreen')}
+                                    onPress={() => setIndex(index - 1)}
                                 >
                                     <TextComponent
                                         text='Skip'
@@ -186,5 +206,11 @@ const localStyle = StyleSheet.create({
         width: sizes.width,
         height: sizes.height,
         resizeMode: 'cover',
+    },
+    swDot: {
+        height: 8,
+        width: 8,
+        borderRadius: 100,
+        marginHorizontal: 2,
     },
 });
