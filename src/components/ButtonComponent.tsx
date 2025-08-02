@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ActivityIndicator, StyleProp, StyleSheet, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import TextComponent from './TextComponent';
+import RowComponent from './RowComponent';
 
 interface Props {
     text: string;
     isLoading?: boolean;
     color?: string;
+    preffix?: ReactNode;
     styles?: StyleProp<ViewStyle>;
     textStyles?: StyleProp<TextStyle>;
     onPress: () => void;
 }
 
 const ButtonComponent = (props: Props) => {
-    const { text, isLoading, onPress, color, styles, textStyles } = props;
+    const { text, isLoading, onPress, color, preffix, styles, textStyles } = props;
     const localStyle = StyleSheet.create({
         btnContainer: {
             justifyContent: 'center',
@@ -32,7 +34,8 @@ const ButtonComponent = (props: Props) => {
         >
             {isLoading ? (
                 <ActivityIndicator />
-            ) : (
+            ) : <>
+                {preffix && preffix}
                 <TextComponent
                     text={text}
                     flex={0}
@@ -40,7 +43,7 @@ const ButtonComponent = (props: Props) => {
                     size={16}
                     font={fontFamillies.poppinsBold}
                 />
-            )}
+            </>}
         </TouchableOpacity>
     );
 };

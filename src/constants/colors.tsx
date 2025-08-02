@@ -9,5 +9,12 @@ export const colors = {
     primary: '#6CC51D',
     primaryDark: '#AEDC81',
     primaryLight: '#EBFFD7',
-    gray: '#DCDCDC'
+    gray: '#DCDCDC',
+    blue: '#407EC7',
+    vegetable:'#E6F2EA',
+    fruit: '#FFE9E5',
+    beverage: '#FFF6E3',
+    grocery: '#F3EFFA',
+    edibleOil: '#DCF4F5',
+    household: '#FFE8F2'
 }

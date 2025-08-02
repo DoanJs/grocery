@@ -9,8 +9,7 @@ import ProfileScreen from "./profile/ProfileScreen";
 import SplashScreen from "./SplashScreen";
 
 export {
-    CartScreen, HeartScreen, HomeScreen,
-    Login, ProfileScreen, Register,
+    CartScreen, HeartScreen, HomeScreen, Login, ProfileScreen, Register,
     SplashScreen, SwiperScreen, AuthHomeScreen
 };
 
