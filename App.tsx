@@ -1,27 +1,31 @@
-import { NavigationContainer } from '@react-navigation/native'
-import React, { useEffect, useState } from 'react'
-import AuthNavigator from './src/router/AuthNavigator'
-import MainNavigator from './src/router/MainNavigator'
-import SplashScreen from './src/screens/SplashScreen'
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import AuthNavigator from './src/router/AuthNavigator';
+import MainNavigator from './src/router/MainNavigator';
+import SplashScreen from './src/screens/SplashScreen';
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isWellcome, setIsWellcome] = useState(true)
+  const [isLoading, setIsLoading] = useState(false);
+  const [isWellcome, setIsWellcome] = useState(true);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setIsWellcome(false)
-    }, 1500)
+      setIsWellcome(false);
+    }, 1500);
 
-    return () => clearTimeout(timeout)
-  }, [])
-  return <NavigationContainer>
-    {isWellcome
-      ? <SplashScreen />
-      : isLoading
-        ? <MainNavigator />
-        : <AuthNavigator />}
-  </NavigationContainer>
-}
+    return () => clearTimeout(timeout);
+  }, []);
+  return (
+    <NavigationContainer>
+      {isWellcome ? (
+        <SplashScreen />
+      ) : isLoading ? (
+        <MainNavigator />
+      ) : (
+        <AuthNavigator />
+      )}
+    </NavigationContainer>
+  );
+};
 
-export default App
+export default App;

@@ -12,7 +12,6 @@ const AuthNavigator = () => {
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Register' component={Register} />
             <Stack.Screen name='Main' component={TabNavigator} />
-
         </Stack.Navigator>
     )
 }

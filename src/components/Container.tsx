@@ -12,6 +12,7 @@ import { RowComponent, TextComponent } from '.';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import { globalStyles } from '../styles/globalStyles';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
     children: ReactNode;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const Container = (props: Props) => {
+    const navigation: any = useNavigation()
     const { children, title, back, left, right, isScroll, bg } = props;
     const localStyle = StyleSheet.create({
         header: {
@@ -39,7 +41,7 @@ const Container = (props: Props) => {
             {(back || left || right || title) && (
                 <RowComponent styles={[localStyle.header]}>
                     {back &&
-                        <ArrowLeft size={26} color={colors.text2} />}
+                        <ArrowLeft size={26} color={colors.text2} onPress={() => navigation.goBack()}/>}
                     {/* {left && !back && <TextComponent text="Left" />} */}
                     <View style={localStyle.title}>
                         {title && (

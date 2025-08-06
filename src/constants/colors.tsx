@@ -16,5 +16,10 @@ export const colors = {
     beverage: '#FFF6E3',
     grocery: '#F3EFFA',
     edibleOil: '#DCF4F5',
-    household: '#FFE8F2'
+    household: '#FFE8F2',
+    heart: '#fe585a',
+    orange: '#E8AD41',
+    orange2: '#FDEFD5',
+    pink: '#F56262',
+    pink2:'#FEE4E4'
 }
