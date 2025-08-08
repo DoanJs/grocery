@@ -1,4 +1,5 @@
 import ButtonComponent from './ButtonComponent';
+import CategoryItem from './CategoryItem';
 import Container from './Container';
 import InputComponent from './InputComponent';
 import ProductItemComponent from './ProductItemComponent';
@@ -15,5 +16,5 @@ export {
   ProductItemComponent,
   TextComponent,
   SpaceComponent,
-  InputComponent,
+  InputComponent,CategoryItem
 };

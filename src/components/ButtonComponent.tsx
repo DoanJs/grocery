@@ -3,20 +3,20 @@ import { ActivityIndicator, StyleProp, StyleSheet, TextStyle, TouchableOpacity, 
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import TextComponent from './TextComponent';
-import RowComponent from './RowComponent';
 
 interface Props {
     text: string;
     isLoading?: boolean;
     color?: string;
     preffix?: ReactNode;
+    suffix?: ReactNode;
     styles?: StyleProp<ViewStyle>;
     textStyles?: StyleProp<TextStyle>;
     onPress: () => void;
 }
 
 const ButtonComponent = (props: Props) => {
-    const { text, isLoading, onPress, color, preffix, styles, textStyles } = props;
+    const { text, isLoading, onPress, color, preffix, suffix, styles, textStyles } = props;
     const localStyle = StyleSheet.create({
         btnContainer: {
             justifyContent: 'center',
@@ -43,6 +43,7 @@ const ButtonComponent = (props: Props) => {
                     size={16}
                     font={fontFamillies.poppinsBold}
                 />
+                {suffix && suffix}
             </>}
         </TouchableOpacity>
     );

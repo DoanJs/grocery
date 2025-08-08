@@ -33,7 +33,7 @@ const Container = (props: Props) => {
             paddingVertical: 16,
             paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 42,
         },
-        title: { paddingHorizontal: 16, flex: 1 },
+        title: { paddingHorizontal: 16, flex: 1, alignItems:'center' },
     });
 
     return (
@@ -43,10 +43,10 @@ const Container = (props: Props) => {
                     {back &&
                         <ArrowLeft size={26} color={colors.text2} onPress={() => navigation.goBack()}/>}
                     {/* {left && !back && <TextComponent text="Left" />} */}
-                    <View style={localStyle.title}>
+                    <View style={[localStyle.title]}>
                         {title && (
                             <TextComponent
-                                type="bigTitle"
+                                type="thinTitle"
                                 font={fontFamillies.poppinsBold}
                                 text={title}
                             />

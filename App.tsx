@@ -5,8 +5,8 @@ import MainNavigator from './src/router/MainNavigator';
 import SplashScreen from './src/screens/SplashScreen';
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isWellcome, setIsWellcome] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isWellcome, setIsWellcome] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

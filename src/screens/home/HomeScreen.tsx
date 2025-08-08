@@ -25,6 +25,7 @@ import swiper03Png from '../../assests/images/swiper03.png';
 import swiper04Png from '../../assests/images/swiper04.png';
 import vegetablesCatePng from '../../assests/images/vegetableCate.png';
 import {
+  CategoryItem,
   Container,
   InputComponent,
   ProductItemComponent,
@@ -36,7 +37,6 @@ import {
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
-import { navigationRef } from '../../../navigationRef';
 
 const data = [
   {
@@ -134,7 +134,6 @@ const dataCart = [
   },
 ];
 const HomeScreen = ({ navigation }: any) => {
-  console.log(navigation.getState());
   const [keySearch, setKeySearch] = useState('');
   const [index, setIndex] = useState(0);
   return (
@@ -205,7 +204,7 @@ const HomeScreen = ({ navigation }: any) => {
         </View>
       </SectionComponent>
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <SectionComponent>
           <RowComponent justify="space-between">
             <TextComponent
@@ -213,36 +212,20 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
-              <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
-            </TouchableOpacity>
+            <ArrowRight2 size={sizes.thinTitle} color={colors.text}
+              onPress={() => navigation.navigate('CategoryScreen')}
+            />
           </RowComponent>
 
           <SpaceComponent height={10} />
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {data.map((_, ind) => (
-              <TouchableOpacity
-                key={ind}
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  marginRight: 12,
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: _.color,
-                    marginBottom: 8,
-                    paddingVertical: 16,
-                    borderRadius: 100,
-                    paddingHorizontal: 18,
-                  }}
-                >
-                  <Image source={_.icon} />
-                </View>
-                <TextComponent text={_.name} color={colors.text} />
-              </TouchableOpacity>
+              <CategoryItem key={ind}
+                text={_.name}
+                bg={_.color}
+                srcImage={_.icon}
+              />
             ))}
           </ScrollView>
         </SectionComponent>
@@ -254,7 +237,7 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>

@@ -11,7 +11,7 @@ interface Props {
     flex?: number;
     numberOfLine?: number;
     color?: string;
-    type?: 'bigTitle' | 'title' | 'smallTitle' | 'bigText' | 'text' | 'smallText';
+    type?: 'bigTitle' | 'title' | 'smallTitle' | 'thinTitle' | 'bigText' | 'text' | 'smallText';
     styles?: StyleProp<TextStyle>;
 }
 
@@ -29,6 +29,9 @@ const TextComponent = (props: Props) => {
             break;
         case 'smallTitle':
             fontSize = sizes.smallTitle;
+            break;
+        case 'thinTitle':
+            fontSize = sizes.thinTitle;
             break;
         case 'bigText':
             fontSize = sizes.bigText;
