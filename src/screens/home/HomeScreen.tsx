@@ -213,7 +213,7 @@ const HomeScreen = ({ navigation }: any) => {
               size={sizes.thinTitle}
             />
             <ArrowRight2 size={sizes.thinTitle} color={colors.text}
-              onPress={() => navigation.navigate('CategoryScreen')}
+              onPress={() => navigation.navigate('CategoriesScreen')}
             />
           </RowComponent>
 
@@ -221,7 +221,9 @@ const HomeScreen = ({ navigation }: any) => {
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {data.map((_, ind) => (
-              <CategoryItem key={ind}
+              <CategoryItem
+                onPress={() => navigation.navigate('CategoryProductScreen')}
+                key={ind}
                 text={_.name}
                 bg={_.color}
                 srcImage={_.icon}
@@ -269,6 +271,7 @@ const HomeScreen = ({ navigation }: any) => {
             ))}
           </SectionComponent>
         </View>
+
       </ScrollView>
     </Container>
   );

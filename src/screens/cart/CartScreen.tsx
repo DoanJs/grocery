@@ -1,12 +1,16 @@
+import { View, Text } from 'react-native'
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Container, SectionComponent, TextComponent } from '../../components'
+import { colors } from '../../constants/colors'
 
 const CartScreen = () => {
-    return (
-        <View>
-            <Text>CartScreen</Text>
-        </View>
-    )
+  return (
+    <Container bg={colors.background} back title='Shopping Cart'>
+      <SectionComponent>
+        <TextComponent text='Js'/>
+      </SectionComponent>
+    </Container>
+  )
 }
 
 export default CartScreen

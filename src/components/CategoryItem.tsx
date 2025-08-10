@@ -11,10 +11,11 @@ interface Props {
     text: string
     styles?: StyleProp<ViewStyle>
     imgStyles?: StyleProp<ViewStyle>
+    onPress: () => void
 }
 
 const CategoryItem = (props: Props) => {
-    const { bg, srcImage, text, styles, imgStyles } = props
+    const { bg, srcImage, text, styles, imgStyles, onPress } = props
     return (
         <TouchableOpacity
             style={[{
@@ -22,6 +23,7 @@ const CategoryItem = (props: Props) => {
                 alignItems: 'center',
                 marginRight: 12,
             }, styles]}
+            onPress={onPress}
         >
             <View
                 style={[{

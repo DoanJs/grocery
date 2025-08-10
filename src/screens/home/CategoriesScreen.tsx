@@ -1,13 +1,13 @@
 import { Setting5 } from 'iconsax-react-native'
 import React from 'react'
 import { View } from 'react-native'
+import babycareCatePng from '../../assests/images/babycare.png'
 import beveragesCatePng from '../../assests/images/beveragesCate.png'
 import edibleOilCatePng from '../../assests/images/edibleOilCate.png'
 import fruitsCatePng from '../../assests/images/fruitsCate.png'
 import groceryCatePng from '../../assests/images/groceryCate.png'
 import householdCatePng from '../../assests/images/householdCate.png'
-import babycareCatePng from '../../assests/images/babycare.png'
-import { default as vegetableCate, default as vegetablesCatePng } from '../../assests/images/vegetableCate.png'
+import vegetablesCatePng from '../../assests/images/vegetableCate.png'
 import { CategoryItem, Container, RowComponent, SectionComponent } from '../../components'
 import { colors } from '../../constants/colors'
 const data = [
@@ -48,15 +48,14 @@ const data = [
     },
 ];
 
-const CategoryScreen = () => {
+const CategoriesScreen = ({navigation}: any) => {
     return (
         <Container back bg={colors.background} title='Categories'
             right={<Setting5
                 onPress={() => { }}
                 size={24}
                 color={colors.text2}
-            />}
-        >
+            />}>
             <View style={{
                 backgroundColor: colors.background1,
                 flex: 1
@@ -70,6 +69,7 @@ const CategoryScreen = () => {
                         {
                             data.map((_, index) =>
                                 <CategoryItem
+                                onPress={() => navigation.navigate('CategoryProductScreen')}
                                     key={index}
                                     bg={_.color}
                                     srcImage={_.icon}
@@ -96,4 +96,4 @@ const CategoryScreen = () => {
     )
 }
 
-export default CategoryScreen
+export default CategoriesScreen

@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Heart, ShoppingBag, User } from 'iconsax-react-native';
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../constants/colors';
 import CartNavigator from './CartNavigator';
@@ -9,7 +9,7 @@ import HeartNavigator from './HeartNavigator';
 import HomeNavigator from './HomeNavigator';
 import ProfileNavigator from './ProfileNavigator';
 
-const TabNavigator = () => {
+const TabNavigator = ({ navigation }: any) => {
   const Tab = createBottomTabNavigator();
 
   const tabBarIcon = ({ focused, size, color, route }: any) => {
@@ -18,9 +18,7 @@ const TabNavigator = () => {
     let icon = <Ionicons size={size} color={color} name="home-outline" />;
     switch (route.name) {
       case 'Cart':
-        icon = (
-          <ShoppingBag variant="TwoTone" color={colors.background} size={42} />
-        );
+        icon = (<></>);
         break;
       case 'Heart':
         icon = <Heart variant="TwoTone" color={color} size={size} />;
@@ -34,14 +32,14 @@ const TabNavigator = () => {
     }
     return (
       <View
-        style={
-          focused
-            ? localStyle.tabIcon
-            : route.name === 'Cart'
-            ? localStyle.cartIcon
-            : undefined
-        }
+        style={localStyle.tabIcon}
       >
+        {route.name === 'Cart' &&
+          <TouchableOpacity style={localStyle.cartIcon}
+            onPress={() => navigation.navigate('CartScreen')}>
+            <ShoppingBag variant="TwoTone" color={colors.background} size={42} />
+          </TouchableOpacity>
+        }
         {icon}
       </View>
     );
@@ -67,6 +65,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Profile" component={ProfileNavigator} />
       <Tab.Screen name="Heart" component={HeartNavigator} />
       <Tab.Screen name="Cart" component={CartNavigator} />
+
     </Tab.Navigator>
   );
 };
