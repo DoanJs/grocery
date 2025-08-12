@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import { HeartScreen } from '../screens'
+import { EmptyScreen, HeartScreen } from '../screens'
 
 const HeartNavigator = () => {
     const Stack = createNativeStackNavigator()
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='HeartScreen' component={HeartScreen} />
+            <Stack.Screen name='EmptyScreen' component={EmptyScreen} />
         </Stack.Navigator>
     )
 }

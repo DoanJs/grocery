@@ -19,8 +19,11 @@ export const colors = {
     household: '#FFE8F2',
     babycare:'#D2EFFF',
     heart: '#fe585a',
+    red:'#ef574b',
     orange: '#E8AD41',
     orange2: '#FDEFD5',
     pink: '#F56262',
-    pink2:'#FEE4E4'
+    pink2:'#FEE4E4',
+    star: '#FFC107',
+    green: '#28b446'
 }

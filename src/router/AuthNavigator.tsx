@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import { AuthHomeScreen, Login, Register, SwiperScreen } from '../screens'
+import { AuthHomeScreen, ForgotPasswordScreen, Login, OTPScreen, Register, SwiperScreen, VerifyNumberScreen } from '../screens'
 import TabNavigator from './TabNavigator'
 
 const AuthNavigator = () => {
@@ -11,6 +11,9 @@ const AuthNavigator = () => {
             <Stack.Screen name='AuthHomeScreen' component={AuthHomeScreen} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Register' component={Register} />
+            <Stack.Screen name='ForgotPasswordScreen' component={ForgotPasswordScreen} />
+            <Stack.Screen name='VerifyNumberScreen' component={VerifyNumberScreen} />
+            <Stack.Screen name='OTPScreen' component={OTPScreen} />
             <Stack.Screen name='Main' component={TabNavigator} />
         </Stack.Navigator>
     )

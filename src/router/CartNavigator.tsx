@@ -7,7 +7,6 @@ const CartNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='EmptyScreen' component={EmptyScreen} />
-            {/* <Stack.Screen name='CartScreen' component={CartScreen} /> */}
         </Stack.Navigator>
     )
 }

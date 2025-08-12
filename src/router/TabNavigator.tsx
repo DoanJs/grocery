@@ -18,10 +18,17 @@ const TabNavigator = ({ navigation }: any) => {
     let icon = <Ionicons size={size} color={color} name="home-outline" />;
     switch (route.name) {
       case 'Cart':
-        icon = (<></>);
+        icon = <></>;
         break;
       case 'Heart':
-        icon = <Heart variant="TwoTone" color={color} size={size} />;
+        icon = (
+          <Heart
+            variant="TwoTone"
+            color={color}
+            size={size}
+            onPress={() => navigation.navigate('HeartScreen')}
+          />
+        );
         break;
       case 'Profile':
         icon = <User color={color} size={size} />;
@@ -31,15 +38,19 @@ const TabNavigator = ({ navigation }: any) => {
         break;
     }
     return (
-      <View
-        style={localStyle.tabIcon}
-      >
-        {route.name === 'Cart' &&
-          <TouchableOpacity style={localStyle.cartIcon}
-            onPress={() => navigation.navigate('CartScreen')}>
-            <ShoppingBag variant="TwoTone" color={colors.background} size={42} />
+      <View style={localStyle.tabIcon}>
+        {route.name === 'Cart' && (
+          <TouchableOpacity
+            style={localStyle.cartIcon}
+            onPress={() => navigation.navigate('CartScreen')}
+          >
+            <ShoppingBag
+              variant="TwoTone"
+              color={colors.background}
+              size={42}
+            />
           </TouchableOpacity>
-        }
+        )}
         {icon}
       </View>
     );
@@ -65,7 +76,6 @@ const TabNavigator = ({ navigation }: any) => {
       <Tab.Screen name="Profile" component={ProfileNavigator} />
       <Tab.Screen name="Heart" component={HeartNavigator} />
       <Tab.Screen name="Cart" component={CartNavigator} />
-
     </Tab.Navigator>
   );
 };

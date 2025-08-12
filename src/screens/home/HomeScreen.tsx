@@ -154,7 +154,7 @@ const HomeScreen = ({ navigation }: any) => {
           prefix={<SearchNormal1 color={colors.text} size={26} />}
           color={colors.background1}
           affix={
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('FilterScreen')}>
               <Setting5 size={26} color={colors.text} />
             </TouchableOpacity>
           }
