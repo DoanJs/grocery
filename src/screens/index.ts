@@ -14,12 +14,14 @@ import FilterScreen from './home/FilterScreen';
 import HomeScreen from './home/HomeScreen';
 import ProductDetailsScreen from './home/ProductDetailsScreen';
 import AddressScreen from './profile/AddressScreen';
+import NotificationsScreen from './profile/NotificationsScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import SplashScreen from './SplashScreen';
 
 export {
+  AddressScreen,
   AuthHomeScreen,
-  CartScreen, AddressScreen,
+  CartScreen,
   CategoriesScreen,
   CategoryProductScreen,
   EmptyScreen,
@@ -28,6 +30,7 @@ export {
   HeartScreen,
   HomeScreen,
   Login,
+  NotificationsScreen,
   OTPScreen,
   ProductDetailsScreen,
   ProfileScreen,

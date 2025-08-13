@@ -57,7 +57,7 @@ const data = [
   {
     icon: <Notification color={colors.green} size={20} />,
     title: 'Notifications',
-    screen:''
+    screen:'NotificationsScreen'
   },
   {
     icon: <Logout color={colors.green} size={20} />,
