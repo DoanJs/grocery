@@ -1,3 +1,4 @@
+import AddressItemComponent from './AddressItemComponent';
 import ButtonComponent from './ButtonComponent';
 import CartItemComponent from './CartItemComponent';
 import CategoryItem from './CategoryItem';
@@ -20,4 +21,5 @@ export {
   SectionComponent,
   SpaceComponent,
   TextComponent,
+  AddressItemComponent
 };

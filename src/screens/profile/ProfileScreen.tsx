@@ -27,38 +27,46 @@ const data = [
   {
     icon: <User color={colors.green} size={20} />,
     title: 'About me',
+    screen:''
   },
   {
     icon: <Box color={colors.green} size={20} />,
     title: 'My Orders',
+    screen: ''
   },
   {
     icon: <Heart color={colors.green} size={20} />,
     title: 'My Favorites',
+    screen:''
   },
   {
     icon: <Location color={colors.green} size={20} />,
     title: 'My Address',
+    screen: 'AddressScreen'
   },
   {
     icon: <Card color={colors.green} size={20} />,
     title: 'Credit Cards',
+    screen:''
   },
   {
     icon: <TransactionMinus color={colors.green} size={20} />,
     title: 'Transactions',
+    screen:''
   },
   {
     icon: <Notification color={colors.green} size={20} />,
     title: 'Notifications',
+    screen:''
   },
   {
     icon: <Logout color={colors.green} size={20} />,
     title: 'Sign out',
+    screen:''
   },
 ];
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}: any) => {
   return (
     <Container bg={colors.background}>
       <SectionComponent
@@ -127,7 +135,7 @@ const ProfileScreen = () => {
               alignItems: 'center',
               marginVertical: 10,
             }}
-            onPress={() => {}}
+            onPress={() => navigation.navigate(_.screen)}
           >
             {_.icon}
             <SpaceComponent width={16}/>

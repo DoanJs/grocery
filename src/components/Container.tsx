@@ -58,7 +58,7 @@ const Container = (props: Props) => {
             {!isScroll ? (
                 <View style={[globalStyles.container]}>{children}</View>
             ) : (
-                <ScrollView style={[globalStyles.container]}>{children}</ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false} style={[globalStyles.container]}>{children}</ScrollView>
             )}
         </SafeAreaView>
     );

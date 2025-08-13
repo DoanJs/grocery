@@ -13,12 +13,13 @@ import CategoryProductScreen from './home/CategoryProductScreen';
 import FilterScreen from './home/FilterScreen';
 import HomeScreen from './home/HomeScreen';
 import ProductDetailsScreen from './home/ProductDetailsScreen';
+import AddressScreen from './profile/AddressScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import SplashScreen from './SplashScreen';
 
 export {
   AuthHomeScreen,
-  CartScreen,
+  CartScreen, AddressScreen,
   CategoriesScreen,
   CategoryProductScreen,
   EmptyScreen,
