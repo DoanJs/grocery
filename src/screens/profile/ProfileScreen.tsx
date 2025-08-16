@@ -52,7 +52,7 @@ const data = [
   {
     icon: <TransactionMinus color={colors.green} size={20} />,
     title: 'Transactions',
-    screen:''
+    screen:'TransactionsScreen'
   },
   {
     icon: <Notification color={colors.green} size={20} />,

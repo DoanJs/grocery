@@ -27,7 +27,6 @@ import vegetablesCatePng from '../../assests/images/vegetableCate.png';
 import {
   CategoryItem,
   Container,
-  InputComponent,
   ProductItemComponent,
   RowComponent,
   SectionComponent,
@@ -144,28 +143,30 @@ const HomeScreen = ({ navigation }: any) => {
           marginBottom: 0,
         }}
       >
-        <InputComponent
+        <RowComponent
+          justify="space-between"
           styles={{
+            paddingHorizontal: 20,
+            paddingVertical: 16,
             backgroundColor: colors.background1,
-            paddingVertical: 12,
-            paddingHorizontal: 26,
             borderRadius: 5,
+            marginBottom: 10,
           }}
-          prefix={<SearchNormal1 color={colors.text} size={26} />}
-          color={colors.background1}
-          affix={
-            <TouchableOpacity onPress={() => navigation.navigate('FilterScreen')}>
-              <Setting5 size={26} color={colors.text} />
-            </TouchableOpacity>
-          }
-          value={keySearch}
-          placeholder="Search keywords..."
-          placeholderTextColor={colors.text}
-          textStyles={{
-            color: colors.text,
-          }}
-          onChange={val => setKeySearch(val)}
-        />
+        >
+          <RowComponent onPress={() => navigation.navigate('SearchScreen')}>
+            <SearchNormal1 color={colors.text} size={26} />
+            <SpaceComponent width={10} />
+            <TextComponent
+              text="Search keywords.."
+              color={colors.text}
+              font={fontFamillies.poppinsMedium}
+              size={sizes.bigText}
+            />
+          </RowComponent>
+          <TouchableOpacity onPress={() => navigation.navigate('FilterScreen')}>
+            <Setting5 size={26} color={colors.text} />
+          </TouchableOpacity>
+        </RowComponent>
       </SectionComponent>
 
       <SectionComponent
@@ -212,7 +213,9 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <ArrowRight2 size={sizes.thinTitle} color={colors.text}
+            <ArrowRight2
+              size={sizes.thinTitle}
+              color={colors.text}
               onPress={() => navigation.navigate('CategoriesScreen')}
             />
           </RowComponent>
@@ -239,7 +242,7 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => { }}>
+            <TouchableOpacity onPress={() => {}}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>
@@ -271,7 +274,6 @@ const HomeScreen = ({ navigation }: any) => {
             ))}
           </SectionComponent>
         </View>
-
       </ScrollView>
     </Container>
   );
