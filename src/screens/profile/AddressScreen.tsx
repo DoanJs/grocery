@@ -21,7 +21,11 @@ const AddressScreen = ({ navigation }: any) => {
       bg={colors.background}
       back
       title="My Address"
-      right={<AddCircle size={26} color={colors.text2} />}
+      right={<AddCircle 
+        size={26} 
+        color={colors.text2} 
+        onPress={() => navigation.navigate('AddAdressScreen')}
+        />}
     >
       <SectionComponent
         styles={{

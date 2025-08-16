@@ -13,29 +13,29 @@ import CategoryProductScreen from './home/CategoryProductScreen';
 import FilterScreen from './home/FilterScreen';
 import HomeScreen from './home/HomeScreen';
 import ProductDetailsScreen from './home/ProductDetailsScreen';
+import AboutMeScreen from './profile/AboutMeScreen';
+import AddAdressScreen from './profile/AddAdressScreen';
 import AddressScreen from './profile/AddressScreen';
+import MyOrderScreen from './profile/MyOrderScreen';
 import NotificationsScreen from './profile/NotificationsScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import SplashScreen from './SplashScreen';
 
 export {
-  AddressScreen,
-  AuthHomeScreen,
+  AboutMeScreen, AddAdressScreen, AddressScreen, AuthHomeScreen,
   CartScreen,
-  CategoriesScreen,
-  CategoryProductScreen,
-  EmptyScreen,
-  FilterScreen,
+  CategoriesScreen, CategoryProductScreen,
+  EmptyScreen, FilterScreen,
   ForgotPasswordScreen,
   HeartScreen,
   HomeScreen,
-  Login,
-  NotificationsScreen,
+  Login, MyOrderScreen, NotificationsScreen,
   OTPScreen,
   ProductDetailsScreen,
   ProfileScreen,
   Register,
   SplashScreen,
   SwiperScreen,
-  VerifyNumberScreen,
+  VerifyNumberScreen
 };
+

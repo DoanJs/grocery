@@ -27,12 +27,12 @@ const data = [
   {
     icon: <User color={colors.green} size={20} />,
     title: 'About me',
-    screen:''
+    screen:'AboutMeScreen'
   },
   {
     icon: <Box color={colors.green} size={20} />,
     title: 'My Orders',
-    screen: ''
+    screen: 'MyOrderScreen'
   },
   {
     icon: <Heart color={colors.green} size={20} />,

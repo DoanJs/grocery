@@ -5,6 +5,7 @@ import CategoryItem from './CategoryItem';
 import Container from './Container';
 import InputComponent from './InputComponent';
 import NotificationItemComponent from './NotificationItemComponent';
+import OrderItemComponent from './OrderItemComponent';
 import ProductItemComponent from './ProductItemComponent';
 import RowComponent from './RowComponent';
 import SectionComponent from './SectionComponent';
@@ -24,4 +25,5 @@ export {
   SectionComponent,
   SpaceComponent,
   TextComponent,
+  OrderItemComponent
 };

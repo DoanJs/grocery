@@ -6,6 +6,7 @@ import {
   ForwardItem,
   GlobalSearch,
   Location,
+  Solana,
   User,
 } from 'iconsax-react-native';
 import React, { useState } from 'react';
@@ -38,7 +39,7 @@ const data = [
     title: 'Address',
   },
   {
-    icon: <ForwardItem size={20} color={colors.text} />,
+    icon: <Solana size={20} color={colors.text} />,
     title: 'City',
   },
   {

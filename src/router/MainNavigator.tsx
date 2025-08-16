@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { AddressScreen, CartScreen, CategoriesScreen, CategoryProductScreen, FilterScreen, HeartScreen, NotificationsScreen, ProductDetailsScreen } from '../screens';
+import { AboutMeScreen, AddAdressScreen, AddressScreen, CartScreen, CategoriesScreen, CategoryProductScreen, FilterScreen, HeartScreen, MyOrderScreen, NotificationsScreen, ProductDetailsScreen } from '../screens';
 import TabNavigator from './TabNavigator';
 
 const MainNavigator = () => {
@@ -16,6 +16,9 @@ const MainNavigator = () => {
       <Stack.Screen name='HeartScreen' component={HeartScreen} />
       <Stack.Screen name='AddressScreen' component={AddressScreen} />
       <Stack.Screen name='NotificationsScreen' component={NotificationsScreen} />
+      <Stack.Screen name='AddAdressScreen' component={AddAdressScreen} />
+      <Stack.Screen name='MyOrderScreen' component={MyOrderScreen} />
+      <Stack.Screen name='AboutMeScreen' component={AboutMeScreen} />
     </Stack.Navigator>
   );
 };
