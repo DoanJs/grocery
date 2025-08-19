@@ -12,6 +12,8 @@ import {
 import React, { useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import {
+  BtnShadowLinearComponent,
+  CheckedButtonComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
@@ -60,7 +62,7 @@ const AddressItemComponent = (props: Props) => {
   const { title, address, value, phone, onPress } = props;
   const [showMore, setShowMore] = useState(false);
 
- 
+
   return (
     <View
       style={{
@@ -230,38 +232,13 @@ const AddressItemComponent = (props: Props) => {
 
             <SpaceComponent height={16} />
 
-            <RowComponent onPress={() => onPress(title)}>
-              <View
-                style={{
-                  height: 18,
-                  width: 32,
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  borderColor: value === title ? colors.primary : colors.text,
-                  flexDirection: 'row',
-                  justifyContent: value === title ? 'flex-end' : 'flex-start',
-                  backgroundColor:
-                    value === title ? colors.primary : colors.text,
-                }}
-              >
-                <View
-                  style={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: 100,
-                    borderWidth: 1,
-                    borderColor: value === title ? colors.primary : colors.text,
-                    backgroundColor: colors.background,
-                  }}
-                />
-              </View>
-              <SpaceComponent width={10} />
-              <TextComponent
-                text="Make default"
-                color={colors.text2}
-                font={fontFamillies.poppinsMedium}
-              />
-            </RowComponent>
+            <CheckedButtonComponent
+              value={value}
+              makeDefault={title}
+              title='Make default'
+              onPress={() => onPress(title)}
+            />
+            
           </SectionComponent>
         </>
       )}

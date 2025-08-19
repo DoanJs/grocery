@@ -1,17 +1,15 @@
 import { ArrowDown2 } from 'iconsax-react-native';
 import React, { useState } from 'react';
 import { Image, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import usaFlag from '../../assests/images/usaFlag.png';
 import {
-  ButtonComponent,
+  BtnShadowLinearComponent,
   Container,
   InputComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -107,36 +105,10 @@ const VerifyNumberScreen = ({ navigation }: any) => {
 
         <SpaceComponent height={10} />
 
-        <Shadow
-          distance={5}
-          startColor={`${colors.primaryLight}d8`}
-          endColor={`${colors.primary}10`}
-          offset={[0, 4]}
-          style={{
-            width: '100%',
-            marginBottom: 16,
-          }}
-        >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={[colors.primaryDark, colors.primary]}
-            style={{ borderRadius: 5 }}
-          >
-            <ButtonComponent
-              styles={{
-                backgroundColor: 'transparent',
-              }}
-              textStyles={{
-                color: colors.background,
-                fontFamily: fontFamillies.poppinsSemiBold,
-                fontSize: sizes.bigText,
-              }}
-              onPress={() => navigation.navigate('OTPScreen')}
-              text="Next"
-            />
-          </LinearGradient>
-        </Shadow>
+        <BtnShadowLinearComponent
+          title='Next'
+          onPress={() => navigation.navigate('OTPScreen')}
+        />
 
         <TextComponent
           text="Resend confirmation code (1:23)"

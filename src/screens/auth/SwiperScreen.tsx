@@ -15,6 +15,7 @@ import phoneImg from '../../assests/images/phone.png'
 import shrimpImg from '../../assests/images/shrimp.png'
 import vegetableImg from '../../assests/images/vegetable.png'
 import {
+    BtnShadowLinearComponent,
     ButtonComponent,
     RowComponent,
     SectionComponent, SpaceComponent, TextComponent
@@ -163,15 +164,11 @@ const SwiperScreen = ({ navigation }: any) => {
 
                     {
                         index < 8
-                            ? <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[colors.primaryDark, colors.primary]} style={{ borderRadius: 5 }}>
-                                <ButtonComponent
-                                    color='transparent'
-                                    onPress={() => navigation.navigate('AuthHomeScreen')}
-                                    text='Get started'
-                                    textStyles={{ color: colors.background }} />
-                            </LinearGradient>
-                            :
-                            <RowComponent justify='space-between'>
+                            ? <BtnShadowLinearComponent
+                                onPress={() => navigation.navigate('AuthHomeScreen')}
+                                title='Get started'
+                            />
+                            : <RowComponent justify='space-between'>
                                 <TouchableOpacity
                                     onPress={() => setIndex(index - 1)}
                                 >

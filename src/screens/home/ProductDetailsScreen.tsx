@@ -78,11 +78,13 @@ const ProductDetailsScreen = ({ navigation }: any) => {
               <AntDesign name='star' size={20} color={colors.orange} />
               <AntDesign name='star' size={20} color={colors.orange} />
             </RowComponent>
-            <TextComponent
-              text='(89 reviews)'
-              color={colors.text}
-              font={fontFamillies.poppinsMedium}
-            />
+            <TouchableOpacity onPress={() => navigation.navigate('ReviewsScreen')}>
+              <TextComponent
+                text='(89 reviews)'
+                color={colors.text}
+                font={fontFamillies.poppinsMedium}
+              />
+            </TouchableOpacity>
           </RowComponent>
 
           <View>
@@ -171,6 +173,7 @@ const ProductDetailsScreen = ({ navigation }: any) => {
               suffix={<ShoppingBag size={24} color={colors.background} />}
             />
           </LinearGradient>
+
         </SectionComponent>
 
       </View>

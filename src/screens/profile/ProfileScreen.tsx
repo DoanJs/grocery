@@ -47,7 +47,7 @@ const data = [
   {
     icon: <Card color={colors.green} size={20} />,
     title: 'Credit Cards',
-    screen:''
+    screen:'MyCardScreen'
   },
   {
     icon: <TransactionMinus color={colors.green} size={20} />,

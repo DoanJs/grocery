@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {
+  BtnShadowLinearComponent,
   ButtonComponent,
   Container,
   InputComponent,
@@ -88,36 +89,11 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
 
         <SpaceComponent height={10} />
 
-        <Shadow
-          distance={5}
-          startColor={`${colors.primaryLight}d8`}
-          endColor={`${colors.primary}10`}
-          offset={[0, 4]}
-          style={{
-            width: '100%',
-            marginBottom: 16,
-          }}
-        >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={[colors.primaryDark, colors.primary]}
-            style={{ borderRadius: 5 }}
-          >
-            <ButtonComponent
-              styles={{
-                backgroundColor: 'transparent',
-              }}
-              textStyles={{
-                color: colors.background,
-                fontFamily: fontFamillies.poppinsSemiBold,
-                fontSize: sizes.bigText,
-              }}
-              onPress={() => navigation.navigate('OTPScreen')}
-              text="Send link"
-            />
-          </LinearGradient>
-        </Shadow>
+        <BtnShadowLinearComponent
+          title='Send link'
+          onPress={() => navigation.navigate('OTPScreen')}
+        />
+        
       </SectionComponent>
     </Container>
   );

@@ -6,9 +6,11 @@ import myOrder from '../assests/images/myOrder.png'
 import { colors } from '../constants/colors'
 import { fontFamillies } from '../constants/fontFamilies'
 import { sizes } from '../constants/sizes'
+import { useNavigation } from '@react-navigation/native'
 
 interface Props {
     code: string
+    notMore?: boolean
 }
 
 const data = [
@@ -39,15 +41,21 @@ const data = [
     },
 ]
 const OrderItemComponent = (props: Props) => {
-    const { code } = props
+    const navigation: any = useNavigation()
+    const { code, notMore } = props
     const [isShow, setIsShow] = useState(false);
 
     return (
-        <View style={{marginVertical: 6}}>
-            <RowComponent justify='space-between' styles={{
-                backgroundColor: colors.background,
-                padding: 20,
-            }}>
+        <View style={{ marginVertical: 6 }}>
+            <RowComponent justify='space-between'
+                onPress={!notMore
+                    ? () => navigation.navigate('TrackOrderScreen')
+                    : undefined
+                }
+                styles={{
+                    backgroundColor: colors.background,
+                    padding: 20,
+                }}>
                 <View style={{
                     backgroundColor: colors.primaryLight,
                     padding: 16,
@@ -102,21 +110,24 @@ const OrderItemComponent = (props: Props) => {
                     </RowComponent>
                 </RowComponent>
 
-                <TouchableOpacity
-                    onPress={() => setIsShow(!isShow)}
-                    style={{
-                        padding: 1,
-                        borderWidth: 1,
-                        borderColor: colors.primary,
-                        borderRadius: 100,
-                    }}
-                >
-                    {
-                        isShow 
-                        ? <ArrowUp2 variant="Bold" size={20} color={colors.primary} />
-                        : <ArrowDown2 variant="Bold" size={20} color={colors.primary} />
-                    }
-                </TouchableOpacity>
+                {
+                    !notMore &&
+                    <TouchableOpacity
+                        onPress={() => setIsShow(!isShow)}
+                        style={{
+                            padding: 1,
+                            borderWidth: 1,
+                            borderColor: colors.primary,
+                            borderRadius: 100,
+                        }}
+                    >
+                        {
+                            isShow
+                                ? <ArrowUp2 variant="Bold" size={20} color={colors.primary} />
+                                : <ArrowDown2 variant="Bold" size={20} color={colors.primary} />
+                        }
+                    </TouchableOpacity>
+                }
             </RowComponent>
 
             {

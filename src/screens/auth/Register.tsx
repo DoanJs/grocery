@@ -1,15 +1,13 @@
 import { ArrowLeft, Lock } from 'iconsax-react-native';
 import React, { useState } from 'react';
 import { ImageBackground, TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
+import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import createAccountPng from '../../assests/images/createAccount.png';
-import { ButtonComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components';
+import { BtnShadowLinearComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
-import Feather from 'react-native-vector-icons/Feather';
 
 const Register = ({ navigation }: any) => {
     const [email, setEmail] = useState('')
@@ -105,38 +103,10 @@ const Register = ({ navigation }: any) => {
 
                     <SpaceComponent height={16} />
 
-                    <Shadow
-                        distance={5}
-                        startColor={`${colors.primaryLight}d8`} endColor={`${colors.primary}10`}
-                        offset={[0, 4]}
-                        style={{
-                            width: '100%',
-                            marginBottom: 16
-                        }}
-                    >
-                        <LinearGradient
-                            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                            colors={[colors.primaryDark, colors.primary]}
-                            style={{ borderRadius: 5 }}
-                        >
-                            <ButtonComponent
-                                color='transparent'
-                                onPress={() => { }}
-                                text='Signup'
-                                textStyles={{
-                                    color: colors.background,
-                                    fontFamily: fontFamillies.poppinsMedium,
-                                    fontSize: sizes.bigText,
-                                    marginLeft: 20
-                                }}
-                                styles={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    borderRadius: 5,
-                                }}
-                            />
-                        </LinearGradient>
-                    </Shadow>
+                    <BtnShadowLinearComponent
+                        title='Signup'
+                        onPress={() => { }}
+                    />
 
                     <RowComponent justify='center'>
                         <TextComponent

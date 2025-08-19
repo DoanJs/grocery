@@ -27,6 +27,7 @@ interface Props {
     styles?: StyleProp<ViewStyle>;
     textStyles?: StyleProp<TextStyle>;
     color?: string;
+    editable?: boolean
 }
 
 const InputComponent = (props: Props) => {
@@ -44,6 +45,7 @@ const InputComponent = (props: Props) => {
         isPassword,
         styles,
         textStyles,
+        editable
     } = props;
     const [showPass, setShowPass] = useState(false);
 
@@ -81,6 +83,7 @@ const InputComponent = (props: Props) => {
                         numberOfLines={numberOfLine}
                         secureTextEntry={isPassword ? !showPass : false}
                         autoCapitalize="none"
+                        editable={editable ?? true}
                     />
                 </View>
                 {affix && affix}

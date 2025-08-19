@@ -20,10 +20,12 @@ export const colors = {
     babycare:'#D2EFFF',
     heart: '#fe585a',
     red:'#ef574b',
+    red2: '#ec6f5a',
     orange: '#E8AD41',
     orange2: '#FDEFD5',
+    orange3:'#f7ca57',
     pink: '#F56262',
     pink2:'#FEE4E4',
     star: '#FFC107',
-    green: '#28b446'
+    green: '#28b446',
 }

@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import {
-  ButtonComponent,
+  BtnShadowLinearComponent,
   Container,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -143,36 +141,10 @@ const OTPScreen = ({ navigation }: any) => {
 
         <SpaceComponent height={16} />
 
-        <Shadow
-          distance={5}
-          startColor={`${colors.primaryLight}d8`}
-          endColor={`${colors.primary}10`}
-          offset={[0, 4]}
-          style={{
-            width: '100%',
-            marginBottom: 16,
-          }}
-        >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={[colors.primaryDark, colors.primary]}
-            style={{ borderRadius: 5 }}
-          >
-            <ButtonComponent
-              styles={{
-                backgroundColor: 'transparent',
-              }}
-              textStyles={{
-                color: colors.background,
-                fontFamily: fontFamillies.poppinsSemiBold,
-                fontSize: sizes.bigText,
-              }}
-              onPress={() => navigation.navigate('OTPScreen')}
-              text="Next"
-            />
-          </LinearGradient>
-        </Shadow>
+        <BtnShadowLinearComponent
+          onPress={() => navigation.navigate('OTPScreen')}
+          title="Next"
+        />
 
         <RowComponent
           styles={{
@@ -185,7 +157,7 @@ const OTPScreen = ({ navigation }: any) => {
             font={fontFamillies.poppinsLight}
             size={sizes.bigText}
           />
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => { }}>
             <TextComponent
               text="Resend a new code"
               font={fontFamillies.poppinsMedium}

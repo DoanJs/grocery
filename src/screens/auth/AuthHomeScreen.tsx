@@ -1,12 +1,10 @@
 import { ArrowLeft } from 'iconsax-react-native';
 import React from 'react';
 import { Image, ImageBackground, TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import googlePng from '../../assests/images/google.png';
 import userPng from '../../assests/images/user.png';
 import welcomeImg from '../../assests/images/welcome.png';
-import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components';
+import { BtnShadowLinearComponent, ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
@@ -68,34 +66,14 @@ const AuthHomeScreen = ({ navigation }: any) => (
             fontSize: sizes.bigText, marginLeft: 16
           }} />
 
-        <Shadow
-          distance={5}
-          startColor={`${colors.primaryLight}d8`} endColor={`${colors.primary}10`}
-          offset={[0, 4]}
-          style={{
-            width: '100%',
-            marginBottom: 16
+        <BtnShadowLinearComponent
+          title='Create an account'
+          onPress={() => navigation.navigate('Register')}
+          preffix={<Image source={userPng} style={{ marginHorizontal: 20 }} />}
+          btnStyles={{
+            justifyContent: 'flex-start',
           }}
-        >
-          <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[colors.primaryDark, colors.primary]} style={{ borderRadius: 5 }}>
-            <ButtonComponent
-              color='transparent'
-              onPress={() => navigation.navigate('Register')}
-              text='Create an account'
-              textStyles={{
-                color: colors.background, fontFamily: fontFamillies.poppinsMedium,
-                fontSize: sizes.bigText,
-                marginLeft: 20
-              }}
-              styles={{
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                borderRadius: 5,
-              }}
-              preffix={<Image source={userPng} style={{ marginHorizontal: 20 }} />}
-            />
-          </LinearGradient>
-        </Shadow>
+        />
 
         <RowComponent justify='center'>
           <TextComponent

@@ -1,17 +1,16 @@
 import { ArrowLeft, Lock } from 'iconsax-react-native';
 import React, { useState } from 'react';
 import { ImageBackground, TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import welcomeBackPng from '../../assests/images/welcomeBack.png';
 import {
-  ButtonComponent,
+  BtnShadowLinearComponent,
+  CheckedButtonComponent,
   InputComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -106,37 +105,17 @@ const Login = ({ navigation }: any) => {
           />
 
           <RowComponent justify="space-between">
-            <RowComponent onPress={() => setRemember(!remember)}>
-              <View
-                style={{
-                  height: 18,
-                  width: 32,
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  borderColor: remember ? colors.primary : colors.text,
-                  flexDirection: 'row',
-                  justifyContent: remember ? 'flex-end' : 'flex-start',
-                }}
-              >
-                <View
-                  style={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: 100,
-                    borderWidth: 1,
-                    borderColor: remember ? colors.primary : colors.text,
-                    backgroundColor: remember ? colors.primary : 'transparent',
-                  }}
-                />
-              </View>
-              <SpaceComponent width={10} />
-              <TextComponent
-                text="Remember me"
-                color={colors.text}
-                font={fontFamillies.poppinsMedium}
-                size={sizes.bigText}
-              />
-            </RowComponent>
+            <CheckedButtonComponent
+              onPress={() => setRemember(!remember)}
+              title='Remember me'
+              titleStyles={{
+                fontFamily: fontFamillies.poppinsMedium,
+                fontSize: sizes.bigText,
+                color: colors.text
+              }}
+              value={remember}
+            />
+
             <TouchableOpacity
               onPress={() => navigation.navigate('ForgotPasswordScreen')}
             >
@@ -151,40 +130,10 @@ const Login = ({ navigation }: any) => {
 
           <SpaceComponent height={16} />
 
-          <Shadow
-            distance={5}
-            startColor={`${colors.primaryLight}d8`}
-            endColor={`${colors.primary}10`}
-            offset={[0, 4]}
-            style={{
-              width: '100%',
-              marginBottom: 16,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              colors={[colors.primaryDark, colors.primary]}
-              style={{ borderRadius: 5 }}
-            >
-              <ButtonComponent
-                color="transparent"
-                onPress={() => navigation.navigate('Main')}
-                text="Login"
-                textStyles={{
-                  color: colors.background,
-                  fontFamily: fontFamillies.poppinsMedium,
-                  fontSize: sizes.bigText,
-                  marginLeft: 20,
-                }}
-                styles={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  borderRadius: 5,
-                }}
-              />
-            </LinearGradient>
-          </Shadow>
+          <BtnShadowLinearComponent
+            title='Login'
+            onPress={() => navigation.navigate('Main')}
+          />
 
           <RowComponent justify="center">
             <TextComponent

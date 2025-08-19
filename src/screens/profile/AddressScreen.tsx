@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import {
   AddressItemComponent,
+  BtnShadowLinearComponent,
   ButtonComponent,
   Container,
   SectionComponent,
@@ -21,11 +22,11 @@ const AddressScreen = ({ navigation }: any) => {
       bg={colors.background}
       back
       title="My Address"
-      right={<AddCircle 
-        size={26} 
-        color={colors.text2} 
+      right={<AddCircle
+        size={26}
+        color={colors.text2}
         onPress={() => navigation.navigate('AddAdressScreen')}
-        />}
+      />}
     >
       <SectionComponent
         styles={{
@@ -54,40 +55,10 @@ const AddressScreen = ({ navigation }: any) => {
       </SectionComponent>
 
       <SectionComponent>
-        <Shadow
-          distance={5}
-          startColor={`${colors.primaryLight}d8`}
-          endColor={`${colors.primary}10`}
-          offset={[0, 4]}
-          style={{
-            width: '100%',
-            marginBottom: 16,
-          }}
-        >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={[colors.primaryDark, colors.primary]}
-            style={{ borderRadius: 5 }}
-          >
-            <ButtonComponent
-              color="transparent"
-              onPress={() => navigation.navigate('Main')}
-              text="Save settings"
-              textStyles={{
-                color: colors.background,
-                fontFamily: fontFamillies.poppinsMedium,
-                fontSize: sizes.bigText,
-                marginLeft: 20,
-              }}
-              styles={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                borderRadius: 5,
-              }}
-            />
-          </LinearGradient>
-        </Shadow>
+        <BtnShadowLinearComponent
+          onPress={() => navigation.navigate('Main')}
+          title="Save settings"
+        />
       </SectionComponent>
     </Container>
   );

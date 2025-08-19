@@ -2,19 +2,16 @@ import { ShoppingBag } from 'iconsax-react-native';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
-import broccoliItem from '../../assests/images/broccoliItem.png';
-import grapesItem from '../../assests/images/grapesItem.png';
 import avacodaItem from '../../assests/images/avacodaItem.png';
-import pineappleItem from '../../assests/images/broccoliItem.png';
+import { default as broccoliItem, default as pineappleItem } from '../../assests/images/broccoliItem.png';
+import grapesItem from '../../assests/images/grapesItem.png';
 import {
-  ButtonComponent,
+  BtnShadowLinearComponent,
   CartItemComponent,
   Container,
   RowComponent,
   SectionComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -50,7 +47,7 @@ const data1 = [
   },
 ];
 // const data1: any = [];
-const CartScreen = ({navigation}: any) => {
+const CartScreen = ({ navigation }: any) => {
   return (
     <Container bg={colors.background} back title="Shopping Cart">
       <View
@@ -148,74 +145,19 @@ const CartScreen = ({navigation}: any) => {
                 />
               </RowComponent>
 
-              <Shadow
-                distance={5}
-                startColor={`${colors.primaryLight}d8`}
-                endColor={`${colors.primary}10`}
-                offset={[0, 4]}
-                style={{
-                  width: '100%',
-                  marginBottom: 16,
-                }}
-              >
-                <LinearGradient
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  colors={[colors.primaryDark, colors.primary]}
-                  style={{ borderRadius: 5 }}
-                >
-                  <ButtonComponent
-                    color="transparent"
-                    onPress={() => {}}
-                    text="Checkout"
-                    styles={{
-                      borderRadius: 5,
-                    }}
-                    textStyles={{
-                      color: colors.background,
-                      fontFamily: fontFamillies.poppinsMedium,
-                      fontSize: sizes.bigText,
-                      marginLeft: 20,
-                    }}
-                  />
-                </LinearGradient>
-              </Shadow>
+              <BtnShadowLinearComponent
+                title='Checkout'
+                onPress={() => navigation.navigate('ShippingMethodScreen')}
+              />
+
             </SectionComponent>
           </View>
         ) : (
           <SectionComponent>
-            <Shadow
-              distance={5}
-              startColor={`${colors.primaryLight}d8`}
-              endColor={`${colors.primary}10`}
-              offset={[0, 4]}
-              style={{
-                width: '100%',
-                marginBottom: 16,
-              }}
-            >
-              <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                colors={[colors.primaryDark, colors.primary]}
-                style={{ borderRadius: 5 }}
-              >
-                <ButtonComponent
-                  color="transparent"
-                  onPress={() => navigation.navigate('Main')}
-                  text="Start shopping"
-                  styles={{
-                    borderRadius: 5,
-                  }}
-                  textStyles={{
-                    color: colors.background,
-                    fontFamily: fontFamillies.poppinsMedium,
-                    fontSize: sizes.bigText,
-                    marginLeft: 20,
-                  }}
-                />
-              </LinearGradient>
-            </Shadow>
+            <BtnShadowLinearComponent
+              title='Start shopping'
+              onPress={() => navigation.navigate('ShippingMethodScreen')}
+            />
           </SectionComponent>
         )}
       </View>
