@@ -1,8 +1,8 @@
 export interface ProductModel {
-  id?: string | number;
-  title?: string
-  description?: string
-  price?: string
-  source?: string
+  id: string | number;
+  title: string
+  quantity: string
+  price: string
+  url: string
   sale?: string
 }

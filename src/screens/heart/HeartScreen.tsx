@@ -49,6 +49,7 @@ const HeartScreen = () => {
           backgroundColor: colors.background1,
           flex: 1,
           paddingVertical: 20,
+          marginBottom: 0
         }}
       >
         <GestureHandlerRootView>

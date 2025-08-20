@@ -62,7 +62,7 @@ const data = [
   {
     icon: <Logout color={colors.green} size={20} />,
     title: 'Sign out',
-    screen:''
+    screen:'LogOutScreen'
   },
 ];
 

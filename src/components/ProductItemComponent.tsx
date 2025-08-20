@@ -1,11 +1,6 @@
 import { Heart, ShoppingBag } from 'iconsax-react-native';
 import React from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { RowComponent, SpaceComponent, TextComponent } from '.';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
@@ -76,7 +71,7 @@ const ProductItemComponent = (props: Props) => {
       >
         <SpaceComponent height={24} />
         <Image
-          source={product.source as ImageSourcePropType}
+          source={{ uri: product.url }}
           style={{
             height: 120,
             width: 120,
@@ -94,7 +89,7 @@ const ProductItemComponent = (props: Props) => {
           font={fontFamillies.poppinsSemiBold}
         />
         <TextComponent
-          text={product.description as string}
+          text={product.quantity as string}
           color={colors.text}
           font={fontFamillies.poppinsMedium}
         />

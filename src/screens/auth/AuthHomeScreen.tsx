@@ -8,6 +8,7 @@ import { BtnShadowLinearComponent, ButtonComponent, RowComponent, SectionCompone
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
+import { signInWithGoogle } from '../../../firebase.config';
 
 const AuthHomeScreen = ({ navigation }: any) => (
   <ImageBackground
@@ -52,7 +53,7 @@ const AuthHomeScreen = ({ navigation }: any) => (
 
         <ButtonComponent
           text='Continue with google'
-          onPress={() => { }}
+          onPress={signInWithGoogle}
           color={colors.background}
           preffix={<Image source={googlePng} style={{ marginHorizontal: 20 }} />}
           styles={{
@@ -96,7 +97,6 @@ const AuthHomeScreen = ({ navigation }: any) => (
       </SectionComponent>
     </View>
   </ImageBackground>
-
 )
 
 export default AuthHomeScreen

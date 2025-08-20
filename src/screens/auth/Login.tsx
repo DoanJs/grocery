@@ -1,7 +1,8 @@
 import { ArrowLeft, Lock } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, TouchableOpacity, View } from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import { auth, signInWithEmailAndPassword } from '../../../firebase.config';
 import welcomeBackPng from '../../assests/images/welcomeBack.png';
 import {
   BtnShadowLinearComponent,
@@ -10,16 +11,51 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Login = ({ navigation }: any) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('demo01@gmail.com');
+  const [password, setPassword] = useState('demo01');
   const [remember, setRemember] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorText, setErrorText] = useState('');
+
+  useEffect(() => {
+    if (email || password) {
+      setErrorText('');
+    }
+  }, [email, password]);
+
+  const handleLoginWithEmail = async () => {
+    if (!email || !password) {
+      setErrorText('Please enter your email or password!');
+    } else {
+      setErrorText('');
+      setIsLoading(true);
+
+      await signInWithEmailAndPassword(auth, email, password)
+        .then(async userCredential => {
+          // Signed in
+          setIsLoading(false);
+          const user = userCredential.user;
+          if(remember){
+            await AsyncStorage.setItem('user', user.email as string);
+          }
+        })
+        .catch((error: any) => {
+          console.log(error);
+          setIsLoading(false);
+          setErrorText(error.message);
+        });
+    }
+  };
+
   return (
     <ImageBackground
       source={welcomeBackPng}
@@ -107,11 +143,11 @@ const Login = ({ navigation }: any) => {
           <RowComponent justify="space-between">
             <CheckedButtonComponent
               onPress={() => setRemember(!remember)}
-              title='Remember me'
+              title="Remember me"
               titleStyles={{
                 fontFamily: fontFamillies.poppinsMedium,
                 fontSize: sizes.bigText,
-                color: colors.text
+                color: colors.text,
               }}
               value={remember}
             />
@@ -128,11 +164,25 @@ const Login = ({ navigation }: any) => {
             </TouchableOpacity>
           </RowComponent>
 
+          {errorText !== '' && (
+            <TextComponent
+              text={errorText}
+              color={colors.red}
+              font={fontFamillies.poppinsSemiBold}
+              size={sizes.smallText}
+              styles={{
+                marginTop: 8,
+              }}
+            />
+          )}
+
           <SpaceComponent height={16} />
 
           <BtnShadowLinearComponent
-            title='Login'
-            onPress={() => navigation.navigate('Main')}
+            title="Login"
+            onPress={handleLoginWithEmail}
+            isLoading={isLoading}
+            
           />
 
           <RowComponent justify="center">

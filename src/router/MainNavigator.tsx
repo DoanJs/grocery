@@ -25,6 +25,7 @@ import {
 } from '../screens';
 import SearchScreen from '../screens/home/SearchScreen';
 import TabNavigator from './TabNavigator';
+import LogOutScreen from '../screens/profile/LogOutScreen';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -62,6 +63,7 @@ const MainNavigator = () => {
       <Stack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
       <Stack.Screen name="OrderSuccessScreen" component={OrderSuccessScreen} />
       <Stack.Screen name="TrackOrderScreen" component={TrackOrderScreen} />
+      <Stack.Screen name="LogOutScreen" component={LogOutScreen} />
     </Stack.Navigator>
   );
 };
