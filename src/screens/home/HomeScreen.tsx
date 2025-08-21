@@ -1,3 +1,4 @@
+import { where } from '@react-native-firebase/firestore';
 import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -25,7 +26,7 @@ import {
 import { categories } from '../../constants/categories';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
-import { getDataOnSnapshot } from '../../constants/getDataOnSnapshot';
+import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
 
@@ -33,37 +34,27 @@ const HomeScreen = ({ navigation }: any) => {
   const user = auth.currentUser;
   const [index, setIndex] = useState(0);
   const [products, setProducts] = useState<ProductModel[]>([]);
-  const [hearts, setHearts] = useState<any[]>([])
+  const [hearts, setHearts] = useState<any[]>([]);
   const [carts, setCarts] = useState<any[]>([]);
-
 
   useEffect(() => {
     if (user) {
-      getDataOnSnapshot({
+      onSnapshotData({
         nameCollect: 'products',
         setData: setProducts,
-        condition: null
-      })
+      });
 
-      getDataOnSnapshot({
+      onSnapshotData({
         nameCollect: 'hearts',
         setData: setHearts,
-        condition: {
-          fieldPath: 'userId',
-          opStr:'==',
-          value: user.uid
-        }
-      })
+        conditions: [where('userId', '==', user.uid)],
+      });
 
-      getDataOnSnapshot({
+      onSnapshotData({
         nameCollect: 'carts',
-        setData: setCarts, 
-        condition: {
-          fieldPath: 'userId',
-          opStr:'==',
-          value: user.uid
-        }
-      })
+        setData: setCarts,
+        conditions: [where('userId', '==', user.uid)],
+      });
     }
   }, [user]);
 
@@ -174,7 +165,7 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => { }}>
+            <TouchableOpacity onPress={() => {}}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>
@@ -197,9 +188,11 @@ const HomeScreen = ({ navigation }: any) => {
           >
             {products.map((_, index) => (
               <ProductItemComponent
-                onPress={() => navigation.navigate('ProductDetailsScreen', {
-                  productId: _.id
-                })}
+                onPress={() =>
+                  navigation.navigate('ProductDetailsScreen', {
+                    productId: _.id,
+                  })
+                }
                 key={index}
                 product={_}
                 cart={carts.filter(pro => pro.productId === _.id)}

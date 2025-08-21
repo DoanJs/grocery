@@ -1,80 +1,98 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, where } from '@react-native-firebase/firestore'
-import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native'
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import Entypo from 'react-native-vector-icons/Entypo'
-import { auth, db } from '../../../firebase.config'
-import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
-import { colors } from '../../constants/colors'
-import { fontFamillies } from '../../constants/fontFamilies'
-import { getDocByID } from '../../constants/getDocByID'
-import { sizes } from '../../constants/sizes'
-import { ProductModel } from '../../models/ProductModel'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  where,
+} from '@react-native-firebase/firestore';
+import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { auth, db } from '../../../firebase.config';
+import {
+  ButtonComponent,
+  RowComponent,
+  SectionComponent,
+  SpaceComponent,
+  TextComponent,
+} from '../../components';
+import { colors } from '../../constants/colors';
+import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocData } from '../../constants/getDocData';
+import { onSnapshotData } from '../../constants/onSnapshotData';
+import { sizes } from '../../constants/sizes';
+import { ProductModel } from '../../models/ProductModel';
 
 const ProductDetailsScreen = ({ navigation, route }: any) => {
-  const user = auth.currentUser
-  const { productId } = route.params
+  const user = auth.currentUser;
+  const { productId } = route.params;
   const [isShowText, setIsShowText] = useState(false);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<ProductModel>();
-  const [heart, setHeart] = useState<any>()
+  const [hearts, setHearts] = useState<any>([]);
+  const [carts, setCarts] = useState<any>([]);
 
   useEffect(() => {
     if (productId) {
-      getDocByID({
+      getDocData({
         id: productId,
         nameCollect: 'products',
-        setData: setProduct
-      })
-      getHeart()
+        setData: setProduct,
+      });
 
+      onSnapshotData({
+        nameCollect: 'hearts',
+        conditions: [
+          where('productId', '==', productId),
+          where('userId', '==', user?.uid),
+        ],
+        setData: setHearts,
+      });
+
+      onSnapshotData({
+        nameCollect: 'carts',
+        conditions: [
+          where('productId', '==', productId),
+          where('userId', '==', user?.uid),
+        ],
+        setData: setCarts,
+      });
     }
   }, [productId]);
 
-
-  const getHeart = async () => {
-    const q = query(
-      collection(db, 'hearts'),
-      where('productId', '==', productId),
-      where('userId', '==', user?.uid),
-    );
-
-    await onSnapshot(q, doc => {
-      if (doc.empty) {
-        console.log(`Data not found`);
-      } else {
-        const items: any = [];
-
-        doc.forEach((item: any) => {
-          items.push({
-            id: item.id,
-            ...item.data(),
-          });
-        });
-
-        setHeart(items[0]);
-      }
-    });
-  }
-
   const handleChangeHeart = async () => {
-    if (heart) {
-      await deleteDoc(doc(db, 'hearts', heart.id))
+    if (hearts[0]) {
+      await deleteDoc(doc(db, 'hearts', hearts[0].id));
     } else {
       await addDoc(collection(db, 'hearts'), {
         productId: productId,
-        userId: user?.uid
-      })
+        userId: user?.uid,
+      });
     }
-  }
+  };
 
-  return product ?
+  const handleAddCart = async () =>
+    await addDoc(collection(db, 'carts'), {
+      productId,
+      userId: user?.uid,
+      quantity: quantity > 0 ? quantity : 1,
+    });
+
+
+  return product ? (
     <View
       style={{
         backgroundColor: colors.background,
-        flex: 1
+        flex: 1,
       }}
     >
       <ArrowLeft
@@ -93,142 +111,169 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         style={{
           width: sizes.width,
           height: '45%',
-          resizeMode: 'contain'
+          resizeMode: 'contain',
         }}
       />
 
-      <SectionComponent styles={{
-        flex: 1,
-        backgroundColor: colors.background1,
-        paddingVertical: 20
-      }} >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <RowComponent justify='space-between'>
-            <TextComponent
-              text={product.price}
-              font={fontFamillies.poppinsSemiBold}
-              size={sizes.thinTitle}
-              color={colors.primary}
-            />
-
-            <Heart size={20}
-              onPress={handleChangeHeart}
-              variant={
-                heart ? 'Bold' : 'Linear'
-              }
-              color={
-                heart ? colors.heart : colors.text
-              }
-            />
-          </RowComponent>
-          <TextComponent
-            text={product.title}
-            font={fontFamillies.poppinsSemiBold}
-            size={sizes.smallTitle}
-          />
-          <TextComponent
-            text={product.quantity}
-            font={fontFamillies.poppinsMedium}
-            color={colors.text}
-          />
-          <RowComponent styles={{
-            alignItems: 'baseline',
-          }}>
-            <TextComponent
-              text='4.5'
-              font={fontFamillies.poppinsMedium}
-            />
-            <RowComponent styles={{
-              marginHorizontal: 6
-            }}>
-              <AntDesign name='star' size={20} color={colors.orange} />
-              <AntDesign name='star' size={20} color={colors.orange} />
-              <AntDesign name='star' size={20} color={colors.orange} />
-              <AntDesign name='star' size={20} color={colors.orange} />
-              <AntDesign name='star' size={20} color={colors.orange} />
-            </RowComponent>
-            <TouchableOpacity onPress={() => navigation.navigate('ReviewsScreen')}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background1,
+          paddingVertical: 20,
+        }}
+      >
+        <SectionComponent
+          styles={{
+            flex: 1,
+            paddingVertical: 20,
+            marginBottom: 0,
+          }}
+        >
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <RowComponent justify="space-between">
               <TextComponent
-                text='(89 reviews)'
-                color={colors.text}
-                font={fontFamillies.poppinsMedium}
+                text={product.price}
+                font={fontFamillies.poppinsSemiBold}
+                size={sizes.thinTitle}
+                color={colors.primary}
               />
-            </TouchableOpacity>
-          </RowComponent>
 
-          <View>
+              <Heart
+                size={20}
+                onPress={handleChangeHeart}
+                variant={hearts[0] ? 'Bold' : 'Linear'}
+                color={hearts[0] ? colors.heart : colors.text}
+              />
+            </RowComponent>
             <TextComponent
-              text={product.description as string}
-              color={colors.text}
-              numberOfLine={isShowText ? undefined : 4}
+              text={product.title}
+              font={fontFamillies.poppinsSemiBold}
+              size={sizes.smallTitle}
             />
-            {
-
-              !isShowText && <TouchableOpacity
-                onPress={() => setIsShowText(true)}>
+            <TextComponent
+              text={product.quantity}
+              font={fontFamillies.poppinsMedium}
+              color={colors.text}
+            />
+            <RowComponent
+              styles={{
+                alignItems: 'baseline',
+              }}
+            >
+              <TextComponent text="4.5" font={fontFamillies.poppinsMedium} />
+              <RowComponent
+                styles={{
+                  marginHorizontal: 6,
+                }}
+              >
+                <AntDesign name="star" size={20} color={colors.orange} />
+                <AntDesign name="star" size={20} color={colors.orange} />
+                <AntDesign name="star" size={20} color={colors.orange} />
+                <AntDesign name="star" size={20} color={colors.orange} />
+                <AntDesign name="star" size={20} color={colors.orange} />
+              </RowComponent>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ReviewsScreen')}
+              >
                 <TextComponent
-                  text={isShowText ? 'hide' : 'more'}
-                  font={fontFamillies.poppinsBold}
-                  styles={{
-                    backgroundColor: colors.background1,
-                    paddingLeft: 10,
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '30%',
-                    width: '100%',
-                  }}
+                  text="(89 reviews)"
+                  color={colors.text}
+                  font={fontFamillies.poppinsMedium}
                 />
               </TouchableOpacity>
-            }
-          </View>
-
-          <SpaceComponent height={16} />
-
-          <RowComponent justify='space-between' styles={{
-            backgroundColor: colors.background,
-            paddingHorizontal: 16
-          }}>
-            <TextComponent text='Quantity'
-              font={fontFamillies.poppinsMedium} color={colors.text}
-            />
-            <RowComponent>
-              <Entypo size={18} name='minus'
-                style={{
-                  paddingRight: 16
-                }} color={colors.primary}
-                onPress={() => quantity <= 0 ? 0 : setQuantity(quantity - 1)}
-              />
-              <TextComponent text={`${quantity}`} styles={{
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                borderLeftColor: colors.border,
-                borderRightColor: colors.border,
-                paddingHorizontal: 16,
-                paddingVertical: 16
-              }} font={fontFamillies.poppinsMedium} size={sizes.thinTitle} />
-              <Entypo size={18} name='plus'
-                style={{
-                  paddingLeft: 16
-                }} color={colors.primary}
-
-                onPress={() => setQuantity(quantity + 1)}
-              />
             </RowComponent>
-          </RowComponent>
-        </ScrollView>
-      </SectionComponent>
 
-      <View style={{
-        backgroundColor: colors.background1,
-        position: 'absolute',
-        bottom: 10,
-        right: 0,
-        left: 0
-      }}>
+            <View>
+              <TextComponent
+                text={product.description as string}
+                color={colors.text}
+                numberOfLine={isShowText ? undefined : 4}
+              />
+              {product.description &&
+                product.description.length > 200 &&
+                !isShowText && (
+                  <TouchableOpacity onPress={() => setIsShowText(true)}>
+                    <TextComponent
+                      text={isShowText ? 'hide' : 'more'}
+                      font={fontFamillies.poppinsBold}
+                      styles={{
+                        backgroundColor: colors.background1,
+                        paddingLeft: 10,
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '30%',
+                        width: '100%',
+                      }}
+                    />
+                  </TouchableOpacity>
+                )}
+            </View>
+
+            <SpaceComponent height={16} />
+
+            <RowComponent
+              justify="space-between"
+              styles={{
+                backgroundColor: colors.background,
+                paddingHorizontal: 16,
+              }}
+            >
+              <TextComponent
+                text="Quantity"
+                font={fontFamillies.poppinsMedium}
+                color={colors.text}
+              />
+              <RowComponent>
+                <Entypo
+                  size={18}
+                  name="minus"
+                  style={{
+                    paddingRight: 16,
+                  }}
+                  color={colors.primary}
+                  onPress={() =>
+                    quantity <= 0 ? 0 : setQuantity(quantity - 1)
+                  }
+                />
+                <TextComponent
+                  text={`${quantity}`}
+                  styles={{
+                    borderLeftWidth: 1,
+                    borderRightWidth: 1,
+                    borderLeftColor: colors.border,
+                    borderRightColor: colors.border,
+                    paddingVertical: 16,
+                    width: 50,
+                    textAlign: 'center',
+                  }}
+                  font={fontFamillies.poppinsMedium}
+                  size={sizes.thinTitle}
+                />
+                <Entypo
+                  size={18}
+                  name="plus"
+                  style={{
+                    paddingLeft: 16,
+                  }}
+                  color={colors.primary}
+                  onPress={() => setQuantity(quantity + 1)}
+                />
+              </RowComponent>
+            </RowComponent>
+          </ScrollView>
+        </SectionComponent>
+
         <SectionComponent>
-          <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[colors.primaryDark, colors.primary]} style={{ borderRadius: 5 }}>
-            <ButtonComponent text='Add to cart' onPress={() => { }}
-              color='transparent'
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={[colors.primaryDark, colors.primary]}
+            style={{ borderRadius: 5 }}
+          >
+            <ButtonComponent
+              text={carts[0] ? 'Go to Cart' : "Add to cart"}
+              onPress={carts[0] ? () => navigation.navigate('CartScreen') : handleAddCart}
+              color="transparent"
               styles={{
                 flexDirection: 'row',
               }}
@@ -242,13 +287,12 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
               suffix={<ShoppingBag size={24} color={colors.background} />}
             />
           </LinearGradient>
-
         </SectionComponent>
-
       </View>
     </View>
-    : <ActivityIndicator />
+  ) : (
+    <ActivityIndicator />
+  );
+};
 
-}
-
-export default ProductDetailsScreen
+export default ProductDetailsScreen;
