@@ -1,7 +1,9 @@
+import { addDoc, collection, deleteDoc, doc, setDoc } from '@react-native-firebase/firestore';
 import { Heart, ShoppingBag } from 'iconsax-react-native';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { RowComponent, SpaceComponent, TextComponent } from '.';
+import { auth, db } from '../../firebase.config';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import { sizes } from '../constants/sizes';
@@ -9,13 +11,60 @@ import { ProductModel } from '../models/ProductModel';
 
 interface Props {
   onPress: () => void;
-  isCart?: boolean;
-  isHeart?: boolean;
+  cart?: any;
+  heart?: any;
   product: ProductModel;
 }
 
 const ProductItemComponent = (props: Props) => {
-  const { onPress, isCart, isHeart, product } = props;
+  const user = auth.currentUser
+  const { onPress, cart, heart, product } = props;
+
+  const handleChageQuantity = async (type: string) => {
+    let quantity = cart[0].quantity
+    let isDelete = false
+
+    switch (type) {
+      case 'decrease':
+        if (quantity === 1) {
+          isDelete = true
+        }
+        quantity = quantity - 1
+        break;
+      case 'increase':
+        quantity = quantity + 1
+        break;
+      default:
+        break;
+    }
+
+    if (isDelete) {
+      await deleteDoc(doc(db, 'carts', cart[0].id))
+    } else {
+      await setDoc(
+        doc(db, 'carts', cart[0].id), { quantity },
+        { merge: true })
+    }
+
+  }
+
+  const handleChangeHeart = async () => {
+    if (heart[0]) {
+      await deleteDoc(doc(db, 'hearts', heart[0].id))
+    } else {
+      await addDoc(collection(db, 'hearts'), {
+        productId: product.id,
+        userId: user?.uid
+      })
+    }
+  }
+
+  const handleAddCart = async () =>
+    await addDoc(collection(db, 'carts'), {
+      productId: product.id,
+      userId: user?.uid,
+      quantity: 1
+    })
 
   return (
     <RowComponent
@@ -44,13 +93,13 @@ const ProductItemComponent = (props: Props) => {
             size={sizes.smallText}
             font={fontFamillies.poppinsMedium}
             color={colors.pink}
-            // color={isNew ? colors.orange : colors.pink}
+          // color={isNew ? colors.orange : colors.pink}
           />
         </View>
       )}
 
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={handleChangeHeart}
         style={{
           position: 'absolute',
           top: 8,
@@ -58,9 +107,9 @@ const ProductItemComponent = (props: Props) => {
         }}
       >
         <Heart
-          color={isHeart ? colors.heart : colors.border}
+          color={heart[0] ? colors.heart : colors.border}
           size={20}
-          variant={isHeart ? 'Bold' : 'Linear'}
+          variant={heart[0] ? 'Bold' : 'Linear'}
         />
       </TouchableOpacity>
 
@@ -96,18 +145,17 @@ const ProductItemComponent = (props: Props) => {
       </RowComponent>
 
       <RowComponent
-        onPress={!isCart ? () => {} : undefined}
         styles={{
           width: '100%',
-          justifyContent: isCart ? 'space-around' : 'center',
+          justifyContent: cart.length === 0 ? 'center' : 'space-around',
           borderTopWidth: 1,
           borderColor: colors.border,
           paddingVertical: 10,
         }}
       >
-        {isCart ? (
+        {cart.length > 0 ? (
           <>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => handleChageQuantity('decrease')}>
               <TextComponent
                 text="-"
                 size={sizes.bigText}
@@ -116,12 +164,12 @@ const ProductItemComponent = (props: Props) => {
               />
             </TouchableOpacity>
             <TextComponent
-              text="10"
+              text={cart[0].quantity}
               size={sizes.bigText}
               color={colors.primary}
               font={fontFamillies.poppinsMedium}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => handleChageQuantity('increase')}>
               <TextComponent
                 text="+"
                 size={sizes.bigText}
@@ -131,15 +179,15 @@ const ProductItemComponent = (props: Props) => {
             </TouchableOpacity>
           </>
         ) : (
-          <>
+          <RowComponent onPress={handleAddCart}>
             <ShoppingBag size={20} color={colors.primary} />
-            <SpaceComponent width={8} />
+            <SpaceComponent width={6} />
             <TextComponent
               text="Add to cart"
               font={fontFamillies.poppinsMedium}
               color={colors.text2}
             />
-          </>
+          </RowComponent>
         )}
       </RowComponent>
     </RowComponent>

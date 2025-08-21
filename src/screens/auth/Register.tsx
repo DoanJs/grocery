@@ -49,7 +49,6 @@ const Register = ({ navigation }: any) => {
           const user = userCredential.user;
           addDoc(collection(db, 'users'), {
             email,
-            id: user.uid,
           });
         })
         .catch((error: any) => {

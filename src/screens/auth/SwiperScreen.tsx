@@ -24,6 +24,7 @@ import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../../firebase.config';
 
 const data = [
   'Get Discounts On All Products',
@@ -41,9 +42,11 @@ const data = [
 
 const SwiperScreen = ({ navigation }: any) => {
   const [index, setIndex] = useState(0);
+  const user = auth.currentUser
+
   useEffect(() => {
     AsyncStorage.getItem('user').then(result => {
-        if(result!== ''){
+        if(result!== '' && !user){
             navigation.navigate('AuthHomeScreen')
         }
     })

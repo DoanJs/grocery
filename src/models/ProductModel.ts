@@ -5,4 +5,5 @@ export interface ProductModel {
   price: string
   url: string
   sale?: string
+  description?: string
 }

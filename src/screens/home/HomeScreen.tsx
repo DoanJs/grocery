@@ -1,8 +1,3 @@
-import {
-  collection,
-  onSnapshot,
-  query,
-} from '@react-native-firebase/firestore';
 import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -13,9 +8,7 @@ import {
   View,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { auth, db } from '../../../firebase.config';
-import grapesItem from '../../assests/images/grapesItem.png';
-import peachItem from '../../assests/images/peachItem.png';
+import { auth } from '../../../firebase.config';
 import swiper01Png from '../../assests/images/swiper01.png';
 import swiper02Png from '../../assests/images/swiper02.png';
 import swiper03Png from '../../assests/images/swiper03.png';
@@ -32,65 +25,48 @@ import {
 import { categories } from '../../constants/categories';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { getDataOnSnapshot } from '../../constants/getDataOnSnapshot';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
 
-const dataHeart = [
-  {
-    id: 1,
-    title: 'Fresh Peach',
-    description: 'dozen',
-    price: 8.0,
-    source: peachItem,
-  },
-];
-const dataCart = [
-  {
-    id: 4,
-    title: 'Black Grapes',
-    description: '5.0 lbs',
-    price: 7.05,
-    source: grapesItem,
-  },
-];
 const HomeScreen = ({ navigation }: any) => {
   const user = auth.currentUser;
   const [index, setIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<ProductModel[]>([]);
+  const [hearts, setHearts] = useState<any[]>([])
+  const [carts, setCarts] = useState<any[]>([]);
+
 
   useEffect(() => {
     if (user) {
-      getProducts();
+      getDataOnSnapshot({
+        nameCollect: 'products',
+        setData: setProducts,
+        condition: null
+      })
+
+      getDataOnSnapshot({
+        nameCollect: 'hearts',
+        setData: setHearts,
+        condition: {
+          fieldPath: 'userId',
+          opStr:'==',
+          value: user.uid
+        }
+      })
+
+      getDataOnSnapshot({
+        nameCollect: 'carts',
+        setData: setCarts, 
+        condition: {
+          fieldPath: 'userId',
+          opStr:'==',
+          value: user.uid
+        }
+      })
     }
   }, [user]);
 
-  const getProducts = async () => {
-    setIsLoading(true);
-    const q = query(
-      collection(db, 'products'),
-      // where('uids', 'array-contains', user?.uid),
-    );
-    await onSnapshot(q, doc => {
-      if (doc.empty) {
-        setIsLoading(false);
-        console.log(`Products data not found`);
-      } else {
-        const items: any = [];
-
-        doc.forEach((item: any) => {
-          items.push({
-            id: item.id,
-            ...item.data(),
-          });
-        });
-
-        setProducts(items);
-
-        setIsLoading(false);
-      }
-    });
-  };
   return (
     <Container>
       <SectionComponent
@@ -198,7 +174,7 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>
@@ -221,11 +197,13 @@ const HomeScreen = ({ navigation }: any) => {
           >
             {products.map((_, index) => (
               <ProductItemComponent
-                onPress={() => navigation.navigate('ProductDetailsScreen')}
+                onPress={() => navigation.navigate('ProductDetailsScreen', {
+                  productId: _.id
+                })}
                 key={index}
                 product={_}
-                isCart={dataCart.filter(pro => pro.id === _.id).length > 0}
-                isHeart={dataHeart.filter(pro => pro.id === _.id).length > 0}
+                cart={carts.filter(pro => pro.productId === _.id)}
+                heart={hearts.filter(pro => pro.productId === _.id)}
               />
             ))}
           </SectionComponent>

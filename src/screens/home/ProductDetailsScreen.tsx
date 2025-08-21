@@ -1,19 +1,76 @@
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, where } from '@react-native-firebase/firestore'
 import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native'
-import React, { useState } from 'react'
-import { Image, ScrollView, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
-import lemonDetail from '../../assests/images/lemonDetail.png'
+import { auth, db } from '../../../firebase.config'
 import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
 import { colors } from '../../constants/colors'
 import { fontFamillies } from '../../constants/fontFamilies'
+import { getDocByID } from '../../constants/getDocByID'
 import { sizes } from '../../constants/sizes'
+import { ProductModel } from '../../models/ProductModel'
 
-const ProductDetailsScreen = ({ navigation }: any) => {
+const ProductDetailsScreen = ({ navigation, route }: any) => {
+  const user = auth.currentUser
+  const { productId } = route.params
   const [isShowText, setIsShowText] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  return (
+  const [product, setProduct] = useState<ProductModel>();
+  const [heart, setHeart] = useState<any>()
+
+  useEffect(() => {
+    if (productId) {
+      getDocByID({
+        id: productId,
+        nameCollect: 'products',
+        setData: setProduct
+      })
+      getHeart()
+
+    }
+  }, [productId]);
+
+
+  const getHeart = async () => {
+    const q = query(
+      collection(db, 'hearts'),
+      where('productId', '==', productId),
+      where('userId', '==', user?.uid),
+    );
+
+    await onSnapshot(q, doc => {
+      if (doc.empty) {
+        console.log(`Data not found`);
+      } else {
+        const items: any = [];
+
+        doc.forEach((item: any) => {
+          items.push({
+            id: item.id,
+            ...item.data(),
+          });
+        });
+
+        setHeart(items[0]);
+      }
+    });
+  }
+
+  const handleChangeHeart = async () => {
+    if (heart) {
+      await deleteDoc(doc(db, 'hearts', heart.id))
+    } else {
+      await addDoc(collection(db, 'hearts'), {
+        productId: productId,
+        userId: user?.uid
+      })
+    }
+  }
+
+  return product ?
     <View
       style={{
         backgroundColor: colors.background,
@@ -32,9 +89,11 @@ const ProductDetailsScreen = ({ navigation }: any) => {
         }}
       />
       <Image
-        source={lemonDetail}
+        source={{ uri: product.url }}
         style={{
           width: sizes.width,
+          height: '45%',
+          resizeMode: 'contain'
         }}
       />
 
@@ -46,19 +105,29 @@ const ProductDetailsScreen = ({ navigation }: any) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <RowComponent justify='space-between'>
             <TextComponent
-              text="$2.22"
+              text={product.price}
               font={fontFamillies.poppinsSemiBold}
               size={sizes.thinTitle}
+              color={colors.primary}
             />
-            <Heart size={20} color={colors.text} />
+
+            <Heart size={20}
+              onPress={handleChangeHeart}
+              variant={
+                heart ? 'Bold' : 'Linear'
+              }
+              color={
+                heart ? colors.heart : colors.text
+              }
+            />
           </RowComponent>
           <TextComponent
-            text="Organic Lemons"
+            text={product.title}
             font={fontFamillies.poppinsSemiBold}
             size={sizes.smallTitle}
           />
           <TextComponent
-            text='1.50 lbs'
+            text={product.quantity}
             font={fontFamillies.poppinsMedium}
             color={colors.text}
           />
@@ -89,7 +158,7 @@ const ProductDetailsScreen = ({ navigation }: any) => {
 
           <View>
             <TextComponent
-              text='Organic Mountain works as a seller for many organic growers of organic lemons. Organic lemons are easy to spot in your produce aisle. They are just like regular lemons, but they will usually have a few more scars on the outside of the lemon skin. Organic lemons are considered to be the world&apos; finest lemon for juicing'
+              text={product.description as string}
               color={colors.text}
               numberOfLine={isShowText ? undefined : 4}
             />
@@ -178,7 +247,8 @@ const ProductDetailsScreen = ({ navigation }: any) => {
 
       </View>
     </View>
-  )
+    : <ActivityIndicator />
+
 }
 
 export default ProductDetailsScreen
