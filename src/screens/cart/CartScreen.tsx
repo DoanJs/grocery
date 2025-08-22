@@ -1,9 +1,14 @@
+import { where } from '@react-native-firebase/firestore';
 import { ShoppingBag } from 'iconsax-react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { auth } from '../../../firebase.config';
 import avacodaItem from '../../assests/images/avacodaItem.png';
-import { default as broccoliItem, default as pineappleItem } from '../../assests/images/broccoliItem.png';
+import {
+  default as broccoliItem,
+  default as pineappleItem,
+} from '../../assests/images/broccoliItem.png';
 import grapesItem from '../../assests/images/grapesItem.png';
 import {
   BtnShadowLinearComponent,
@@ -11,11 +16,13 @@ import {
   Container,
   RowComponent,
   SectionComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
+import { ProductModel } from '../../models/ProductModel';
 const data1 = [
   {
     id: 6,
@@ -48,6 +55,43 @@ const data1 = [
 ];
 // const data1: any = [];
 const CartScreen = ({ navigation }: any) => {
+  const user = auth.currentUser;
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [carts, setCarts] = useState<ProductModel[]>([]);
+  const [proCarts, setProCarts] = useState<any[]>([]);
+
+  useEffect(() => {
+    onSnapshotData({
+      nameCollect: 'products',
+      setData: setProducts,
+    });
+
+    onSnapshotData({
+      nameCollect: 'carts',
+      setData: setCarts,
+      conditions: [where('userId', '==', user?.uid)],
+    });
+  }, []);
+
+  useEffect(() => {
+    if (carts && products) {
+      let items: ProductModel[] = [];
+
+      carts.map((cart: any) => {
+        const index = products.findIndex(
+          (product: ProductModel) => product.id === cart.productId,
+        );
+
+        items.push({
+          ...cart,
+          product: products[index],
+        });
+      });
+
+      setProCarts(items);
+    }
+  }, [products, carts]);
+
   return (
     <Container bg={colors.background} back title="Shopping Cart">
       <View
@@ -62,11 +106,15 @@ const CartScreen = ({ navigation }: any) => {
             paddingVertical: 20,
           }}
         >
-          {data1.length > 0 ? (
+          {proCarts.length > 0 ? (
             <GestureHandlerRootView>
               <ScrollView showsVerticalScrollIndicator={false}>
-                {data1.map((_: any, index: number) => (
-                  <CartItemComponent key={index} product={_} />
+                {proCarts.map((_: any, index: number) => (
+                  <CartItemComponent
+                    key={index}
+                    product={_.product}
+                    quantity={_.quantity}
+                  />
                 ))}
               </ScrollView>
             </GestureHandlerRootView>
@@ -146,16 +194,15 @@ const CartScreen = ({ navigation }: any) => {
               </RowComponent>
 
               <BtnShadowLinearComponent
-                title='Checkout'
+                title="Checkout"
                 onPress={() => navigation.navigate('ShippingMethodScreen')}
               />
-
             </SectionComponent>
           </View>
         ) : (
           <SectionComponent>
             <BtnShadowLinearComponent
-              title='Start shopping'
+              title="Start shopping"
               onPress={() => navigation.navigate('ShippingMethodScreen')}
             />
           </SectionComponent>

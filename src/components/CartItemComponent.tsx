@@ -16,11 +16,11 @@ import { ProductModel } from '../models/ProductModel';
 
 interface Props {
   product: ProductModel;
+  quantity: number
 }
 
 const CartItemComponent = (props: Props) => {
-  const { product } = props;
-  const [quantity, setQuantity] = useState(5);
+  const { product, quantity } = props;
   const renderRightActions = () => {
     return (
       <TouchableOpacity
@@ -52,7 +52,7 @@ const CartItemComponent = (props: Props) => {
           }}
         >
           <Image
-            source={product.source as ImageSourcePropType}
+            source={{uri: product.url}}
             resizeMode="contain"
             style={{
               marginRight: 16,
@@ -68,7 +68,7 @@ const CartItemComponent = (props: Props) => {
             }}
           >
             <TextComponent
-              text="$2.22 x 4"
+              text={`$${product.price}`}
               color={colors.primary}
               font={fontFamillies.poppinsMedium}
             />
@@ -79,7 +79,7 @@ const CartItemComponent = (props: Props) => {
               font={fontFamillies.poppinsSemiBold}
             />
             <TextComponent
-              text={product.description as string}
+              text={product.quantity as string}
               color={colors.text}
             />
           </RowComponent>
@@ -94,7 +94,7 @@ const CartItemComponent = (props: Props) => {
               size={20}
               color={colors.primary}
               name="plus"
-              onPress={() => setQuantity(quantity + 1)}
+              // onPress={() => setQuantity(quantity + 1)}
             />
             <TextComponent
               color={colors.text}
@@ -109,7 +109,7 @@ const CartItemComponent = (props: Props) => {
               size={20}
               color={colors.primary}
               name="minus"
-              onPress={() => (quantity === 0 ? 0 : setQuantity(quantity - 1))}
+              // onPress={() => (quantity === 0 ? 0 : setQuantity(quantity - 1))}
             />
           </RowComponent>
         </RowComponent>

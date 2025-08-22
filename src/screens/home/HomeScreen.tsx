@@ -148,7 +148,9 @@ const HomeScreen = ({ navigation }: any) => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {categories.map((_, ind) => (
               <CategoryItem
-                onPress={() => navigation.navigate('CategoryProductScreen')}
+                onPress={() => navigation.navigate('CategoryProductScreen', {
+                  category: _.name
+                })}
                 key={ind}
                 text={_.name}
                 bg={_.color}
