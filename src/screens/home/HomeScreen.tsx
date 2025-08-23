@@ -30,8 +30,9 @@ import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
 
-const HomeScreen = ({ navigation }: any) => {
+const HomeScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
+  const { params } = route
   const [index, setIndex] = useState(0);
   const [products, setProducts] = useState<ProductModel[]>([]);
   const [hearts, setHearts] = useState<any[]>([]);
@@ -39,10 +40,18 @@ const HomeScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (user) {
-      onSnapshotData({
-        nameCollect: 'products',
-        setData: setProducts,
-      });
+      if (params && params.conditions.length > 0) {
+        onSnapshotData({
+          nameCollect: 'products',
+          setData: setProducts,
+          conditions: params.conditions
+        });
+      } else {
+        onSnapshotData({
+          nameCollect: 'products',
+          setData: setProducts,
+        });
+      }
 
       onSnapshotData({
         nameCollect: 'hearts',
@@ -56,7 +65,7 @@ const HomeScreen = ({ navigation }: any) => {
         conditions: [where('userId', '==', user.uid)],
       });
     }
-  }, [user]);
+  }, [user, params]);
 
   return (
     <Container>
@@ -86,7 +95,9 @@ const HomeScreen = ({ navigation }: any) => {
               size={sizes.bigText}
             />
           </RowComponent>
-          <TouchableOpacity onPress={() => navigation.navigate('FilterScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('FilterScreen', {
+            valueCondition: params?.valueCondition
+          })}>
             <Setting5 size={26} color={colors.text} />
           </TouchableOpacity>
         </RowComponent>
@@ -167,7 +178,7 @@ const HomeScreen = ({ navigation }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>

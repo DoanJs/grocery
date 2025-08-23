@@ -1,3 +1,4 @@
+import { where } from '@react-native-firebase/firestore';
 import {
   ArrowRotateLeft,
   Box,
@@ -5,20 +6,17 @@ import {
   Tag,
   TickCircle,
 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
   BtnShadowLinearComponent,
-  ButtonComponent,
   Container,
   InputComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -39,10 +37,11 @@ const data = [
   },
 ];
 
-const FilterScreen = () => {
-  const [min, setMin] = useState('');
-  const [max, setMax] = useState('');
-  const [starSelected, setStarSelected] = useState(2);
+const FilterScreen = ({ navigation, route }: any) => {
+  const { valueCondition } = route.params
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(0);
+  const [starSelected, setStarSelected] = useState(-1);
   const [dataOther, setDataOther] = useState<string[]>([]);
 
   const onSelectedOther = (title: string) => {
@@ -58,10 +57,53 @@ const FilterScreen = () => {
     setDataOther(newData);
   };
   const resetData = () => {
-    setMin('');
-    setMax(''), setDataOther([]);
-    setStarSelected(2);
+    setMin(0);
+    setMax(0), setDataOther([]);
+    setStarSelected(-1);
   };
+
+  const handleFilter = async () => {
+    let conditionMinMax: any[] = []
+    let conditionStar: any[] = []
+
+    if (max > min) {
+      conditionMinMax = ([
+        where('price', '>=', min),
+        where('price', '<=', max)
+      ])
+    } else {
+      conditionMinMax = []
+    }
+
+    if (starSelected > -1) {
+      conditionStar = conditionMinMax.concat([where('star', '==', starSelected + 1)])
+    } else {
+      conditionStar = conditionMinMax
+    }
+
+    navigation.navigate('Main', {
+      screen: 'Home',
+      params: {
+        screen: 'HomeScreen',
+        params: {
+          conditions: conditionStar,
+          valueCondition: {
+            min,
+            max,
+            starSelected: starSelected
+          }
+        }
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (valueCondition) {
+      setMin(valueCondition.min)
+      setMax(valueCondition.max)
+      setStarSelected(valueCondition.starSelected)
+    }
+  }, [valueCondition])
   return (
     <Container
       bg={colors.background}
@@ -113,11 +155,12 @@ const FilterScreen = () => {
                   />
                 }
                 color={colors.background1}
-                value={min}
+                value={`${min}`}
+                keyboardType='numeric'
                 textStyles={{
                   color: colors.text,
                 }}
-                onChange={val => setMin(val)}
+                onChange={val => setMin(Number(val))}
               />
               <InputComponent
                 styles={{
@@ -135,11 +178,12 @@ const FilterScreen = () => {
                   />
                 }
                 color={colors.background1}
-                value={max}
+                value={`${max}`}
+                keyboardType='numeric'
                 textStyles={{
                   color: colors.text,
                 }}
-                onChange={val => setMax(val)}
+                onChange={val => setMax(Number(val))}
               />
             </RowComponent>
           </View>
@@ -250,7 +294,7 @@ const FilterScreen = () => {
 
         <BtnShadowLinearComponent
           title='Apply filter'
-          onPress={() => { }}
+          onPress={handleFilter}
         />
 
       </SectionComponent>

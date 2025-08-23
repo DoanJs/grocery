@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import {
+    KeyboardTypeOptions,
     StyleProp,
     TextInput,
     TextStyle,
@@ -16,6 +17,7 @@ import RowComponent from './RowComponent';
 interface Props {
     value: string;
     onChange: (val: string) => void;
+    keyboardType?: KeyboardTypeOptions
     placeholder?: string;
     placeholderTextColor?: string;
     prefix?: ReactNode;
@@ -35,6 +37,7 @@ const InputComponent = (props: Props) => {
         color,
         value,
         onChange,
+        keyboardType,
         placeholder,
         placeholderTextColor,
         prefix,
@@ -84,6 +87,7 @@ const InputComponent = (props: Props) => {
                         secureTextEntry={isPassword ? !showPass : false}
                         autoCapitalize="none"
                         editable={editable ?? true}
+                        keyboardType={keyboardType ?? 'default'}
                     />
                 </View>
                 {affix && affix}

@@ -4,12 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { auth } from '../../../firebase.config';
-import avacodaItem from '../../assests/images/avacodaItem.png';
-import {
-  default as broccoliItem,
-  default as pineappleItem,
-} from '../../assests/images/broccoliItem.png';
-import grapesItem from '../../assests/images/grapesItem.png';
 import {
   BtnShadowLinearComponent,
   CartItemComponent,
@@ -23,37 +17,7 @@ import { fontFamillies } from '../../constants/fontFamilies';
 import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
-const data1 = [
-  {
-    id: 6,
-    title: 'Fresh Broccoli',
-    description: '1.50 lbs',
-    price: '$2.22 x 4',
-    source: broccoliItem,
-  },
-  {
-    id: 4,
-    title: 'Black Grapes',
-    description: '5.0 lbs',
-    price: '$2.22 x 4',
-    source: grapesItem,
-  },
-  {
-    id: 2,
-    title: 'Avacoda',
-    description: '1.50 lbs',
-    price: '$2.22 x 4',
-    source: avacodaItem,
-  },
-  {
-    id: 3,
-    title: 'Pineapple',
-    description: 'dozen',
-    price: '$2.22 x 4',
-    source: pineappleItem,
-  },
-];
-// const data1: any = [];
+
 const CartScreen = ({ navigation }: any) => {
   const user = auth.currentUser;
   const [products, setProducts] = useState<ProductModel[]>([]);
@@ -75,7 +39,7 @@ const CartScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (carts && products) {
-      let items: ProductModel[] = [];
+      let items: any[] = [];
 
       carts.map((cart: any) => {
         const index = products.findIndex(
@@ -83,7 +47,7 @@ const CartScreen = ({ navigation }: any) => {
         );
 
         items.push({
-          ...cart,
+          cart,
           product: products[index],
         });
       });
@@ -91,6 +55,17 @@ const CartScreen = ({ navigation }: any) => {
       setProCarts(items);
     }
   }, [products, carts]);
+
+  const handleCalculate = () => {
+    let subTotal: number = 0
+    if (proCarts.length > 0) {
+      proCarts.map((pro) => {
+        subTotal += Number(pro.product.price) * pro.cart.quantity
+      })
+    }
+
+    return subTotal
+  }
 
   return (
     <Container bg={colors.background} back title="Shopping Cart">
@@ -113,7 +88,7 @@ const CartScreen = ({ navigation }: any) => {
                   <CartItemComponent
                     key={index}
                     product={_.product}
-                    quantity={_.quantity}
+                    cart={_.cart}
                   />
                 ))}
               </ScrollView>
@@ -143,7 +118,7 @@ const CartScreen = ({ navigation }: any) => {
           )}
         </SectionComponent>
 
-        {data1.length > 0 ? (
+        {proCarts.length > 0 ? (
           <View>
             <SectionComponent>
               <RowComponent justify="space-between">
@@ -153,7 +128,7 @@ const CartScreen = ({ navigation }: any) => {
                   font={fontFamillies.poppinsMedium}
                 />
                 <TextComponent
-                  text="$56.7"
+                  text={`$${handleCalculate()}`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />
@@ -186,7 +161,7 @@ const CartScreen = ({ navigation }: any) => {
                   size={sizes.thinTitle}
                 />
                 <TextComponent
-                  text="$58.2"
+                  text={`$${handleCalculate() + 1.6}`}
                   color={colors.text2}
                   font={fontFamillies.poppinsSemiBold}
                   size={sizes.thinTitle}

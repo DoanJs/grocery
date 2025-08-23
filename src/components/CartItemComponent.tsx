@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import { deleteDoc, doc, setDoc } from '@react-native-firebase/firestore';
+import React from 'react';
 import {
   Image,
-  ImageSourcePropType,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { RowComponent, TextComponent } from '.';
+import { db } from '../../firebase.config';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import { sizes } from '../constants/sizes';
@@ -16,15 +17,17 @@ import { ProductModel } from '../models/ProductModel';
 
 interface Props {
   product: ProductModel;
-  quantity: number
+  cart: any
 }
 
 const CartItemComponent = (props: Props) => {
-  const { product, quantity } = props;
+  const { product, cart } = props;
+
+
   const renderRightActions = () => {
     return (
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={async () => await deleteDoc(doc(db, 'carts', cart.id))}
         style={{
           justifyContent: 'center',
           alignItems: 'center',
@@ -36,6 +39,28 @@ const CartItemComponent = (props: Props) => {
       </TouchableOpacity>
     );
   };
+
+  const handleChangeQuantity = async (type: string) => {
+    let quantity = cart.quantity
+    let isDelete = false
+
+    if (type === 'decrease') {
+      if (quantity === 1) {
+        isDelete = true
+      }
+      quantity = quantity - 1
+    } else {
+      quantity = quantity + 1
+    }
+
+    if (isDelete) {
+      await deleteDoc(doc(db, 'carts', cart.id))
+    } else {
+      await setDoc(
+        doc(db, 'carts', cart.id), { quantity },
+        { merge: true })
+    }
+  }
 
   return (
     <View
@@ -52,7 +77,7 @@ const CartItemComponent = (props: Props) => {
           }}
         >
           <Image
-            source={{uri: product.url}}
+            source={{ uri: product.url }}
             resizeMode="contain"
             style={{
               marginRight: 16,
@@ -94,11 +119,11 @@ const CartItemComponent = (props: Props) => {
               size={20}
               color={colors.primary}
               name="plus"
-              // onPress={() => setQuantity(quantity + 1)}
+              onPress={() => handleChangeQuantity('increase')}
             />
             <TextComponent
               color={colors.text}
-              text={`${quantity}`}
+              text={`${cart.quantity}`}
               font={fontFamillies.poppinsMedium}
               size={sizes.bigText}
               styles={{
@@ -109,7 +134,7 @@ const CartItemComponent = (props: Props) => {
               size={20}
               color={colors.primary}
               name="minus"
-              // onPress={() => (quantity === 0 ? 0 : setQuantity(quantity - 1))}
+              onPress={() => handleChangeQuantity('decrease')}
             />
           </RowComponent>
         </RowComponent>

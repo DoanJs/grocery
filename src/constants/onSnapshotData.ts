@@ -34,5 +34,5 @@ export const onSnapshotData = async ({
 
       setData(items);
     }
-  });
+  }, error => console.log('onSnapshot error: ', error));
 };

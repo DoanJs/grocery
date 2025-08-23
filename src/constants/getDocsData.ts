@@ -14,6 +14,7 @@ export const getDocsData = async ({
   const q = query(collection(db, nameCollect), ...condition);
 
   const querySnapshot = await getDocs(q);
+  
   const items: any = [];
   querySnapshot.forEach((doc: any) => {
     items.push({
