@@ -1,9 +1,5 @@
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  where,
+  where
 } from '@react-native-firebase/firestore';
 import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
@@ -15,17 +11,19 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { auth, db } from '../../../firebase.config';
+import { auth } from '../../../firebase.config';
 import {
   ButtonComponent,
+  ListStarComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
+import { addDocData } from '../../constants/addDocData';
 import { colors } from '../../constants/colors';
+import { deleteDocData } from '../../constants/deleteDocData';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { getDocData } from '../../constants/getDocData';
 import { onSnapshotData } from '../../constants/onSnapshotData';
@@ -40,6 +38,8 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
   const [product, setProduct] = useState<ProductModel>();
   const [hearts, setHearts] = useState<any>([]);
   const [carts, setCarts] = useState<any>([]);
+  const [comments, setComments] = useState<any[]>([]);
+  const [star, setStar] = useState<number>(0);
 
   useEffect(() => {
     if (productId) {
@@ -66,27 +66,51 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         ],
         setData: setCarts,
       });
+
+      onSnapshotData({
+        nameCollect: 'comments',
+        setData: setComments,
+        conditions: [
+          where('productId', '==', productId)
+        ]
+      })
     }
   }, [productId]);
 
-  const handleChangeHeart = async () => {
+  useEffect(() => {
+    if (comments.length > 0) {
+      let starTotal: number = 0
+      comments.map((_) => starTotal += _.star)
+      setStar(Number((starTotal / (comments.length)).toFixed(1)))
+    }
+  }, [comments])
+
+  const handleChangeHeart = () => {
     if (hearts[0]) {
-      await deleteDoc(doc(db, 'hearts', hearts[0].id));
+      deleteDocData({
+        nameCollect: 'hearts',
+        id: hearts[0].id
+      })
     } else {
-      await addDoc(collection(db, 'hearts'), {
-        productId: productId,
-        userId: user?.uid,
-      });
+      addDocData({
+        nameCollect: 'hearts',
+        value: {
+          productId: productId,
+          userId: user?.uid,
+        }
+      })
     }
   };
 
-  const handleAddCart = async () =>
-    await addDoc(collection(db, 'carts'), {
-      productId,
-      userId: user?.uid,
-      quantity: quantity > 0 ? quantity : 1,
-    });
-
+  const handleAddCart = () =>
+    addDocData({
+      nameCollect: 'carts',
+      value: {
+        productId,
+        userId: user?.uid,
+        quantity: quantity > 0 ? quantity : 1,
+      }
+    })
 
   return product ? (
     <View
@@ -132,7 +156,7 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <RowComponent justify="space-between">
               <TextComponent
-                text={product.price}
+                text={`${product.price}`}
                 font={fontFamillies.poppinsSemiBold}
                 size={sizes.thinTitle}
                 color={colors.primary}
@@ -160,23 +184,15 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
                 alignItems: 'baseline',
               }}
             >
-              <TextComponent text="4.5" font={fontFamillies.poppinsMedium} />
-              <RowComponent
-                styles={{
-                  marginHorizontal: 6,
-                }}
-              >
-                <AntDesign name="star" size={20} color={colors.orange} />
-                <AntDesign name="star" size={20} color={colors.orange} />
-                <AntDesign name="star" size={20} color={colors.orange} />
-                <AntDesign name="star" size={20} color={colors.orange} />
-                <AntDesign name="star" size={20} color={colors.orange} />
-              </RowComponent>
+              <TextComponent text={`${star}`} font={fontFamillies.poppinsMedium} />
+              <ListStarComponent star={star} />
               <TouchableOpacity
-                onPress={() => navigation.navigate('ReviewsScreen')}
+                onPress={() => navigation.navigate('ReviewsScreen', {
+                  productId: product.id
+                })}
               >
                 <TextComponent
-                  text="(89 reviews)"
+                  text={`${comments.length} reivew${comments.length * 4 > 9 ? 's' : ''}`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />

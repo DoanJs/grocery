@@ -17,17 +17,21 @@ import { ProductModel } from '../models/ProductModel';
 
 interface Props {
   product: ProductModel;
-  cart: any
+  cart?: any
+  heart?: any
 }
 
 const CartItemComponent = (props: Props) => {
-  const { product, cart } = props;
-
+  const { product, cart, heart } = props;
 
   const renderRightActions = () => {
     return (
       <TouchableOpacity
-        onPress={async () => await deleteDoc(doc(db, 'carts', cart.id))}
+        onPress={async () => await deleteDoc(
+          doc(
+            db,
+            cart ? 'carts' : 'hearts',
+            cart ? cart.id : heart.id))}
         style={{
           justifyContent: 'center',
           alignItems: 'center',
@@ -109,34 +113,37 @@ const CartItemComponent = (props: Props) => {
             />
           </RowComponent>
 
-          <RowComponent
-            styles={{
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Entypo
-              size={20}
-              color={colors.primary}
-              name="plus"
-              onPress={() => handleChangeQuantity('increase')}
-            />
-            <TextComponent
-              color={colors.text}
-              text={`${cart.quantity}`}
-              font={fontFamillies.poppinsMedium}
-              size={sizes.bigText}
+          {
+            cart &&
+            <RowComponent
               styles={{
-                paddingVertical: 8,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
               }}
-            />
-            <Entypo
-              size={20}
-              color={colors.primary}
-              name="minus"
-              onPress={() => handleChangeQuantity('decrease')}
-            />
-          </RowComponent>
+            >
+              <Entypo
+                size={20}
+                color={colors.primary}
+                name="plus"
+                onPress={() => handleChangeQuantity('increase')}
+              />
+              <TextComponent
+                color={colors.text}
+                text={`${cart.quantity}`}
+                font={fontFamillies.poppinsMedium}
+                size={sizes.bigText}
+                styles={{
+                  paddingVertical: 8,
+                }}
+              />
+              <Entypo
+                size={20}
+                color={colors.primary}
+                name="minus"
+                onPress={() => handleChangeQuantity('decrease')}
+              />
+            </RowComponent>
+          }
         </RowComponent>
       </Swipeable>
     </View>

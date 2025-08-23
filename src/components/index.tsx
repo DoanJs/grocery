@@ -14,6 +14,7 @@ import ProgressShippingComponent from './ProgressShippingComponent';
 import ReviewItemComponent from './ReviewItemComponent';
 import RowComponent from './RowComponent';
 import SectionComponent from './SectionComponent';
+import ListStarComponent from './ListStarComponent';
 import SpaceComponent from './SpaceComponent';
 import TextComponent from './TextComponent';
 
@@ -21,7 +22,7 @@ export {
   AddressItemComponent, BtnShadowLinearComponent, ButtonComponent, CardItemComponent, CartItemComponent, CategoryItem, CheckedButtonComponent, Container,
   InputComponent,
   NotificationItemComponent, OrderItemComponent, ProductItemComponent, ProgressShippingComponent, ReviewItemComponent, RowComponent,
-  SectionComponent, SpaceComponent,
+  SectionComponent, ListStarComponent, SpaceComponent,
   TextComponent
 };
 

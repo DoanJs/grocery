@@ -1,47 +1,58 @@
-import React from 'react';
+import { where } from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import avacodaItem from '../../assests/images/avacodaItem.png';
-import broccoliItem from '../../assests/images/broccoliItem.png';
-import grapesItem from '../../assests/images/grapesItem.png';
-import pineappleItem from '../../assests/images/pineappleItem.png';
+import { auth } from '../../../firebase.config';
 import {
   CartItemComponent,
   Container,
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
-const data1 = [
-  {
-    id: 6,
-    title: 'Fresh Broccoli',
-    description: '1.50 lbs',
-    price: '$2.22 x 4',
-    source: broccoliItem,
-  },
-  {
-    id: 4,
-    title: 'Black Grapes',
-    description: '5.0 lbs',
-    price: '$2.22 x 4',
-    source: grapesItem,
-  },
-  {
-    id: 2,
-    title: 'Avacoda',
-    description: '1.50 lbs',
-    price: '$2.22 x 4',
-    source: avacodaItem,
-  },
-  {
-    id: 3,
-    title: 'Pineapple',
-    description: 'dozen',
-    price: '$2.22 x 4',
-    source: pineappleItem,
-  },
-];
+import { onSnapshotData } from '../../constants/onSnapshotData';
+import { ProductModel } from '../../models/ProductModel';
+
+
 const HeartScreen = () => {
+  const user = auth.currentUser
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [hearts, setHearts] = useState<any[]>([]);
+  const [proHearts, setProHearts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      onSnapshotData({
+        nameCollect: 'products',
+        setData: setProducts
+      })
+
+      onSnapshotData({
+        nameCollect: 'hearts',
+        setData: setHearts,
+        conditions: [where('userId', '==', user?.uid)],
+      });
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (hearts && products) {
+      let items: any[] = [];
+
+      hearts.map((heart: any) => {
+        const index = products.findIndex(
+          (product: ProductModel) => product.id === heart.productId,
+        );
+
+        items.push({
+          heart,
+          product: products[index],
+        });
+      });
+
+      setProHearts(items);
+    }
+  }, [products, hearts]);
+
   return (
     <Container bg={colors.background} back title="Favorites">
       <SectionComponent
@@ -54,8 +65,12 @@ const HeartScreen = () => {
       >
         <GestureHandlerRootView>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {data1.map((_, index) => (
-              <CartItemComponent key={index} product={_} />
+            {proHearts.map((_, index) => (
+              <CartItemComponent
+                key={index}
+                product={_.product}
+                heart={_.heart}
+              />
             ))}
           </ScrollView>
         </GestureHandlerRootView>

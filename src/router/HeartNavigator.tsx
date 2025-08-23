@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import { EmptyScreen, HeartScreen } from '../screens'
+import { EmptyScreen } from '../screens'
 
 const HeartNavigator = () => {
     const Stack = createNativeStackNavigator()

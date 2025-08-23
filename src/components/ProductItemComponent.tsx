@@ -1,11 +1,13 @@
-import { addDoc, collection, deleteDoc, doc, setDoc } from '@react-native-firebase/firestore';
 import { Heart, ShoppingBag } from 'iconsax-react-native';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { RowComponent, SpaceComponent, TextComponent } from '.';
-import { auth, db } from '../../firebase.config';
+import { auth } from '../../firebase.config';
+import { addDocData } from '../constants/addDocData';
 import { colors } from '../constants/colors';
+import { deleteDocData } from '../constants/deleteDocData';
 import { fontFamillies } from '../constants/fontFamilies';
+import { setDocData } from '../constants/setDocData';
 import { sizes } from '../constants/sizes';
 import { ProductModel } from '../models/ProductModel';
 
@@ -20,7 +22,7 @@ const ProductItemComponent = (props: Props) => {
   const user = auth.currentUser
   const { onPress, cart, heart, product } = props;
 
-  const handleChageQuantity = async (type: string) => {
+  const handleChageQuantity = (type: string) => {
     let quantity = cart[0].quantity
     let isDelete = false
 
@@ -39,31 +41,45 @@ const ProductItemComponent = (props: Props) => {
     }
 
     if (isDelete) {
-      await deleteDoc(doc(db, 'carts', cart[0].id))
+      deleteDocData({
+        nameCollect: 'carts',
+        id: cart[0].id
+      })
     } else {
-      await setDoc(
-        doc(db, 'carts', cart[0].id), { quantity },
-        { merge: true })
+      setDocData({
+        nameCollect: 'carts',
+        id: cart[0].id,
+        valueUpdate: { quantity }
+      })
     }
 
   }
 
-  const handleChangeHeart = async () => {
+  const handleChangeHeart = () => {
     if (heart[0]) {
-      await deleteDoc(doc(db, 'hearts', heart[0].id))
+      deleteDocData({
+        nameCollect: 'hearts',
+        id: heart[0].id
+      })
     } else {
-      await addDoc(collection(db, 'hearts'), {
-        productId: product.id,
-        userId: user?.uid
+      addDocData({
+        nameCollect: 'hearts',
+        value: {
+          productId: product.id,
+          userId: user?.uid
+        }
       })
     }
   }
 
-  const handleAddCart = async () =>
-    await addDoc(collection(db, 'carts'), {
-      productId: product.id,
-      userId: user?.uid,
-      quantity: 1
+  const handleAddCart = () =>
+    addDocData({
+      nameCollect: 'carts',
+      value: {
+        productId: product.id,
+        userId: user?.uid,
+        quantity: 1
+      }
     })
 
   return (

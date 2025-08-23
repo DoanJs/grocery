@@ -1,17 +1,32 @@
+import { addDoc, collection, serverTimestamp } from '@react-native-firebase/firestore'
 import React, { useState } from 'react'
 import { View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import { Shadow } from 'react-native-shadow-2'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import { BtnShadowLinearComponent, ButtonComponent, Container, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
+import { auth, db } from '../../../firebase.config'
+import { BtnShadowLinearComponent, Container, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
 import { colors } from '../../constants/colors'
 import { fontFamillies } from '../../constants/fontFamilies'
 import { sizes } from '../../constants/sizes'
 
-const WriteReviewScreen = () => {
+const WriteReviewScreen = ({ navigation, route }: any) => {
+    const { productId } = route.params
+    const user = auth.currentUser
     const [text, setText] = useState('');
     const [star, setStar] = useState(4);
+
+    const handleWriteReview = async () => {
+        await addDoc(collection(db, 'comments'), {
+            productId,
+            userId: user?.uid,
+            star: star + 1,
+            text,
+            createdAt: serverTimestamp(),
+            updateAt: serverTimestamp(),
+        })
+
+        navigation.goBack()
+    }
     return (
         <Container bg={colors.background} back title='Write Reviews'>
             <View style={{
@@ -83,10 +98,10 @@ const WriteReviewScreen = () => {
                 </SectionComponent>
                 <SectionComponent>
                     <BtnShadowLinearComponent
-                        onPress={() => { }}
+                        onPress={handleWriteReview}
                         title="Start shopping"
                     />
-                    
+
                 </SectionComponent>
             </View>
         </Container>

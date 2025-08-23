@@ -1,37 +1,43 @@
 import React from 'react'
 import { Image, ImageSourcePropType, View } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import { RowComponent, SectionComponent, SpaceComponent, TextComponent } from '.'
+import { ListStarComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '.'
 import { colors } from '../constants/colors'
 import { fontFamillies } from '../constants/fontFamilies'
 import { sizes } from '../constants/sizes'
+import moment from 'moment'
 
 interface Props {
-    icon: ImageSourcePropType | undefined,
-    name: string,
-    time: string
-    star: number
-    text: string
+    user: any
+    comment: any
 }
 
 const ReviewItemComponent = (props: Props) => {
-    const { icon, name, time, star, text } = props
+    const { user, comment } = props
     return (
         <SectionComponent styles={{
             backgroundColor: colors.background,
             paddingVertical: 20
         }}>
             <RowComponent>
-                <Image source={icon} />
+                <Image source={{ uri: user?.url }} style={{
+                    height: 60,
+                    width: 60,
+                    resizeMode: 'cover',
+                    borderRadius: 100
+                }} />
                 <SpaceComponent width={10} />
                 <View>
                     <TextComponent
-                        text={name}
+                        text={user.name}
                         font={fontFamillies.poppinsSemiBold}
                         size={sizes.bigText}
                     />
                     <TextComponent
-                        text={time}
+                        text={comment.createdAt
+                            ? moment(comment.createdAt.toDate()).format('DD/MM/YYYY HH:mm:ss') as string
+                            : ''
+                        }
                         font={fontFamillies.poppinsMedium}
                         size={sizes.smallText}
                         color={colors.text}
@@ -50,32 +56,17 @@ const ReviewItemComponent = (props: Props) => {
                 alignItems: 'baseline',
             }}>
                 <TextComponent
-                    text={`${star}`}
+                    text={`${comment.star}`}
                     font={fontFamillies.poppinsMedium}
                 />
-                {
-                    Array.from({ length: Math.floor(star) }).map((_, index) =>
-                        <FontAwesome
-                            name='star' size={20}
-                            color={colors.star} key={index}
-                            style={{
-                                marginHorizontal: 2
-                            }}
-                        />)
-                }
-                {
-                    star - Math.floor(star) > 0 &&
-                    <FontAwesome
-                        name='star-half-empty' size={20}
-                        color={colors.star}
-                        style={{
-                            marginHorizontal: 2
-                        }}
-                    />
-                }
+                <SpaceComponent width={4} />
+                <ListStarComponent
+                    star={comment.star}
+                    colorEmpty={colors.background1}
+                />
             </RowComponent>
             <TextComponent
-                text={text}
+                text={comment.text}
                 color={colors.text}
             />
         </SectionComponent>
