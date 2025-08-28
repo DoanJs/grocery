@@ -29,14 +29,16 @@ import { fontFamillies } from '../../constants/fontFamilies';
 import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
+import { HeartModel } from '../../models/HeartModel';
+import { CartModel } from '../../models/CartModel';
 
 const HomeScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
   const { params } = route
   const [index, setIndex] = useState(0);
   const [products, setProducts] = useState<ProductModel[]>([]);
-  const [hearts, setHearts] = useState<any[]>([]);
-  const [carts, setCarts] = useState<any[]>([]);
+  const [hearts, setHearts] = useState<HeartModel[]>([]);
+  const [carts, setCarts] = useState<CartModel[]>([]);
 
   useEffect(() => {
     if (user) {

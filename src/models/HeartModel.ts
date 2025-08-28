@@ -1,8 +1,6 @@
-export interface CommentModel {
+export interface HeartModel {
   id: string;
   productId: string;
-  star: number;
-  text: string;
   userId: string;
   createAt: CreateAt;
   updateAt: UpdateAt;

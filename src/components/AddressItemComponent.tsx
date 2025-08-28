@@ -3,7 +3,6 @@ import {
   ArrowUp2,
   Barcode,
   Call,
-  ForwardItem,
   GlobalSearch,
   Location,
   Solana,
@@ -12,7 +11,6 @@ import {
 import React, { useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import {
-  BtnShadowLinearComponent,
   CheckedButtonComponent,
   RowComponent,
   SectionComponent,
@@ -22,11 +20,10 @@ import {
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import { sizes } from '../constants/sizes';
+import { AddressModel } from '../models/AddressModel';
 
 interface Props {
-  title: string;
-  address: string;
-  phone: string;
+  address: AddressModel;
   value: string;
   onPress: (val: any) => void;
 }
@@ -34,34 +31,33 @@ interface Props {
 const data = [
   {
     icon: <User size={20} color={colors.text} />,
-    title: 'Name',
+    title: 'name',
   },
   {
     icon: <Location size={20} color={colors.text} />,
-    title: 'Address',
+    title: 'address',
   },
   {
     icon: <Solana size={20} color={colors.text} />,
-    title: 'City',
+    title: 'city',
   },
   {
     icon: <Barcode size={20} color={colors.text} />,
-    title: 'Zip code',
+    title: 'zipCode',
   },
   {
     icon: <GlobalSearch size={20} color={colors.text} />,
-    title: 'Country',
+    title: 'country',
   },
   {
     icon: <Call size={20} color={colors.text} />,
-    title: 'Phone number',
+    title: 'phone',
   },
 ];
 
 const AddressItemComponent = (props: Props) => {
-  const { title, address, value, phone, onPress } = props;
+  const { value, address, onPress } = props;
   const [showMore, setShowMore] = useState(false);
-
 
   return (
     <View
@@ -70,7 +66,7 @@ const AddressItemComponent = (props: Props) => {
         position: 'relative',
       }}
     >
-      {value === title && (
+      {value === address.id && (
         <View
           style={{
             position: 'absolute',
@@ -98,7 +94,7 @@ const AddressItemComponent = (props: Props) => {
         <RowComponent
           justify="space-between"
           styles={{
-            paddingVertical: 20,
+            paddingVertical: 26,
           }}
         >
           <View
@@ -119,19 +115,19 @@ const AddressItemComponent = (props: Props) => {
             }}
           >
             <TextComponent
-              text={title}
+              text={address.name}
               font={fontFamillies.poppinsSemiBold}
               size={sizes.bigText}
             />
             <TextComponent
-              text={address}
+              text={`${address.address}, ${address.city}, ${address.country} ${address.zipCode}`}
               size={sizes.smallText}
               styles={{
                 width: '70%',
               }}
             />
             <TextComponent
-              text={phone}
+              text={address.phone}
               size={sizes.smallText}
               font={fontFamillies.poppinsSemiBold}
             />
@@ -182,7 +178,7 @@ const AddressItemComponent = (props: Props) => {
                 {_.icon}
                 <SpaceComponent width={20} />
                 <TextComponent
-                  text={_.title}
+                  text={`${address[_.title as keyof AddressModel]}`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />
@@ -203,7 +199,7 @@ const AddressItemComponent = (props: Props) => {
                   {_.icon}
                   <SpaceComponent width={20} />
                   <TextComponent
-                    text={_.title}
+                    text={`${address[_.title as keyof AddressModel]}`}
                     color={colors.text}
                     font={fontFamillies.poppinsMedium}
                   />
@@ -223,7 +219,7 @@ const AddressItemComponent = (props: Props) => {
                 {_.icon}
                 <SpaceComponent width={20} />
                 <TextComponent
-                  text={_.title}
+                  text={`${address[_.title as keyof AddressModel]}`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />
@@ -234,11 +230,10 @@ const AddressItemComponent = (props: Props) => {
 
             <CheckedButtonComponent
               value={value}
-              makeDefault={title}
-              title='Make default'
-              onPress={() => onPress(title)}
+              makeDefault={address.id}
+              title="Make default"
+              onPress={() => onPress(address.id)}
             />
-            
           </SectionComponent>
         </>
       )}

@@ -1,11 +1,11 @@
-export interface CommentModel {
+export interface UserModel {
   id: string;
-  productId: string;
-  star: number;
-  text: string;
-  userId: string;
   createAt: CreateAt;
+  email: string;
+  phone: string
+  name: string;
   updateAt: UpdateAt;
+  url: string;
 }
 
 export interface CreateAt {

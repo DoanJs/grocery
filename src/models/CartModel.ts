@@ -1,8 +1,7 @@
-export interface CommentModel {
+export interface CartModel {
   id: string;
   productId: string;
-  star: number;
-  text: string;
+  quantity: number;
   userId: string;
   createAt: CreateAt;
   updateAt: UpdateAt;

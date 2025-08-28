@@ -1,73 +1,39 @@
-import {
-  ArrowRight2,
-  Box,
-  Camera,
-  Card,
-  Heart,
-  Location,
-  Logout,
-  Notification,
-  TransactionMinus,
-  User,
-} from 'iconsax-react-native';
-import React from 'react';
+import { ArrowRight2, Camera } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
-import avatar from '../../assests/images/avatar.png';
+import { auth } from '../../../firebase.config';
 import {
   Container,
+  LoadingComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
+import { profileItems } from '../../constants/dataSetDefault';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocData } from '../../constants/getDocData';
 import { sizes } from '../../constants/sizes';
-const data = [
-  {
-    icon: <User color={colors.green} size={20} />,
-    title: 'About me',
-    screen:'AboutMeScreen'
-  },
-  {
-    icon: <Box color={colors.green} size={20} />,
-    title: 'My Orders',
-    screen: 'MyOrderScreen'
-  },
-  {
-    icon: <Heart color={colors.green} size={20} />,
-    title: 'My Favorites',
-    screen:''
-  },
-  {
-    icon: <Location color={colors.green} size={20} />,
-    title: 'My Address',
-    screen: 'AddressScreen'
-  },
-  {
-    icon: <Card color={colors.green} size={20} />,
-    title: 'Credit Cards',
-    screen:'MyCardScreen'
-  },
-  {
-    icon: <TransactionMinus color={colors.green} size={20} />,
-    title: 'Transactions',
-    screen:'TransactionsScreen'
-  },
-  {
-    icon: <Notification color={colors.green} size={20} />,
-    title: 'Notifications',
-    screen:'NotificationsScreen'
-  },
-  {
-    icon: <Logout color={colors.green} size={20} />,
-    title: 'Sign out',
-    screen:'LogOutScreen'
-  },
-];
+import { UserModel } from '../../models/UserModel';
 
-const ProfileScreen = ({navigation}: any) => {
-  return (
+const ProfileScreen = ({ navigation }: any) => {
+  const userId = auth.currentUser?.uid;
+  const [user, setUser] = useState<UserModel>();
+
+  useEffect(() => {
+    if (userId) {
+      getDocData({
+        nameCollect: 'users',
+        id: userId,
+        setData: setUser,
+      });
+    }
+  }, [userId]);
+
+  return !user ? (
+    <LoadingComponent size={30} />
+  ) : (
     <Container bg={colors.background}>
       <SectionComponent
         styles={{
@@ -90,10 +56,12 @@ const ProfileScreen = ({navigation}: any) => {
             }}
           >
             <Image
-              source={avatar}
+              source={{ uri: user.url }}
               style={{
-                resizeMode: 'contain',
+                resizeMode: 'cover',
                 borderRadius: 100,
+                height: 120,
+                width: 120,
               }}
             />
             <View
@@ -110,11 +78,11 @@ const ProfileScreen = ({navigation}: any) => {
             </View>
           </View>
           <TextComponent
-            text="Olivia Austin"
+            text={user.name}
             font={fontFamillies.poppinsSemiBold}
             size={sizes.bigText}
           />
-          <TextComponent text="oliviaaustin@gmail.com" color={colors.text} />
+          <TextComponent text={user.email} color={colors.text} />
         </View>
       </SectionComponent>
 
@@ -124,10 +92,10 @@ const ProfileScreen = ({navigation}: any) => {
           backgroundColor: colors.background1,
           flex: 1,
           marginBottom: 0,
-          paddingHorizontal:32
+          paddingHorizontal: 32,
         }}
       >
-        {data.map((_, index) => (
+        {profileItems.map((_, index) => (
           <RowComponent
             key={index}
             justify="space-between"
@@ -138,7 +106,7 @@ const ProfileScreen = ({navigation}: any) => {
             onPress={() => navigation.navigate(_.screen)}
           >
             {_.icon}
-            <SpaceComponent width={16}/>
+            <SpaceComponent width={16} />
             <TextComponent
               text={_.title}
               font={fontFamillies.poppinsSemiBold}

@@ -19,22 +19,22 @@ interface Props {
 }
 
 const ProductItemComponent = (props: Props) => {
-  const user = auth.currentUser
+  const user = auth.currentUser;
   const { onPress, cart, heart, product } = props;
 
   const handleChageQuantity = (type: string) => {
-    let quantity = cart[0].quantity
-    let isDelete = false
+    let quantity = cart && cart[0].quantity;
+    let isDelete = false;
 
     switch (type) {
       case 'decrease':
         if (quantity === 1) {
-          isDelete = true
+          isDelete = true;
         }
-        quantity = quantity - 1
+        quantity = quantity - 1;
         break;
       case 'increase':
-        quantity = quantity + 1
+        quantity = quantity + 1;
         break;
       default:
         break;
@@ -43,34 +43,33 @@ const ProductItemComponent = (props: Props) => {
     if (isDelete) {
       deleteDocData({
         nameCollect: 'carts',
-        id: cart[0].id
-      })
+        id: cart[0].id,
+      });
     } else {
       setDocData({
         nameCollect: 'carts',
         id: cart[0].id,
-        valueUpdate: { quantity }
-      })
+        valueUpdate: { quantity },
+      });
     }
-
-  }
+  };
 
   const handleChangeHeart = () => {
     if (heart[0]) {
       deleteDocData({
         nameCollect: 'hearts',
-        id: heart[0].id
-      })
+        id: heart[0].id,
+      });
     } else {
       addDocData({
         nameCollect: 'hearts',
         value: {
           productId: product.id,
-          userId: user?.uid
-        }
-      })
+          userId: user?.uid,
+        },
+      });
     }
-  }
+  };
 
   const handleAddCart = () =>
     addDocData({
@@ -78,9 +77,9 @@ const ProductItemComponent = (props: Props) => {
       value: {
         productId: product.id,
         userId: user?.uid,
-        quantity: 1
-      }
-    })
+        quantity: 1,
+      },
+    });
 
   return (
     <RowComponent
@@ -109,7 +108,7 @@ const ProductItemComponent = (props: Props) => {
             size={sizes.smallText}
             font={fontFamillies.poppinsMedium}
             color={colors.pink}
-          // color={isNew ? colors.orange : colors.pink}
+            // color={isNew ? colors.orange : colors.pink}
           />
         </View>
       )}

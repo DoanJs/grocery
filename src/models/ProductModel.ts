@@ -1,11 +1,23 @@
 export interface ProductModel {
-  id: string | number;
-  title: string;
-  quantity: string;
-  price: number;
-  url: string;
+  id: string;
   category: string;
-  star: number,
-  sale?: string;
-  description?: string;
+  description: string;
+  price: number;
+  quantity: string;
+  sale: string;
+  star: number;
+  title: string;
+  url: string;
+  createAt: CreateAt;
+  updateAt: UpdateAt;
+}
+
+export interface CreateAt {
+  _seconds: number;
+  _nanoseconds: number;
+}
+
+export interface UpdateAt {
+  _seconds: number;
+  _nanoseconds: number;
 }

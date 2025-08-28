@@ -8,6 +8,7 @@ import { fontFamillies } from '../constants/fontFamilies';
 import { sizes } from '../constants/sizes';
 
 interface Props {
+  disable?: boolean;
   onPress: () => void;
   isLoading?: boolean;
   title: string;
@@ -17,9 +18,45 @@ interface Props {
   btnStyles?: StyleProp<ViewStyle>;
 }
 const BtnShadowLinearComponent = (props: Props) => {
-  const { onPress, title, preffix, suffix, titleStyles, btnStyles, isLoading } =
-    props;
-  return (
+  const {
+    disable,
+    onPress,
+    title,
+    preffix,
+    suffix,
+    titleStyles,
+    btnStyles,
+    isLoading,
+  } = props;
+  return disable ? (
+    <ButtonComponent
+      disable
+      isLoading={isLoading ?? false}
+      color={colors.gray}
+      onPress={() => {}}
+      text={title}
+      textStyles={[
+        {
+          color: colors.background,
+          fontFamily: fontFamillies.poppinsSemiBold,
+          fontSize: sizes.bigText,
+          marginLeft: 20,
+        },
+        titleStyles,
+      ]}
+      styles={[
+        {
+          flexDirection: 'row',
+          justifyContent: 'center',
+          borderRadius: 5,
+          marginBottom: 16,
+        },
+        btnStyles,
+      ]}
+      preffix={preffix ?? undefined}
+      suffix={suffix ?? undefined}
+    />
+  ) : (
     <Shadow
       distance={5}
       startColor={`${colors.primaryLight}d8`}

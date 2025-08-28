@@ -1,6 +1,4 @@
-import {
-  where
-} from '@react-native-firebase/firestore';
+import { where } from '@react-native-firebase/firestore';
 import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -28,6 +26,9 @@ import { fontFamillies } from '../../constants/fontFamilies';
 import { getDocData } from '../../constants/getDocData';
 import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
+import { CartModel } from '../../models/CartModel';
+import { CommentModel } from '../../models/CommentModel';
+import { HeartModel } from '../../models/HeartModel';
 import { ProductModel } from '../../models/ProductModel';
 
 const ProductDetailsScreen = ({ navigation, route }: any) => {
@@ -36,9 +37,9 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
   const [isShowText, setIsShowText] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<ProductModel>();
-  const [hearts, setHearts] = useState<any>([]);
-  const [carts, setCarts] = useState<any>([]);
-  const [comments, setComments] = useState<any[]>([]);
+  const [hearts, setHearts] = useState<HeartModel[]>([]);
+  const [carts, setCarts] = useState<CartModel[]>([]);
+  const [comments, setComments] = useState<CommentModel[]>([]);
   const [star, setStar] = useState<number>(0);
 
   useEffect(() => {
@@ -70,35 +71,33 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
       onSnapshotData({
         nameCollect: 'comments',
         setData: setComments,
-        conditions: [
-          where('productId', '==', productId)
-        ]
-      })
+        conditions: [where('productId', '==', productId)],
+      });
     }
   }, [productId]);
 
   useEffect(() => {
     if (comments.length > 0) {
-      let starTotal: number = 0
-      comments.map((_) => starTotal += _.star)
-      setStar(Number((starTotal / (comments.length)).toFixed(1)))
+      let starTotal: number = 0;
+      comments.map(_ => (starTotal += _.star));
+      setStar(Number((starTotal / comments.length).toFixed(1)));
     }
-  }, [comments])
+  }, [comments]);
 
   const handleChangeHeart = () => {
     if (hearts[0]) {
       deleteDocData({
         nameCollect: 'hearts',
-        id: hearts[0].id
-      })
+        id: hearts[0].id,
+      });
     } else {
       addDocData({
         nameCollect: 'hearts',
         value: {
           productId: productId,
           userId: user?.uid,
-        }
-      })
+        },
+      });
     }
   };
 
@@ -109,8 +108,8 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         productId,
         userId: user?.uid,
         quantity: quantity > 0 ? quantity : 1,
-      }
-    })
+      },
+    });
 
   return product ? (
     <View
@@ -184,15 +183,22 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
                 alignItems: 'baseline',
               }}
             >
-              <TextComponent text={`${star}`} font={fontFamillies.poppinsMedium} />
+              <TextComponent
+                text={`${star}`}
+                font={fontFamillies.poppinsMedium}
+              />
               <ListStarComponent star={star} />
               <TouchableOpacity
-                onPress={() => navigation.navigate('ReviewsScreen', {
-                  productId: product.id
-                })}
+                onPress={() =>
+                  navigation.navigate('ReviewsScreen', {
+                    productId: product.id,
+                  })
+                }
               >
                 <TextComponent
-                  text={`${comments.length} reivew${comments.length * 4 > 9 ? 's' : ''}`}
+                  text={`${comments.length} reivew${
+                    comments.length * 4 > 9 ? 's' : ''
+                  }`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />
@@ -287,8 +293,12 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
             style={{ borderRadius: 5 }}
           >
             <ButtonComponent
-              text={carts[0] ? 'Go to Cart' : "Add to cart"}
-              onPress={carts[0] ? () => navigation.navigate('CartScreen') : handleAddCart}
+              text={carts[0] ? 'Go to Cart' : 'Add to cart'}
+              onPress={
+                carts[0]
+                  ? () => navigation.navigate('CartScreen')
+                  : handleAddCart
+              }
               color="transparent"
               styles={{
                 flexDirection: 'row',
