@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 
@@ -28,4 +28,8 @@ export const globalStyles = StyleSheet.create({
         fontFamily: fontFamillies.poppinsMedium,
         color: colors.text2,
     },
+    header: {
+        marginTop: Platform.OS === 'ios' ? 0 : 60,
+        marginBottom: 0,
+    }
 });

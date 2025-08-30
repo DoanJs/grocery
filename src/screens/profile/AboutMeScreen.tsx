@@ -18,13 +18,12 @@ import {
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
-import { getDocData } from '../../constants/getDocData';
 import { sizes } from '../../constants/sizes';
-import { UserModel } from '../../models/UserModel';
+import useUserStore from '../../zustand/store/useUserStore';
 
 const AboutMeScreen = () => {
   const userFirebase = auth.currentUser;
-  const [user, setUser] = useState<UserModel>();
+  const { user } = useUserStore()
   const [value, setValue] = useState<any>({
     oldPass: '',
     newPass: '',
@@ -33,16 +32,6 @@ const AboutMeScreen = () => {
   const [textError, setTextError] = useState('');
   const [disable, setDisable] = useState(true);
   const [isloading, setIsloading] = useState(false);
-
-  useEffect(() => {
-    if (userFirebase) {
-      getDocData({
-        nameCollect: 'users',
-        id: userFirebase.uid,
-        setData: setUser,
-      });
-    }
-  }, [userFirebase]);
 
   useEffect(() => {
     if (textError) {
@@ -82,9 +71,9 @@ const AboutMeScreen = () => {
         setDisable(true);
         setIsloading(false)
         setValue({
-          oldPass:'',
-          newPass:'',
-          confPass:''
+          oldPass: '',
+          newPass: '',
+          confPass: ''
         })
       } catch (error: any) {
         console.error('Error:', error.message);

@@ -3,8 +3,8 @@ export interface CartModel {
   productId: string;
   quantity: number;
   userId: string;
-  createAt: CreateAt;
-  updateAt: UpdateAt;
+  createAt?: CreateAt;
+  updateAt?: UpdateAt;
 }
 
 export interface CreateAt {

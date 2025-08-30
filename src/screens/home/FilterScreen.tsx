@@ -1,4 +1,3 @@
-import { where } from '@react-native-firebase/firestore';
 import {
   ArrowRotateLeft,
   Box,
@@ -43,6 +42,7 @@ const FilterScreen = ({ navigation, route }: any) => {
   const [max, setMax] = useState(0);
   const [starSelected, setStarSelected] = useState(-1);
   const [dataOther, setDataOther] = useState<string[]>([]);
+  const [disable, setDisable] = useState(true);
 
   const onSelectedOther = (title: string) => {
     const newData = [...dataOther];
@@ -62,31 +62,12 @@ const FilterScreen = ({ navigation, route }: any) => {
     setStarSelected(-1);
   };
 
-  const handleFilter = async () => {
-    let conditionMinMax: any[] = []
-    let conditionStar: any[] = []
-
-    if (max > min) {
-      conditionMinMax = ([
-        where('price', '>=', min),
-        where('price', '<=', max)
-      ])
-    } else {
-      conditionMinMax = []
-    }
-
-    if (starSelected > -1) {
-      conditionStar = conditionMinMax.concat([where('star', '==', starSelected + 1)])
-    } else {
-      conditionStar = conditionMinMax
-    }
-
+  const handleFilter = () => {
     navigation.navigate('Main', {
       screen: 'Home',
       params: {
         screen: 'HomeScreen',
         params: {
-          conditions: conditionStar,
           valueCondition: {
             min,
             max,
@@ -99,11 +80,32 @@ const FilterScreen = ({ navigation, route }: any) => {
 
   useEffect(() => {
     if (valueCondition) {
+      if (
+        min === valueCondition?.min
+        && max == valueCondition?.max
+        && starSelected === valueCondition?.starSelected
+      ) {
+        setDisable(true)
+      } else {
+        setDisable(false)
+      }
+    } else if(min === 0 && max ===0&&starSelected === -1){
+      setDisable(true)
+    }else{
+      setDisable(false)
+    }
+
+  }, [min, max, starSelected])
+
+  useEffect(() => {
+    if (valueCondition) {
       setMin(valueCondition.min)
       setMax(valueCondition.max)
       setStarSelected(valueCondition.starSelected)
     }
   }, [valueCondition])
+
+  
   return (
     <Container
       bg={colors.background}
@@ -293,6 +295,7 @@ const FilterScreen = ({ navigation, route }: any) => {
         </View>
 
         <BtnShadowLinearComponent
+          disable={disable}
           title='Apply filter'
           onPress={handleFilter}
         />

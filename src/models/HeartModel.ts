@@ -2,8 +2,8 @@ export interface HeartModel {
   id: string;
   productId: string;
   userId: string;
-  createAt: CreateAt;
-  updateAt: UpdateAt;
+  createAt?: CreateAt;
+  updateAt?: UpdateAt;
 }
 
 export interface CreateAt {

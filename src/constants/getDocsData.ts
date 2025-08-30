@@ -9,9 +9,11 @@ export const getDocsData = async ({
 }: {
   nameCollect: string;
   setData: SetStateAction<any>;
-  condition: any;
+  condition?: any;
 }) => {
-  const q = query(collection(db, nameCollect), ...condition);
+  const q = condition 
+  ? query(collection(db, nameCollect), ...condition)
+  : query(collection(db, nameCollect))
 
   const querySnapshot = await getDocs(q);
   

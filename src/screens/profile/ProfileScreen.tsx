@@ -1,7 +1,6 @@
 import { ArrowRight2, Camera } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Image, View } from 'react-native';
-import { auth } from '../../../firebase.config';
 import {
   Container,
   LoadingComponent,
@@ -13,23 +12,11 @@ import {
 import { colors } from '../../constants/colors';
 import { profileItems } from '../../constants/dataSetDefault';
 import { fontFamillies } from '../../constants/fontFamilies';
-import { getDocData } from '../../constants/getDocData';
 import { sizes } from '../../constants/sizes';
-import { UserModel } from '../../models/UserModel';
+import useUserStore from '../../zustand/store/useUserStore';
 
 const ProfileScreen = ({ navigation }: any) => {
-  const userId = auth.currentUser?.uid;
-  const [user, setUser] = useState<UserModel>();
-
-  useEffect(() => {
-    if (userId) {
-      getDocData({
-        nameCollect: 'users',
-        id: userId,
-        setData: setUser,
-      });
-    }
-  }, [userId]);
+  const { user } = useUserStore()
 
   return !user ? (
     <LoadingComponent size={30} />

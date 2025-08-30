@@ -3,6 +3,7 @@ import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -21,61 +22,80 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { categories } from '../../constants/categories';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
-import { onSnapshotData } from '../../constants/onSnapshotData';
+import { getDocsData } from '../../constants/getDocsData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
-import { HeartModel } from '../../models/HeartModel';
-import { CartModel } from '../../models/CartModel';
+import useCartStore from '../../zustand/store/useCartStore';
+import useHeartStore from '../../zustand/store/useHeartStore';
+import useProductStore from '../../zustand/store/useProductStore';
+import { globalStyles } from '../../styles/globalStyles';
+import { getDocData } from '../../constants/getDocData';
+import useUserStore from '../../zustand/store/useUserStore';
 
 const HomeScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
   const { params } = route
   const [index, setIndex] = useState(0);
-  const [products, setProducts] = useState<ProductModel[]>([]);
-  const [hearts, setHearts] = useState<HeartModel[]>([]);
-  const [carts, setCarts] = useState<CartModel[]>([]);
+  const [productsData, setProductsData] = useState<ProductModel[]>([]);
+  const {setUser} = useUserStore()
+  const { products, setProducts } = useProductStore()
+  const { hearts, setHearts } = useHeartStore()
+  const { carts, setCarts } = useCartStore()
 
   useEffect(() => {
     if (user) {
-      if (params && params.conditions.length > 0) {
-        onSnapshotData({
-          nameCollect: 'products',
-          setData: setProducts,
-          conditions: params.conditions
-        });
-      } else {
-        onSnapshotData({
-          nameCollect: 'products',
-          setData: setProducts,
-        });
-      }
-
-      onSnapshotData({
+      getDocData({
+        id: user.uid,
+        nameCollect: 'users',
+        setData: setUser
+      })
+      getDocsData({
+        nameCollect: 'products',
+        setData: setProductsData,
+      })
+      getDocsData({
         nameCollect: 'hearts',
         setData: setHearts,
-        conditions: [where('userId', '==', user.uid)],
-      });
-
-      onSnapshotData({
+        condition: [where('userId', '==', user.uid)],
+      })
+      getDocsData({
         nameCollect: 'carts',
         setData: setCarts,
-        conditions: [where('userId', '==', user.uid)],
-      });
+        condition: [where('userId', '==', user.uid)],
+      })
     }
-  }, [user, params]);
+  }, [user])
+
+  useEffect(() => {
+    let result = [...productsData]
+    if (params && params.valueCondition) {
+      const { valueCondition } = params
+
+      if (valueCondition.min < valueCondition.max) {
+        result = result.filter(pro =>
+          pro.price >= valueCondition.min
+          && pro.price <= valueCondition.max)
+      }
+
+      if (valueCondition.starSelected > -1) {
+        result = result.filter(pro =>
+          pro.star === valueCondition.starSelected + 1)
+      }
+      setProducts(result)
+    } else {
+      setProducts(result)
+    }
+  }, [productsData, params])
 
   return (
     <Container>
       <SectionComponent
-        styles={{
-          marginTop: 60,
-          marginBottom: 0,
-        }}
+        styles={[globalStyles.header]}
       >
         <RowComponent
           justify="space-between"
@@ -210,8 +230,8 @@ const HomeScreen = ({ navigation, route }: any) => {
                 }
                 key={index}
                 product={_}
-                cart={carts.filter(pro => pro.productId === _.id)}
-                heart={hearts.filter(pro => pro.productId === _.id)}
+                carts={carts.filter(pro => pro.productId === _.id)}
+                hearts={hearts.filter(pro => pro.productId === _.id)}
               />
             ))}
           </SectionComponent>

@@ -2,7 +2,6 @@ import { where } from '@react-native-firebase/firestore';
 import { AddCircle } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { auth } from '../../../firebase.config';
 import {
   AddressItemComponent,
   BtnShadowLinearComponent,
@@ -10,38 +9,39 @@ import {
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
-import { onSnapshotData } from '../../constants/onSnapshotData';
+import { getDocsData } from '../../constants/getDocsData';
 import { setDocData } from '../../constants/setDocData';
-import { AddressModel } from '../../models/AddressModel';
+import useAddressStore from '../../zustand/store/useAddressStore';
+import useUserStore from '../../zustand/store/useUserStore';
 
 const AddressScreen = ({ navigation }: any) => {
-  const user = auth.currentUser;
   const [addressDefault, setAddressDefault] = useState('');
-  const [addesses, setAddesses] = useState<AddressModel[]>([]);
   const [disable, setDisable] = useState(false);
+  const { user } = useUserStore()
+  const { addresses, setAddresses, editAddress } = useAddressStore()
 
   useEffect(() => {
     if (user) {
-      onSnapshotData({
+      getDocsData({
         nameCollect: 'addresses',
-        setData: setAddesses,
-        conditions: [where('userId', '==', user.uid)],
-      });
+        condition: [where('userId', '==', user.id)],
+        setData: setAddresses
+      })
     }
   }, [user]);
 
   useEffect(() => {
-    if (addesses.length > 0) {
-      addesses.map(_ => {
+    if (addresses.length > 0) {
+      addresses.map(_ => {
         _.default && setAddressDefault(_.id);
       });
     }
-  }, [addesses]);
+  }, [addresses]);
 
   useEffect(() => {
-    if (addesses.length > 0) {
-      const index = addesses.findIndex(_ => _.default);
-      if (['', addesses[index].id].includes(addressDefault)) {
+    if (addresses.length > 0) {
+      const index = addresses.findIndex(_ => _.default);
+      if (['', addresses[index].id].includes(addressDefault)) {
         setDisable(true);
       } else {
         setDisable(false);
@@ -49,12 +49,17 @@ const AddressScreen = ({ navigation }: any) => {
     }
   }, [addressDefault]);
 
+
   const handleChangeAddressDefault = () => {
-    const index = addesses.findIndex(_ => _.default);
+    const index = addresses.findIndex(_ => _.default);
+    const indexDefault = addresses.findIndex(_ => _.id === addressDefault)
+
+    editAddress(addresses[index].id, { ...addresses[index], default: false })
+    editAddress(addressDefault, { ...addresses[indexDefault], default: true })
 
     setDocData({
       nameCollect: 'addresses',
-      id: addesses[index].id,
+      id: addresses[index].id,
       valueUpdate: { default: false },
     });
     setDocData({
@@ -75,7 +80,7 @@ const AddressScreen = ({ navigation }: any) => {
         <AddCircle
           size={26}
           color={colors.text2}
-          onPress={() => navigation.navigate('AddAdressScreen',{addressDefault})}
+          onPress={() => navigation.navigate('AddAdressScreen', { addressDefault })}
         />
       }
     >
@@ -93,7 +98,7 @@ const AddressScreen = ({ navigation }: any) => {
           }}
         >
           <ScrollView showsVerticalScrollIndicator={false}>
-            {addesses.map((_, index) => (
+            {addresses.map((_, index) => (
               <AddressItemComponent
                 key={index}
                 address={_}

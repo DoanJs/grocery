@@ -1,4 +1,4 @@
-import { where } from '@react-native-firebase/firestore';
+import { serverTimestamp, where } from '@react-native-firebase/firestore';
 import { ArrowLeft, Heart, ShoppingBag } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -24,12 +24,12 @@ import { colors } from '../../constants/colors';
 import { deleteDocData } from '../../constants/deleteDocData';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { getDocData } from '../../constants/getDocData';
-import { onSnapshotData } from '../../constants/onSnapshotData';
+import { getDocsData } from '../../constants/getDocsData';
 import { sizes } from '../../constants/sizes';
-import { CartModel } from '../../models/CartModel';
-import { CommentModel } from '../../models/CommentModel';
-import { HeartModel } from '../../models/HeartModel';
 import { ProductModel } from '../../models/ProductModel';
+import useCartStore from '../../zustand/store/useCartStore';
+import useCommentStore from '../../zustand/store/useCommentStore';
+import useHeartStore from '../../zustand/store/useHeartStore';
 
 const ProductDetailsScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
@@ -37,10 +37,10 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
   const [isShowText, setIsShowText] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<ProductModel>();
-  const [hearts, setHearts] = useState<HeartModel[]>([]);
-  const [carts, setCarts] = useState<CartModel[]>([]);
-  const [comments, setComments] = useState<CommentModel[]>([]);
   const [star, setStar] = useState<number>(0);
+  const { hearts, removeHeart, addHeart } = useHeartStore()
+  const { carts, addCart } = useCartStore()
+  const { comments, setComments } = useCommentStore()
 
   useEffect(() => {
     if (productId) {
@@ -49,30 +49,11 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         nameCollect: 'products',
         setData: setProduct,
       });
-
-      onSnapshotData({
-        nameCollect: 'hearts',
-        conditions: [
-          where('productId', '==', productId),
-          where('userId', '==', user?.uid),
-        ],
-        setData: setHearts,
-      });
-
-      onSnapshotData({
-        nameCollect: 'carts',
-        conditions: [
-          where('productId', '==', productId),
-          where('userId', '==', user?.uid),
-        ],
-        setData: setCarts,
-      });
-
-      onSnapshotData({
+      getDocsData({
         nameCollect: 'comments',
-        setData: setComments,
-        conditions: [where('productId', '==', productId)],
-      });
+        condition: [where('productId', '==', productId)],
+        setData: setComments
+      })
     }
   }, [productId]);
 
@@ -85,10 +66,11 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
   }, [comments]);
 
   const handleChangeHeart = () => {
-    if (hearts[0]) {
+    if (hearts.filter(pro => pro.productId === productId)[0]) {
+      removeHeart(hearts.filter(pro => pro.productId === productId)[0].id)
       deleteDocData({
         nameCollect: 'hearts',
-        id: hearts[0].id,
+        id: hearts.filter(pro => pro.productId === productId)[0].id,
       });
     } else {
       addDocData({
@@ -96,8 +78,14 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         value: {
           productId: productId,
           userId: user?.uid,
+          createAt: serverTimestamp(),
+          updateAt: serverTimestamp()
         },
-      });
+      }).then(result => addHeart({
+        productId: productId,
+        userId: user?.uid as string,
+        id: result.id
+      }));
     }
   };
 
@@ -108,8 +96,15 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
         productId,
         userId: user?.uid,
         quantity: quantity > 0 ? quantity : 1,
+        createAt: serverTimestamp(),
+        updateAt: serverTimestamp()
       },
-    });
+    }).then(result => addCart({
+      productId,
+      userId: user?.uid as string,
+      quantity: quantity > 0 ? quantity : 1,
+      id: result.id
+    }));
 
   return product ? (
     <View
@@ -164,8 +159,8 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
               <Heart
                 size={20}
                 onPress={handleChangeHeart}
-                variant={hearts[0] ? 'Bold' : 'Linear'}
-                color={hearts[0] ? colors.heart : colors.text}
+                variant={hearts.filter(pro => pro.productId === productId)[0] ? 'Bold' : 'Linear'}
+                color={hearts.filter(pro => pro.productId === productId)[0] ? colors.heart : colors.text}
               />
             </RowComponent>
             <TextComponent
@@ -196,9 +191,8 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
                 }
               >
                 <TextComponent
-                  text={`${comments.length} reivew${
-                    comments.length * 4 > 9 ? 's' : ''
-                  }`}
+                  text={`${comments.length} reivew${comments.length * 4 > 9 ? 's' : ''
+                    }`}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}
                 />
@@ -293,9 +287,9 @@ const ProductDetailsScreen = ({ navigation, route }: any) => {
             style={{ borderRadius: 5 }}
           >
             <ButtonComponent
-              text={carts[0] ? 'Go to Cart' : 'Add to cart'}
+              text={carts.filter(pro => pro.productId === productId)[0] ? 'Go to Cart' : 'Add to cart'}
               onPress={
-                carts[0]
+                carts.filter(pro => pro.productId === productId)[0]
                   ? () => navigation.navigate('CartScreen')
                   : handleAddCart
               }

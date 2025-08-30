@@ -62,7 +62,7 @@ export const profileItems = [
   {
     icon: <Heart color={colors.green} size={20} />,
     title: 'My Favorites',
-    screen: '',
+    screen: 'HeartScreen',
   },
   {
     icon: <Location color={colors.green} size={20} />,

@@ -1,8 +1,8 @@
 import { Setting5 } from 'iconsax-react-native'
 import React from 'react'
+import { ScrollView } from 'react-native'
 import { Container, OrderItemComponent, SectionComponent } from '../../components'
 import { colors } from '../../constants/colors'
-import { ScrollView } from 'react-native'
 
 
 const MyOrderScreen = () => {

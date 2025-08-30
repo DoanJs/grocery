@@ -1,7 +1,6 @@
-import { where } from '@react-native-firebase/firestore';
 import { Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { auth } from '../../../firebase.config';
 import {
   Container,
@@ -9,35 +8,23 @@ import {
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
-import { onSnapshotData } from '../../constants/onSnapshotData';
 import { ProductModel } from '../../models/ProductModel';
+import useCartStore from '../../zustand/store/useCartStore';
+import useHeartStore from '../../zustand/store/useHeartStore';
+import useProductStore from '../../zustand/store/useProductStore';
 
 const CategoryProductScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
   const { category } = route.params;
-  const [products, setProducts] = useState<ProductModel[]>([]);
-  const [carts, setCarts] = useState<any[]>([]);
-  const [hearts, setHearts] = useState<any[]>([]);
+  const { products } = useProductStore()
+  const { hearts } = useHeartStore()
+  const { carts } = useCartStore()
+  const [productCates, setProductCates] = useState<ProductModel[]>([]);
 
   useEffect(() => {
     if (category) {
-      onSnapshotData({
-        nameCollect: 'products',
-        setData: setProducts,
-        conditions: [where('category', '==', category)],
-      });
-
-      onSnapshotData({
-        nameCollect: 'hearts',
-        setData: setHearts,
-        conditions: [where('userId', '==', user?.uid)],
-      });
-
-      onSnapshotData({
-        nameCollect: 'carts',
-        setData: setCarts,
-        conditions: [where('userId', '==', user?.uid)],
-      });
+      const items = products.filter((pro) => pro.category === category)
+      setProductCates(items)
     }
   }, [category]);
 
@@ -46,7 +33,7 @@ const CategoryProductScreen = ({ navigation, route }: any) => {
       bg={colors.background}
       back
       title={category}
-      right={<Setting5 onPress={() => {}} size={24} color={colors.text2} />}
+      right={<Setting5 onPress={() => { }} size={24} color={colors.text2} />}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <SectionComponent
@@ -59,7 +46,7 @@ const CategoryProductScreen = ({ navigation, route }: any) => {
             flexWrap: 'wrap',
           }}
         >
-          {products.map((_, index) => (
+          {productCates.map((_, index) => (
             <ProductItemComponent
               key={index}
               onPress={() =>
@@ -68,8 +55,8 @@ const CategoryProductScreen = ({ navigation, route }: any) => {
                 })
               }
               product={_}
-              cart={carts.filter(pro => pro.productId === _.id)}
-              heart={hearts.filter(pro => pro.productId === _.id)}
+              carts={carts.filter(pro => pro.productId === _.id)}
+              hearts={hearts.filter(pro => pro.productId === _.id)}
             />
           ))}
         </SectionComponent>

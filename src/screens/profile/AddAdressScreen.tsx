@@ -19,6 +19,7 @@ import { addressItems } from '../../constants/dataSetDefault';
 import { flags } from '../../constants/flags';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { setDocData } from '../../constants/setDocData';
+import useAddressStore from '../../zustand/store/useAddressStore';
 
 const initialAddress = {
   userId: '',
@@ -41,6 +42,8 @@ const AddAdressScreen = ({ navigation, route }: any) => {
   const [textError, setTextError] = useState('');
   const [saved, setSaved] = useState(false);
   const [showCountries, setShowCountries] = useState(false);
+  const [disable, setDisable] = useState(true);
+  const { addresses, addAddress, editAddress } = useAddressStore()
 
   useEffect(() => {
     if (textError) {
@@ -49,6 +52,20 @@ const AddAdressScreen = ({ navigation, route }: any) => {
       }, 3000);
     }
   }, [textError]);
+
+  useEffect(() => {
+    if (!form.name &&
+      !form.address &&
+      !form.phone &&
+      !form.email &&
+      !form.zipCode &&
+      !form.city &&
+      !form.country) {
+      setDisable(true)
+    } else {
+      setDisable(false)
+    }
+  }, [form])
 
   const handleAddAddress = () => {
     if (
@@ -64,6 +81,11 @@ const AddAdressScreen = ({ navigation, route }: any) => {
     } else {
       let isDefault: boolean = false;
       if (saved) {
+        const indexDefault = addresses.findIndex(_ => _.id === params.addressDefault)
+        editAddress(
+          params.addressDefault,
+          { ...addresses[indexDefault], default: false }
+        )
         setDocData({
           nameCollect: 'addresses',
           id: params.addressDefault,
@@ -81,7 +103,12 @@ const AddAdressScreen = ({ navigation, route }: any) => {
           userId: user?.uid,
           default: isDefault,
         },
-      });
+      }).then(result => addAddress({
+        ...form,
+        userId: user?.uid,
+        default: isDefault,
+        id: result.id
+      }));
       navigation.navigate('AddressScreen');
     }
   };
@@ -197,6 +224,7 @@ const AddAdressScreen = ({ navigation, route }: any) => {
 
       <SectionComponent>
         <BtnShadowLinearComponent
+          disable={disable}
           onPress={handleAddAddress}
           title="Add address"
         />
