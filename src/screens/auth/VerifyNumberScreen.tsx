@@ -1,7 +1,8 @@
-import { ArrowDown2 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import { signInWithPhoneNumber } from '@react-native-firebase/auth';
+import { ArrowDown2, ArrowUp2 } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
-import usaFlag from '../../assests/images/usaFlag.png';
+import { auth } from '../../../firebase.config';
 import {
   BtnShadowLinearComponent,
   Container,
@@ -9,14 +10,41 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
+import { flags } from '../../constants/flags';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
+import { validVNPhone } from '../../constants/validateEmailPhone';
+import useVerifyPhoneStore from '../../zustand/store/useVerifyPhoneStore';
 
 const VerifyNumberScreen = ({ navigation }: any) => {
-  const [phone, setPhone] = useState('2055550145');
+  const [country, setCountry] = useState(flags[0]);
+  const [phone, setPhone] = useState('912345678');
+  const [disable, setDisable] = useState(true);
+  const [isShowCountry, setIsShowCountry] = useState(false);
+  const { setVerifyPhone } = useVerifyPhoneStore();
+
+  useEffect(() => {
+    if (phone && validVNPhone(country.phone + phone)) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  }, [phone]);
+
+  const handleSendOTP = async () => {
+    const phoneFull = country.phone + phone;
+    try {
+      const confirmation = await signInWithPhoneNumber(auth, phoneFull);
+      setVerifyPhone(confirmation);
+      navigation.navigate('OTPScreen');
+      console.log('✅ OTP đã gửi tới: ', phone);
+    } catch (err) {
+      console.error('❌ Lỗi gửi OTP: ', err);
+    }
+  };
   return (
     <Container bg={colors.background1} back title="Verify Number">
       <SectionComponent
@@ -58,18 +86,37 @@ const VerifyNumberScreen = ({ navigation }: any) => {
           <RowComponent
             styles={{
               paddingHorizontal: 10,
+              width: 100,
             }}
           >
-            <Image source={usaFlag} />
+            <Image
+              source={{ uri: country.icon }}
+              style={{ width: 30, height: 30 }}
+            />
             <TextComponent
-              text="+1"
+              text={country.phone}
               size={sizes.bigText}
               font={fontFamillies.poppinsMedium}
               styles={{
                 marginHorizontal: 4,
               }}
             />
-            <ArrowDown2 size={16} color={colors.text} variant="Bold" />
+
+            {isShowCountry ? (
+              <ArrowUp2
+                size={16}
+                color={colors.text}
+                variant="Bold"
+                onPress={() => setIsShowCountry(!isShowCountry)}
+              />
+            ) : (
+              <ArrowDown2
+                size={16}
+                color={colors.text}
+                variant="Bold"
+                onPress={() => setIsShowCountry(!isShowCountry)}
+              />
+            )}
           </RowComponent>
 
           <View
@@ -102,12 +149,60 @@ const VerifyNumberScreen = ({ navigation }: any) => {
             onChange={val => setPhone(val)}
           />
         </RowComponent>
+        {isShowCountry && (
+          <>
+            {flags.map((flag, index) => (
+              <RowComponent
+                onPress={() => {
+                  setCountry(flag);
+                  setIsShowCountry(false);
+                }}
+                key={index}
+                styles={{
+                  backgroundColor: colors.background,
+                  height: 56,
+                  paddingHorizontal: 10,
+                  borderTopWidth: 1,
+                  borderTopColor: colors.border,
+                }}
+              >
+                <RowComponent
+                  styles={{
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: flag.icon }}
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  />
+                  <TextComponent
+                    text={flag.phone}
+                    size={sizes.bigText}
+                    font={fontFamillies.poppinsMedium}
+                    styles={{
+                      marginHorizontal: 4,
+                    }}
+                  />
+                </RowComponent>
+
+                <TextComponent
+                  text={flag.title}
+                  font={fontFamillies.poppinsMedium}
+                />
+              </RowComponent>
+            ))}
+          </>
+        )}
 
         <SpaceComponent height={10} />
 
         <BtnShadowLinearComponent
-          title='Next'
-          onPress={() => navigation.navigate('OTPScreen')}
+          disable={disable}
+          title="Next"
+          onPress={handleSendOTP}
         />
 
         <TextComponent

@@ -60,6 +60,7 @@ const Register = ({ navigation }: any) => {
               email,
               name: email.split('@')[0],
               url: '',
+              phone,
               createAt: serverTimestamp(),
               updateAt: serverTimestamp(),
             },

@@ -1,19 +1,25 @@
+import { doc, getDoc, serverTimestamp } from '@react-native-firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { db } from '../../../firebase.config';
 import {
   BtnShadowLinearComponent,
   Container,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
+import useVerifyPhoneStore from '../../zustand/store/useVerifyPhoneStore';
+import { setDocData } from '../../constants/setDocData';
+import { addDocData } from '../../constants/addDocData';
 
 const OTPScreen = ({ navigation }: any) => {
   const [codeValues, setCodeValues] = useState<string[]>([]);
+  const { verifyPhone } = useVerifyPhoneStore();
   const ref1 = useRef<any>(0);
   const ref2 = useRef<any>(1);
   const ref3 = useRef<any>(2);
@@ -30,6 +36,48 @@ const OTPScreen = ({ navigation }: any) => {
     data[index] = val;
 
     setCodeValues(data);
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      const userCredential = await verifyPhone?.confirm(codeValues.join(''));
+      const user = userCredential.user;
+
+      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      if (!docSnap.exists()) {
+        setDocData({
+          nameCollect: 'users',
+          id: user.uid,
+          valueUpdate: {
+            email: '',
+            name: user.phoneNumber,
+            url: '',
+            phone: user.phoneNumber,
+            createAt: serverTimestamp(),
+            updateAt: serverTimestamp(),
+          },
+        });
+        addDocData({
+          nameCollect: 'settings',
+          value: {
+            allowNotifications: true,
+            emailNotifications: false,
+            orderNotifications: false,
+            generalNotifications: true,
+            userId: user.uid,
+            createAt: serverTimestamp(),
+            updateAt: serverTimestamp(),
+          },
+        });
+      } else {
+        console.log(`getDoc data error`);
+      }
+
+      // Ví dụ: quay lại Home
+      navigation.replace('Main');
+    } catch (error) {
+      console.error('❌ Sai OTP:', error);
+    }
   };
 
   return (
@@ -141,10 +189,7 @@ const OTPScreen = ({ navigation }: any) => {
 
         <SpaceComponent height={16} />
 
-        <BtnShadowLinearComponent
-          onPress={() => navigation.navigate('OTPScreen')}
-          title="Next"
-        />
+        <BtnShadowLinearComponent onPress={handleVerifyCode} title="Next" />
 
         <RowComponent
           styles={{
@@ -157,7 +202,7 @@ const OTPScreen = ({ navigation }: any) => {
             font={fontFamillies.poppinsLight}
             size={sizes.bigText}
           />
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => {}}>
             <TextComponent
               text="Resend a new code"
               font={fontFamillies.poppinsMedium}

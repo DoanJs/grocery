@@ -13,7 +13,7 @@ import {
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
-import { validateEmail } from '../../constants/validateEmail';
+import { validateEmail } from '../../constants/validateEmailPhone';
 import { auth } from '../../../firebase.config';
 import { sendPasswordResetEmail } from '@react-native-firebase/auth';
 
