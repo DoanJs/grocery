@@ -1,4 +1,3 @@
-import { where } from '@react-native-firebase/firestore';
 import { AddCircle } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
@@ -8,25 +7,19 @@ import {
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
-import { onSnapshotData } from '../../constants/onSnapshotData';
-import { CommentModel } from '../../models/CommentModel';
+import { getDocsData } from '../../constants/getDocsData';
 import { UserModel } from '../../models/UserModel';
+import useCommentStore from '../../zustand/store/useCommentStore';
 
 const ReviewsScreen = ({ navigation, route }: any) => {
   const { productId } = route.params;
-  const [comments, setComments] = useState<CommentModel[]>([]);
+  const { comments } = useCommentStore();
   const [users, setUsers] = useState<UserModel[]>([]);
   const [cmtUsers, setCmtUsers] = useState<any[]>([]);
 
   useEffect(() => {
     if (productId) {
-      onSnapshotData({
-        nameCollect: 'comments',
-        setData: setComments,
-        conditions: [where('productId', '==', productId)],
-      });
-
-      onSnapshotData({
+      getDocsData({
         nameCollect: 'users',
         setData: setUsers,
       });

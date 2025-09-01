@@ -127,3 +127,33 @@ export const addressItems = [
     name: 'country'
   },
 ];
+export const notificationItems = [
+  {
+    title: 'Allow Notifcations',
+    key: 'allowNotifications',
+    description:
+      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
+    value: true,
+  },
+  {
+    title: 'Email Notifcations',
+    description:
+      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
+    value: false,
+    key: 'emailNotifications',
+  },
+  {
+    title: 'Order Notifcations',
+    description:
+      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
+    value: false,
+    key: 'orderNotifications',
+  },
+  {
+    title: 'General Notifcations',
+    description:
+      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
+    value: true,
+    key: 'generalNotifications',
+  },
+];

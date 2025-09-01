@@ -1,9 +1,13 @@
-export interface CommentModel {
+export interface CardModel {
   id: string;
-  productId: string;
-  star: number;
-  text: string;
   userId: string;
+  type: string;
+  url: string;
+  name: string;
+  number: string;
+  exp: string;
+  cvv: string;
+  default: boolean;
   createAt?: CreateAt;
   updateAt?: UpdateAt;
 }

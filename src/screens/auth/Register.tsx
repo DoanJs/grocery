@@ -1,4 +1,8 @@
-import { addDoc, collection, serverTimestamp } from '@react-native-firebase/firestore';
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+} from '@react-native-firebase/firestore';
 import { ArrowLeft, Lock } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { ImageBackground, TouchableOpacity, View } from 'react-native';
@@ -22,6 +26,7 @@ import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
 import { setDocData } from '../../constants/setDocData';
+import { addDocData } from '../../constants/addDocData';
 
 const Register = ({ navigation }: any) => {
   const [email, setEmail] = useState('accountRegister@gmail.com');
@@ -55,6 +60,18 @@ const Register = ({ navigation }: any) => {
               email,
               name: email.split('@')[0],
               url: '',
+              createAt: serverTimestamp(),
+              updateAt: serverTimestamp(),
+            },
+          });
+          addDocData({
+            nameCollect: 'settings',
+            value: {
+              allowNotifications: true,
+              emailNotifications: false,
+              orderNotifications: false,
+              generalNotifications: true,
+              userId: user.uid,
               createAt: serverTimestamp(),
               updateAt: serverTimestamp(),
             },

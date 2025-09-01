@@ -1,9 +1,7 @@
-export interface CommentModel {
+export interface HistoryModel {
   id: string;
-  productId: string;
-  star: number;
-  text: string;
   userId: string;
+  search: string;
   createAt?: CreateAt;
   updateAt?: UpdateAt;
 }

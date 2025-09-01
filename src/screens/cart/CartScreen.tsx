@@ -1,47 +1,33 @@
-import { where } from '@react-native-firebase/firestore';
 import { ShoppingBag } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { auth } from '../../../firebase.config';
 import {
   BtnShadowLinearComponent,
-  CartItemComponent,
   Container,
+  ProductSelectedComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
-import { onSnapshotData } from '../../constants/onSnapshotData';
 import { sizes } from '../../constants/sizes';
+import { CartModel } from '../../models/CartModel';
 import { ProductModel } from '../../models/ProductModel';
+import useCartStore from '../../zustand/store/useCartStore';
+import useProductStore from '../../zustand/store/useProductStore';
 
 const CartScreen = ({ navigation }: any) => {
-  const user = auth.currentUser;
-  const [products, setProducts] = useState<ProductModel[]>([]);
-  const [carts, setCarts] = useState<ProductModel[]>([]);
+  const { products } = useProductStore();
+  const { carts } = useCartStore();
   const [proCarts, setProCarts] = useState<any[]>([]);
-
-  useEffect(() => {
-    onSnapshotData({
-      nameCollect: 'products',
-      setData: setProducts,
-    });
-
-    onSnapshotData({
-      nameCollect: 'carts',
-      setData: setCarts,
-      conditions: [where('userId', '==', user?.uid)],
-    });
-  }, []);
 
   useEffect(() => {
     if (carts && products) {
       let items: any[] = [];
 
-      carts.map((cart: any) => {
+      carts.map((cart: CartModel) => {
         const index = products.findIndex(
           (product: ProductModel) => product.id === cart.productId,
         );
@@ -57,15 +43,15 @@ const CartScreen = ({ navigation }: any) => {
   }, [products, carts]);
 
   const handleCalculate = () => {
-    let subTotal: number = 0
+    let subTotal: number = 0;
     if (proCarts.length > 0) {
-      proCarts.map((pro) => {
-        subTotal += Number(pro.product.price) * pro.cart.quantity
-      })
+      proCarts.map(pro => {
+        subTotal += Number(pro.product.price) * pro.cart.quantity;
+      });
     }
 
-    return subTotal
-  }
+    return subTotal;
+  };
 
   return (
     <Container bg={colors.background} back title="Shopping Cart">
@@ -85,7 +71,7 @@ const CartScreen = ({ navigation }: any) => {
             <GestureHandlerRootView>
               <ScrollView showsVerticalScrollIndicator={false}>
                 {proCarts.map((_: any, index: number) => (
-                  <CartItemComponent
+                  <ProductSelectedComponent
                     key={index}
                     product={_.product}
                     cart={_.cart}
@@ -178,7 +164,7 @@ const CartScreen = ({ navigation }: any) => {
           <SectionComponent>
             <BtnShadowLinearComponent
               title="Start shopping"
-              onPress={() => navigation.navigate('ShippingMethodScreen')}
+              onPress={() => navigation.navigate('Main')}
             />
           </SectionComponent>
         )}

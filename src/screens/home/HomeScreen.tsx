@@ -3,7 +3,6 @@ import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
-  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -22,81 +21,97 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { categories } from '../../constants/categories';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocData } from '../../constants/getDocData';
 import { getDocsData } from '../../constants/getDocsData';
 import { sizes } from '../../constants/sizes';
 import { ProductModel } from '../../models/ProductModel';
+import { globalStyles } from '../../styles/globalStyles';
 import useCartStore from '../../zustand/store/useCartStore';
 import useHeartStore from '../../zustand/store/useHeartStore';
 import useProductStore from '../../zustand/store/useProductStore';
-import { globalStyles } from '../../styles/globalStyles';
-import { getDocData } from '../../constants/getDocData';
 import useUserStore from '../../zustand/store/useUserStore';
 
 const HomeScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
-  const { params } = route
+  const { params } = route;
   const [index, setIndex] = useState(0);
   const [productsData, setProductsData] = useState<ProductModel[]>([]);
-  const {setUser} = useUserStore()
-  const { products, setProducts } = useProductStore()
-  const { hearts, setHearts } = useHeartStore()
-  const { carts, setCarts } = useCartStore()
+  const { setUser } = useUserStore();
+  const { products, setProducts } = useProductStore();
+  const { hearts, setHearts } = useHeartStore();
+  const { carts, setCarts } = useCartStore();
 
   useEffect(() => {
     if (user) {
       getDocData({
         id: user.uid,
         nameCollect: 'users',
-        setData: setUser
-      })
+        setData: setUser,
+      });
       getDocsData({
         nameCollect: 'products',
         setData: setProductsData,
-      })
+      });
       getDocsData({
         nameCollect: 'hearts',
         setData: setHearts,
         condition: [where('userId', '==', user.uid)],
-      })
+      });
       getDocsData({
         nameCollect: 'carts',
         setData: setCarts,
         condition: [where('userId', '==', user.uid)],
-      })
+      });
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
-    let result = [...productsData]
-    if (params && params.valueCondition) {
-      const { valueCondition } = params
+    if (productsData) {
+      let result = [...productsData];
+      if (params && params.valueCondition) {
+        const { valueCondition } = params;
 
-      if (valueCondition.min < valueCondition.max) {
-        result = result.filter(pro =>
-          pro.price >= valueCondition.min
-          && pro.price <= valueCondition.max)
+        if (valueCondition.min < valueCondition.max) {
+          result = result.filter(
+            pro =>
+              pro.price >= valueCondition.min &&
+              pro.price <= valueCondition.max,
+          );
+        }
+
+        if (valueCondition.starSelected > -1) {
+          result = result.filter(
+            pro => pro.star === valueCondition.starSelected + 1,
+          );
+        }
       }
 
-      if (valueCondition.starSelected > -1) {
-        result = result.filter(pro =>
-          pro.star === valueCondition.starSelected + 1)
+      if (params && params.valueSearch) {
+        result = result.filter(
+          pro =>
+            pro.category
+              .toLowerCase()
+              .includes(params.valueSearch.search.toLowerCase()) ||
+            pro.description
+              .toLowerCase()
+              .includes(params.valueSearch.search.toLowerCase()) ||
+            pro.title
+              .toLowerCase()
+              .includes(params.valueSearch.search.toLowerCase()),
+        );
       }
-      setProducts(result)
-    } else {
-      setProducts(result)
+      setProducts(result);
     }
-  }, [productsData, params])
+  }, [productsData, params]);
 
   return (
     <Container>
-      <SectionComponent
-        styles={[globalStyles.header]}
-      >
+      <SectionComponent styles={[globalStyles.header]}>
         <RowComponent
           justify="space-between"
           styles={{
@@ -117,9 +132,13 @@ const HomeScreen = ({ navigation, route }: any) => {
               size={sizes.bigText}
             />
           </RowComponent>
-          <TouchableOpacity onPress={() => navigation.navigate('FilterScreen', {
-            valueCondition: params?.valueCondition
-          })}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('FilterScreen', {
+                valueCondition: params?.valueCondition,
+              })
+            }
+          >
             <Setting5 size={26} color={colors.text} />
           </TouchableOpacity>
         </RowComponent>
@@ -181,9 +200,11 @@ const HomeScreen = ({ navigation, route }: any) => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {categories.map((_, ind) => (
               <CategoryItem
-                onPress={() => navigation.navigate('CategoryProductScreen', {
-                  category: _.name
-                })}
+                onPress={() =>
+                  navigation.navigate('CategoryProductScreen', {
+                    category: _.name,
+                  })
+                }
                 key={ind}
                 text={_.name}
                 bg={_.color}
@@ -200,7 +221,7 @@ const HomeScreen = ({ navigation, route }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => { }}>
+            <TouchableOpacity onPress={() => {}}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>

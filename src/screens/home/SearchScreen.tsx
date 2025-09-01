@@ -1,5 +1,6 @@
+import { serverTimestamp, where } from '@react-native-firebase/firestore';
 import { Camera, SearchNormal1, Setting5 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import {
   Container,
@@ -9,9 +10,15 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
+import { addDocData } from '../../constants/addDocData';
 import { colors } from '../../constants/colors';
+import { deleteDocData } from '../../constants/deleteDocData';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocsData } from '../../constants/getDocsData';
 import { sizes } from '../../constants/sizes';
+import { HistoryModel } from '../../models/HistoryModel';
+import useHistoryStore from '../../zustand/store/useHistoryStore';
+import useUserStore from '../../zustand/store/useUserStore';
 const data = [
   'Fresh Grocery',
   'Bananas',
@@ -23,9 +30,68 @@ const data = [
 ];
 
 const SearchScreen = ({ navigation }: any) => {
-  const [initialHistory, setInitialHistory] = useState(data);
+  const { user } = useUserStore();
   const [initialMore, setInitialMore] = useState(data);
   const [keySearch, setKeySearch] = useState('');
+  const { histories, addHistory, setHistories, clearHistories } =
+    useHistoryStore();
+
+  useEffect(() => {
+    if (user) {
+      getDocsData({
+        nameCollect: 'histories',
+        condition: [where('userId', '==', user.id)],
+        setData: setHistories,
+      });
+    }
+  }, [user]);
+
+  const handleSearch = (search: string) => {
+    if (search !== '') {
+      addDocData({
+        nameCollect: 'histories',
+        value: {
+          userId: user?.id,
+          search: search,
+          createAt: serverTimestamp(),
+          updateAt: serverTimestamp(),
+        },
+      }).then(result =>
+        addHistory({
+          id: result.id,
+          userId: user?.id as string,
+          search: search,
+        }),
+      );
+    }
+
+    navigation.navigate('Main', {
+      screen: 'Home',
+      params: {
+        screen: 'HomeScreen',
+        params: {
+          valueSearch: {
+            search: search,
+          },
+        },
+      },
+    });
+    setKeySearch('');
+  };
+
+  const handleClearHistory = async () => {
+    clearHistories();
+
+    const promiseItems = histories.map((history: HistoryModel) =>
+      deleteDocData({
+        nameCollect: 'histories',
+        id: history.id,
+      }),
+    );
+
+    await Promise.all(promiseItems);
+  };
+
   return (
     <Container
       bg={colors.background}
@@ -41,7 +107,13 @@ const SearchScreen = ({ navigation }: any) => {
             marginLeft: 10,
             top: 8,
           }}
-          prefix={<SearchNormal1 color={colors.text} size={26} />}
+          prefix={
+            <SearchNormal1
+              color={colors.text}
+              size={26}
+              onPress={() => handleSearch(keySearch)}
+            />
+          }
           color={colors.background1}
           affix={
             <TouchableOpacity
@@ -86,7 +158,7 @@ const SearchScreen = ({ navigation }: any) => {
               size={sizes.thinTitle}
               font={fontFamillies.poppinsSemiBold}
             />
-            <TouchableOpacity onPress={() => setInitialHistory([])}>
+            <TouchableOpacity onPress={handleClearHistory}>
               <TextComponent
                 text="clear"
                 font={fontFamillies.poppinsMedium}
@@ -99,9 +171,9 @@ const SearchScreen = ({ navigation }: any) => {
               flexWrap: 'wrap',
             }}
           >
-            {initialHistory.map((_, index) => (
+            {histories.map((_, index) => (
               <TouchableOpacity
-                onPress={() => {}}
+                onPress={() => handleSearch(_.search)}
                 key={index}
                 style={{
                   backgroundColor: colors.background,
@@ -112,7 +184,7 @@ const SearchScreen = ({ navigation }: any) => {
                 }}
               >
                 <TextComponent
-                  text={_}
+                  text={_.search}
                   font={fontFamillies.poppinsMedium}
                   size={sizes.smallText}
                   color={colors.text}
@@ -144,7 +216,7 @@ const SearchScreen = ({ navigation }: any) => {
           >
             {initialMore.map((_, index) => (
               <TouchableOpacity
-                onPress={() => {}}
+                onPress={() => handleSearch(_)}
                 key={index}
                 style={{
                   backgroundColor: colors.background,
@@ -197,7 +269,7 @@ const SearchScreen = ({ navigation }: any) => {
               <Camera size={24} color={colors.text} />
               <SpaceComponent width={16} />
               <TextComponent
-                text="Image Search"
+                text="Voice Search"
                 font={fontFamillies.poppinsMedium}
                 color={colors.text}
               />

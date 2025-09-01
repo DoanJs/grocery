@@ -24,8 +24,8 @@ interface Props {
 const ProductItemComponent = (props: Props) => {
   const user = auth.currentUser;
   const { onPress, carts, hearts, product } = props;
-  const { addCart, editCart, removeCart } = useCartStore()
-  const { addHeart, removeHeart } = useHeartStore()
+  const { addCart, editCart, removeCart } = useCartStore();
+  const { addHeart, removeHeart } = useHeartStore();
 
   const handleChageQuantity = (type: string) => {
     let quantity = carts && carts[0].quantity;
@@ -46,24 +46,24 @@ const ProductItemComponent = (props: Props) => {
     }
 
     if (isDelete) {
-      removeCart(carts[0].id)
+      removeCart(carts[0].id);
       deleteDocData({
         nameCollect: 'carts',
         id: carts[0].id,
       });
     } else {
-      editCart(carts[0].id, { ...carts[0], quantity })
+      editCart(carts[0].id, { ...carts[0], quantity });
       setDocData({
         nameCollect: 'carts',
         id: carts[0].id,
-        valueUpdate: { quantity },
-      })
+        valueUpdate: { quantity, updateAt: serverTimestamp() },
+      });
     }
   };
 
   const handleChangeHeart = () => {
     if (hearts[0]) {
-      removeHeart(hearts[0].id)
+      removeHeart(hearts[0].id);
       deleteDocData({
         nameCollect: 'hearts',
         id: hearts[0].id,
@@ -75,13 +75,15 @@ const ProductItemComponent = (props: Props) => {
           productId: product.id,
           userId: user?.uid,
           createAt: serverTimestamp(),
-          updateAt: serverTimestamp()
+          updateAt: serverTimestamp(),
         },
-      }).then(result => addHeart({
-        productId: product.id,
-        userId: user?.uid as string,
-        id: result.id,
-      }));
+      }).then(result =>
+        addHeart({
+          productId: product.id,
+          userId: user?.uid as string,
+          id: result.id,
+        }),
+      );
     }
   };
 
@@ -93,16 +95,16 @@ const ProductItemComponent = (props: Props) => {
         userId: user?.uid,
         quantity: 1,
         createAt: serverTimestamp(),
-        updateAt: serverTimestamp()
-      }
+        updateAt: serverTimestamp(),
+      },
     }).then(result => {
       addCart({
         productId: product.id,
         userId: user?.uid as string,
         quantity: 1,
         id: result.id,
-      })
-    })
+      });
+    });
 
   return (
     <RowComponent
@@ -131,7 +133,7 @@ const ProductItemComponent = (props: Props) => {
             size={sizes.smallText}
             font={fontFamillies.poppinsMedium}
             color={colors.pink}
-          // color={isNew ? colors.orange : colors.pink}
+            // color={isNew ? colors.orange : colors.pink}
           />
         </View>
       )}

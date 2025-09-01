@@ -15,7 +15,7 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
@@ -37,7 +37,7 @@ const data = [
 ];
 
 const FilterScreen = ({ navigation, route }: any) => {
-  const { valueCondition } = route.params
+  const { valueCondition } = route.params;
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(0);
   const [starSelected, setStarSelected] = useState(-1);
@@ -71,41 +71,39 @@ const FilterScreen = ({ navigation, route }: any) => {
           valueCondition: {
             min,
             max,
-            starSelected: starSelected
-          }
-        }
-      }
-    })
-  }
+            starSelected: starSelected,
+          },
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (valueCondition) {
       if (
-        min === valueCondition?.min
-        && max == valueCondition?.max
-        && starSelected === valueCondition?.starSelected
+        min === valueCondition?.min &&
+        max == valueCondition?.max &&
+        starSelected === valueCondition?.starSelected
       ) {
-        setDisable(true)
+        setDisable(true);
       } else {
-        setDisable(false)
+        setDisable(false);
       }
-    } else if(min === 0 && max ===0&&starSelected === -1){
-      setDisable(true)
-    }else{
-      setDisable(false)
+    } else if (min === 0 && max === 0 && starSelected === -1) {
+      setDisable(true);
+    } else {
+      setDisable(false);
     }
-
-  }, [min, max, starSelected])
+  }, [min, max, starSelected]);
 
   useEffect(() => {
     if (valueCondition) {
-      setMin(valueCondition.min)
-      setMax(valueCondition.max)
-      setStarSelected(valueCondition.starSelected)
+      setMin(valueCondition.min);
+      setMax(valueCondition.max);
+      setStarSelected(valueCondition.starSelected);
     }
-  }, [valueCondition])
+  }, [valueCondition]);
 
-  
   return (
     <Container
       bg={colors.background}
@@ -158,7 +156,7 @@ const FilterScreen = ({ navigation, route }: any) => {
                 }
                 color={colors.background1}
                 value={`${min}`}
-                keyboardType='numeric'
+                keyboardType="numeric"
                 textStyles={{
                   color: colors.text,
                 }}
@@ -181,7 +179,7 @@ const FilterScreen = ({ navigation, route }: any) => {
                 }
                 color={colors.background1}
                 value={`${max}`}
-                keyboardType='numeric'
+                keyboardType="numeric"
                 textStyles={{
                   color: colors.text,
                 }}
@@ -235,8 +233,9 @@ const FilterScreen = ({ navigation, route }: any) => {
                 ))}
               </RowComponent>
               <TextComponent
-                text={`${starSelected + 1} star${starSelected + 1 > 1 ? 's' : ''
-                  }`}
+                text={`${starSelected + 1} star${
+                  starSelected + 1 > 1 ? 's' : ''
+                }`}
                 font={fontFamillies.poppinsMedium}
                 color={colors.text}
               />
@@ -296,10 +295,9 @@ const FilterScreen = ({ navigation, route }: any) => {
 
         <BtnShadowLinearComponent
           disable={disable}
-          title='Apply filter'
+          title="Apply filter"
           onPress={handleFilter}
         />
-
       </SectionComponent>
     </Container>
   );

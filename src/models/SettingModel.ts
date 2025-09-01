@@ -1,8 +1,9 @@
-export interface CommentModel {
+export interface SettingModel {
   id: string;
-  productId: string;
-  star: number;
-  text: string;
+  allowNotifications: boolean;
+  emailNotifications: boolean;
+  orderNotifications: boolean;
+  generalNotifications: boolean;
   userId: string;
   createAt?: CreateAt;
   updateAt?: UpdateAt;

@@ -1,64 +1,78 @@
-import React, { useState } from 'react';
+import { serverTimestamp, where } from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
 import {
   BtnShadowLinearComponent,
-  ButtonComponent,
   Container,
+  LoadingComponent,
   NotificationItemComponent,
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
-import { fontFamillies } from '../../constants/fontFamilies';
-import { sizes } from '../../constants/sizes';
+import { notificationItems } from '../../constants/dataSetDefault';
+import { getDocsData } from '../../constants/getDocsData';
+import { setDocData } from '../../constants/setDocData';
+import { SettingModel } from '../../models/SettingModel';
+import useSettingStore from '../../zustand/store/useSettingStore';
+import useUserStore from '../../zustand/store/useUserStore';
 
-const data = [
-  {
-    title: 'Allow Notifcations',
-    key: 'allow',
-    description:
-      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
-    value: true,
-  },
-  {
-    title: 'Email Notifcations',
-    description:
-      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
-    value: false,
-    key: 'email',
-  },
-  {
-    title: 'Order Notifcations',
-    description:
-      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
-    value: false,
-    key: 'order',
-  },
-  {
-    title: 'General Notifcations',
-    description:
-      'Lorem ipsum dolor sit amet, consetetur sadi pscing elitr, sed diam nonumym',
-    value: true,
-    key: 'general',
-  },
-];
+const NotificationsScreen = () => {
+  const { user } = useUserStore();
+  const [disable, setDisable] = useState(true);
+  const [settingsData, setSettingsData] = useState<SettingModel[]>([]);
+  const { setting, setSetting } = useSettingStore();
 
-const NotificationsScreen = ({ navigation }: any) => {
-  const [notification, setNotification] = useState<any>({
-    allow: true,
-    email: false,
-    order: false,
-    general: true,
-  });
-  return (
+  useEffect(() => {
+    if (user) {
+      getDocsData({
+        nameCollect: 'settings',
+        condition: [where('userId', '==', user.id)],
+        setData: setSettingsData,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (settingsData) {
+      setSetting(settingsData[0]);
+    }
+  }, [settingsData]);
+
+  useEffect(() => {
+    if (
+      settingsData[0] && setting &&
+      settingsData[0].allowNotifications === setting.allowNotifications &&
+      settingsData[0].emailNotifications === setting.emailNotifications &&
+      settingsData[0].orderNotifications === setting.orderNotifications &&
+      settingsData[0].generalNotifications === setting.generalNotifications
+    ) {
+      setDisable(true);
+    } else {
+      setDisable(false);
+    }
+  }, [setting]);
+
+  const handleChangeSetting = () => {
+    setDocData({
+      nameCollect: 'settings',
+      id: setting?.id as string,
+      valueUpdate: {
+        ...setting,
+        updateAt: serverTimestamp(),
+      },
+    });
+
+    setDisable(true)
+  };
+
+  return setting ? (
     <Container bg={colors.background} back title="Notifications">
       <SectionComponent
         styles={{
           backgroundColor: colors.background1,
           flex: 1,
           paddingVertical: 20,
-          marginBottom: 0
+          marginBottom: 0,
         }}
       >
         <View
@@ -66,25 +80,26 @@ const NotificationsScreen = ({ navigation }: any) => {
             flex: 1,
           }}
         >
-          {data.map((_, index) => (
+          {notificationItems.map((_, index) => (
             <NotificationItemComponent
               key={index}
               title={_.title}
               description={_.description}
-              value={notification[_.key]}
-              onPress={val =>
-                setNotification({ ...notification, [_.key]: val })
-              }
+              value={setting[_.key as keyof SettingModel] as boolean}
+              onPress={val => setSetting({ ...setting, [_.key]: val })}
             />
           ))}
         </View>
 
         <BtnShadowLinearComponent
-          onPress={() => { }}
+          disable={disable}
+          onPress={handleChangeSetting}
           title="Save settings"
         />
       </SectionComponent>
     </Container>
+  ) : (
+    <LoadingComponent size={30} />
   );
 };
 

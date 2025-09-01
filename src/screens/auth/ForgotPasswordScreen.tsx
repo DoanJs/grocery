@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Shadow } from 'react-native-shadow-2';
+import React, { useEffect, useState } from 'react';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {
   BtnShadowLinearComponent,
-  ButtonComponent,
   Container,
   InputComponent,
   RowComponent,
@@ -16,9 +13,32 @@ import {
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
+import { validateEmail } from '../../constants/validateEmail';
+import { auth } from '../../../firebase.config';
+import { sendPasswordResetEmail } from '@react-native-firebase/auth';
 
 const ForgotPasswordScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
+  const [disable, setDisable] = useState(true);
+
+  useEffect(() => {
+    if (email && validateEmail(email)) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  }, [email]);
+
+  const handleResetPassword = async () => {
+    try {
+     sendPasswordResetEmail(auth, email).then(result => console.log(result))
+      Alert.alert('Check your email', 'We sent you a password reset link.');
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <Container bg={colors.background1} back title="Password Recovery">
       <SectionComponent
@@ -90,10 +110,10 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
         <SpaceComponent height={10} />
 
         <BtnShadowLinearComponent
-          title='Send link'
-          onPress={() => navigation.navigate('OTPScreen')}
+          disable={disable}
+          title="Send link"
+          onPress={handleResetPassword}
         />
-        
       </SectionComponent>
     </Container>
   );
