@@ -65,7 +65,7 @@ const AddCardScreen = ({ navigation }: any) => {
         setDocData({
           nameCollect: 'cards',
           id: cards[indexDefault].id,
-          valueUpdate: { default: false },
+          valueUpdate: { default: false, updateAt: serverTimestamp() },
         });
       }
       isDefault = true;
@@ -75,7 +75,7 @@ const AddCardScreen = ({ navigation }: any) => {
       nameCollect: 'cards',
       value: {
         ...infoCard,
-        default: isDefault,
+        default: cards.length === 0 ? true:  isDefault,
         userId: user?.id,
         createAt: serverTimestamp(),
         updateAt: serverTimestamp(),
@@ -84,7 +84,7 @@ const AddCardScreen = ({ navigation }: any) => {
       addCard({
         ...infoCard,
         id: result.id,
-        default: isDefault,
+        default: cards.length === 0 ? true:  isDefault,
         userId: user?.id as string,
       }),
     );
@@ -374,9 +374,9 @@ const AddCardScreen = ({ navigation }: any) => {
           </RowComponent>
 
           <CheckedButtonComponent
-            title="Save this card"
-            onPress={() => setSaved(!saved)}
-            value={saved}
+            title={`Save this card ${cards.length === 0 && '(require is true in field)'}`}
+            onPress={() => setSaved(cards.length === 0 ? true : !saved)}
+            value={cards.length === 0 ? true:saved}
           />
         </SectionComponent>
 

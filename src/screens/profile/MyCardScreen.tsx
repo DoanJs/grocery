@@ -1,4 +1,4 @@
-import { where } from '@react-native-firebase/firestore';
+import { serverTimestamp, where } from '@react-native-firebase/firestore';
 import { AddCircle } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -60,12 +60,12 @@ const MyCardScreen = ({ navigation }: any) => {
     setDocData({
       nameCollect: 'cards',
       id: cards[index].id,
-      valueUpdate: { default: false },
+      valueUpdate: { default: false, updateAt: serverTimestamp() },
     });
     setDocData({
       nameCollect: 'cards',
       id: makeDefault,
-      valueUpdate: { default: true },
+      valueUpdate: { default: true, updateAt: serverTimestamp() },
     });
 
     setDisable(true);

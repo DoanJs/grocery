@@ -150,7 +150,9 @@ const HomeScreen = ({ navigation, route }: any) => {
         }}
       >
         <Swiper
-          loop={false}
+          // autoplay
+          // autoplayTimeout={10}
+          loop={true}
           onIndexChanged={num => setIndex(num)}
           index={index}
           style={{
@@ -221,7 +223,7 @@ const HomeScreen = ({ navigation, route }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>

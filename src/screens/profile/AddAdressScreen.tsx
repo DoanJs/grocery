@@ -80,7 +80,7 @@ const AddAdressScreen = ({ navigation, route }: any) => {
       setTextError('Vui lòng không bỏ trống các thông tin !');
     } else {
       let isDefault: boolean = false;
-      if (saved) {
+      if (saved && addresses.length > 0) {
         const indexDefault = addresses.findIndex(_ => _.id === params.addressDefault)
         editAddress(
           params.addressDefault,
@@ -91,6 +91,7 @@ const AddAdressScreen = ({ navigation, route }: any) => {
           id: params.addressDefault,
           valueUpdate: {
             default: false,
+            updateAt: serverTimestamp()
           },
         });
         isDefault = true;
@@ -101,15 +102,16 @@ const AddAdressScreen = ({ navigation, route }: any) => {
         value: {
           ...form,
           userId: user?.uid,
-          default: isDefault,
+          default: addresses.length === 0 ? true : isDefault,
         },
       }).then(result => addAddress({
         ...form,
         userId: user?.uid,
-        default: isDefault,
+        default: addresses.length === 0 ? true : isDefault,
         id: result.id
       }));
-      navigation.navigate('AddressScreen');
+      
+      navigation.goBack();
     }
   };
 
@@ -202,9 +204,9 @@ const AddAdressScreen = ({ navigation, route }: any) => {
             </SectionComponent>
           )}
           <CheckedButtonComponent
-            title="set default this address"
-            onPress={() => setSaved(!saved)}
-            value={saved}
+            title={`set default this address ${addresses.length === 0 && '(require is true in field)'}`}
+            onPress={() => setSaved(addresses.length === 0 ? true : !saved)}
+            value={addresses.length === 0 ? true : saved}
           />
           {textError && (
             <View>

@@ -46,7 +46,7 @@ const CartScreen = ({ navigation }: any) => {
     let subTotal: number = 0;
     if (proCarts.length > 0) {
       proCarts.map(pro => {
-        subTotal += Number(pro.product.price) * pro.cart.quantity;
+        subTotal += Number(pro.product?.price) * pro.cart?.quantity;
       });
     }
 

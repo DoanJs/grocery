@@ -7,8 +7,4 @@ export const typeCards = [
         type: 'Visa Card',
         url: 'https://res.cloudinary.com/filesuploadonserver/image/upload/v1756599289/Grocery/icons/visaCard_ntaz2q.png'
     },
-    {
-        type: 'Paypal Card',
-        url: 'https://res.cloudinary.com/filesuploadonserver/image/upload/v1756599289/Grocery/icons/paypalCard_ssiout.png'
-    },
 ]

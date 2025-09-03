@@ -6,7 +6,7 @@ import { colors } from '../../constants/colors'
 import { fontFamillies } from '../../constants/fontFamilies'
 import { sizes } from '../../constants/sizes'
 
-const OrderSuccessScreen = ({navigation}: any) => {
+const OrderSuccessScreen = ({ navigation }: any) => {
     return (
         <Container bg={colors.background} back title='Order Success'>
             <View style={{

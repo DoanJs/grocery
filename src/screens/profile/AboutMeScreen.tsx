@@ -3,7 +3,7 @@ import {
   reauthenticateWithCredential,
   updatePassword,
 } from '@react-native-firebase/auth';
-import { Lock, Sms, User } from 'iconsax-react-native';
+import { Call, Lock, Sms, User } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { auth } from '../../../firebase.config';
@@ -147,7 +147,7 @@ const AboutMeScreen = () => {
               marginVertical: 4,
             }}
           >
-            <User size={24} color={colors.text} />
+            <Call size={24} color={colors.text} />
             <SpaceComponent width={10} />
             <TextComponent
               text={user?.phone ?? '+1  202  555  0142 '}

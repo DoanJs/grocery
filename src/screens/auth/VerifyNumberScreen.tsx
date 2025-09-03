@@ -23,6 +23,7 @@ const VerifyNumberScreen = ({ navigation }: any) => {
   const [country, setCountry] = useState(flags[0]);
   const [phone, setPhone] = useState('912345678');
   const [disable, setDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isShowCountry, setIsShowCountry] = useState(false);
   const { setVerifyPhone } = useVerifyPhoneStore();
 
@@ -36,11 +37,13 @@ const VerifyNumberScreen = ({ navigation }: any) => {
 
   const handleSendOTP = async () => {
     const phoneFull = country.phone + phone;
+    setIsLoading(true)
     try {
       const confirmation = await signInWithPhoneNumber(auth, phoneFull);
       setVerifyPhone(confirmation);
-      navigation.navigate('OTPScreen');
+      navigation.navigate('OTPScreen', {phoneFull});
       console.log('✅ OTP đã gửi tới: ', phone);
+      setIsLoading(false)
     } catch (err) {
       console.error('❌ Lỗi gửi OTP: ', err);
     }
@@ -201,6 +204,7 @@ const VerifyNumberScreen = ({ navigation }: any) => {
 
         <BtnShadowLinearComponent
           disable={disable}
+          isLoading={isLoading}
           title="Next"
           onPress={handleSendOTP}
         />

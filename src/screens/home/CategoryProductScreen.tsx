@@ -6,6 +6,7 @@ import {
   Container,
   ProductItemComponent,
   SectionComponent,
+  TextComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { ProductModel } from '../../models/ProductModel';
@@ -35,15 +36,19 @@ const CategoryProductScreen = ({ navigation, route }: any) => {
       title={category}
       right={<Setting5 onPress={() => { }} size={24} color={colors.text2} />}
     >
+      <View style={{
+        backgroundColor: colors.background1,
+        flex: 1
+      }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <SectionComponent
           styles={{
-            backgroundColor: colors.background1,
             paddingVertical: 16,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
+            flex: 1
           }}
         >
           {productCates.map((_, index) => (
@@ -61,6 +66,7 @@ const CategoryProductScreen = ({ navigation, route }: any) => {
           ))}
         </SectionComponent>
       </ScrollView>
+      </View>
     </Container>
   );
 };

@@ -15,6 +15,7 @@ import { colors } from '../../constants/colors';
 import { deleteDocData } from '../../constants/deleteDocData';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { getDocsData } from '../../constants/getDocsData';
+import { setDocData } from '../../constants/setDocData';
 import { sizes } from '../../constants/sizes';
 import { HistoryModel } from '../../models/HistoryModel';
 import useHistoryStore from '../../zustand/store/useHistoryStore';
@@ -33,8 +34,8 @@ const SearchScreen = ({ navigation }: any) => {
   const { user } = useUserStore();
   const [initialMore, setInitialMore] = useState(data);
   const [keySearch, setKeySearch] = useState('');
-  const { histories, addHistory, setHistories, clearHistories } =
-    useHistoryStore();
+  const { histories, addHistory,
+    setHistories, clearHistories } = useHistoryStore();
 
   useEffect(() => {
     if (user) {
@@ -48,21 +49,32 @@ const SearchScreen = ({ navigation }: any) => {
 
   const handleSearch = (search: string) => {
     if (search !== '') {
-      addDocData({
-        nameCollect: 'histories',
-        value: {
-          userId: user?.id,
-          search: search,
-          createAt: serverTimestamp(),
-          updateAt: serverTimestamp(),
-        },
-      }).then(result =>
-        addHistory({
-          id: result.id,
-          userId: user?.id as string,
-          search: search,
-        }),
-      );
+
+      const index = histories.findIndex((history: HistoryModel) => history.search === search)
+      if (index !== -1) {
+        setDocData({
+          nameCollect: 'histories',
+          id: histories[index].id,
+          valueUpdate: { updateAt: serverTimestamp() }
+        })
+      } else {
+        addDocData({
+          nameCollect: 'histories',
+          value: {
+            userId: user?.id,
+            search: search,
+            createAt: serverTimestamp(),
+            updateAt: serverTimestamp(),
+          },
+        }).then(result =>
+          addHistory({
+            id: result.id,
+            userId: user?.id as string,
+            search: search,
+          }),
+        );
+      }
+
     }
 
     navigation.navigate('Main', {
@@ -171,26 +183,43 @@ const SearchScreen = ({ navigation }: any) => {
               flexWrap: 'wrap',
             }}
           >
-            {histories.map((_, index) => (
-              <TouchableOpacity
-                onPress={() => handleSearch(_.search)}
-                key={index}
-                style={{
-                  backgroundColor: colors.background,
-                  padding: 8,
-                  borderRadius: 5,
-                  marginRight: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <TextComponent
-                  text={_.search}
-                  font={fontFamillies.poppinsMedium}
-                  size={sizes.smallText}
-                  color={colors.text}
-                />
-              </TouchableOpacity>
-            ))}
+            <TouchableOpacity
+              onPress={() => handleSearch('')}
+              style={{
+                backgroundColor: colors.background,
+                padding: 8,
+                borderRadius: 5,
+                marginRight: 10,
+                marginBottom: 10,
+              }}>
+              <TextComponent
+                text={'All'}
+                font={fontFamillies.poppinsMedium}
+                size={sizes.smallText}
+                color={colors.text}
+              />
+            </TouchableOpacity>
+            {histories.sort((a, b) =>
+              (b.updateAt?._seconds as number) - (a.updateAt?._seconds as number)).map((_, index) => (
+                <TouchableOpacity
+                  onPress={() => handleSearch(_.search)}
+                  key={index}
+                  style={{
+                    backgroundColor: colors.background,
+                    padding: 8,
+                    borderRadius: 5,
+                    marginRight: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <TextComponent
+                    text={_.search}
+                    font={fontFamillies.poppinsMedium}
+                    size={sizes.smallText}
+                    color={colors.text}
+                  />
+                </TouchableOpacity>
+              ))}
           </RowComponent>
 
           <SpaceComponent height={20} />
@@ -240,7 +269,7 @@ const SearchScreen = ({ navigation }: any) => {
         <SectionComponent>
           <RowComponent justify="space-between">
             <RowComponent
-              onPress={() => {}}
+              onPress={() => { }}
               justify="space-between"
               styles={{
                 backgroundColor: colors.background,
@@ -258,7 +287,7 @@ const SearchScreen = ({ navigation }: any) => {
             </RowComponent>
 
             <RowComponent
-              onPress={() => {}}
+              onPress={() => { }}
               justify="space-between"
               styles={{
                 backgroundColor: colors.background,

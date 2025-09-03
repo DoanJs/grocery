@@ -1,7 +1,8 @@
+import { PhoneAuthProvider, signInWithPhoneNumber } from '@react-native-firebase/auth';
 import { doc, getDoc, serverTimestamp } from '@react-native-firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import { db } from '../../../firebase.config';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { auth, db } from '../../../firebase.config';
 import {
   BtnShadowLinearComponent,
   Container,
@@ -10,16 +11,20 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
+import { addDocData } from '../../constants/addDocData';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { setDocData } from '../../constants/setDocData';
 import { sizes } from '../../constants/sizes';
 import useVerifyPhoneStore from '../../zustand/store/useVerifyPhoneStore';
-import { setDocData } from '../../constants/setDocData';
-import { addDocData } from '../../constants/addDocData';
 
-const OTPScreen = ({ navigation }: any) => {
+const OTPScreen = ({ navigation, route }: any) => {
+  const { params } = route
   const [codeValues, setCodeValues] = useState<string[]>([]);
-  const { verifyPhone } = useVerifyPhoneStore();
+  const [disable, setDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const { verifyPhone, setVerifyPhone } = useVerifyPhoneStore();
+  const [limit, setLimit] = useState(83);
   const ref1 = useRef<any>(0);
   const ref2 = useRef<any>(1);
   const ref3 = useRef<any>(2);
@@ -31,17 +36,37 @@ const OTPScreen = ({ navigation }: any) => {
     ref1.current.focus();
   }, []);
 
+  useEffect(() => {
+    if (limit > 0) {
+      const interval = setInterval(() => {
+        setLimit((limit) => limit - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    if (codeValues.length < 6) {
+      setDisable(true)
+    } else {
+      setDisable(false)
+    }
+  }, [codeValues])
+
   const handleChangeCode = (val: string, index: number) => {
     const data = [...codeValues];
     data[index] = val;
 
     setCodeValues(data);
   };
-
+  // verificationId
   const handleVerifyCode = async () => {
+    const { verificationId } = verifyPhone
+    setIsLoading(true)
     try {
-      const userCredential = await verifyPhone?.confirm(codeValues.join(''));
-      const user = userCredential.user;
+      if (!verificationId) throw new Error('Missing verificationId');
+      const credential = PhoneAuthProvider.credential(verificationId, codeValues.join(''));
+      const { user } = await auth.signInWithCredential(credential);
 
       const docSnap = await getDoc(doc(db, 'users', user.uid));
       if (!docSnap.exists()) {
@@ -72,11 +97,25 @@ const OTPScreen = ({ navigation }: any) => {
       } else {
         console.log(`getDoc data error`);
       }
-
+      setIsLoading(false)
       // Ví dụ: quay lại Home
       navigation.replace('Main');
+      console.log('Phone auth successful');
     } catch (error) {
       console.error('❌ Sai OTP:', error);
+    }
+
+
+  };
+
+  const handleSendOTP = async () => {
+    const { phoneFull } = params;
+    try {
+      const confirmation = await signInWithPhoneNumber(auth, phoneFull);
+      setVerifyPhone(confirmation);
+      console.log('✅ OTP đã gửi tới: ', phoneFull);
+    } catch (err) {
+      console.error('❌ Lỗi gửi OTP: ', err);
     }
   };
 
@@ -189,7 +228,11 @@ const OTPScreen = ({ navigation }: any) => {
 
         <SpaceComponent height={16} />
 
-        <BtnShadowLinearComponent onPress={handleVerifyCode} title="Next" />
+        <BtnShadowLinearComponent
+          isLoading={isLoading}
+          disable={disable}
+          onPress={handleVerifyCode} title="Next"
+        />
 
         <RowComponent
           styles={{
@@ -202,13 +245,21 @@ const OTPScreen = ({ navigation }: any) => {
             font={fontFamillies.poppinsLight}
             size={sizes.bigText}
           />
-          <TouchableOpacity onPress={() => {}}>
+          <RowComponent onPress={limit > 0 ? undefined : handleSendOTP}>
             <TextComponent
               text="Resend a new code"
               font={fontFamillies.poppinsMedium}
               size={sizes.bigText}
+              color={limit > 0 ? colors.text : colors.text2}
             />
-          </TouchableOpacity>
+            {
+              limit > 0 &&
+              <TextComponent
+                color={limit > 0 ? colors.text : colors.text2}
+                text={` (${(limit - (limit % 60)) / 60}:${limit - (limit - (limit % 60))
+                  })`} />
+            }
+          </RowComponent>
         </RowComponent>
       </SectionComponent>
     </Container>

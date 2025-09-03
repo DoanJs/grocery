@@ -1,6 +1,8 @@
+import { sendPasswordResetEmail } from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Alert, TouchableOpacity, View } from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import { auth } from '../../../firebase.config';
 import {
   BtnShadowLinearComponent,
   Container,
@@ -14,8 +16,6 @@ import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
 import { sizes } from '../../constants/sizes';
 import { validateEmail } from '../../constants/validateEmailPhone';
-import { auth } from '../../../firebase.config';
-import { sendPasswordResetEmail } from '@react-native-firebase/auth';
 
 const ForgotPasswordScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -31,8 +31,9 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
 
   const handleResetPassword = async () => {
     try {
-     sendPasswordResetEmail(auth, email).then(result => console.log(result))
+      sendPasswordResetEmail(auth, email).then(result => console.log(result))
       Alert.alert('Check your email', 'We sent you a password reset link.');
+      setEmail('')
     } catch (error: any) {
       console.error(error);
       Alert.alert('Error', error.message);
@@ -100,6 +101,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
             onPress={() => navigation.navigate('VerifyNumberScreen')}
           >
             <TextComponent
+
               text="verify phone"
               font={fontFamillies.poppinsMedium}
               color={colors.link}
