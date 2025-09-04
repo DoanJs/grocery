@@ -13,6 +13,7 @@ import {
   MyCardScreen,
   MyOrderScreen,
   NotificationsScreen,
+  OrderConfirmScreen,
   OrderSuccessScreen,
   PaymentMethodScreen,
   ProductDetailsScreen,
@@ -24,8 +25,8 @@ import {
   WriteReviewScreen,
 } from '../screens';
 import SearchScreen from '../screens/home/SearchScreen';
-import TabNavigator from './TabNavigator';
 import LogOutScreen from '../screens/profile/LogOutScreen';
+import TabNavigator from './TabNavigator';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -58,10 +59,20 @@ const MainNavigator = () => {
       <Stack.Screen name="AddCardScreen" component={AddCardScreen} />
       <Stack.Screen name="ReviewsScreen" component={ReviewsScreen} />
       <Stack.Screen name="WriteReviewScreen" component={WriteReviewScreen} />
-      <Stack.Screen name="ShippingMethodScreen" component={ShippingMethodScreen} />
-      <Stack.Screen name="ShippingAddressScreen" component={ShippingAddressScreen} />
-      <Stack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
+      <Stack.Screen
+        name="ShippingMethodScreen"
+        component={ShippingMethodScreen}
+      />
+      <Stack.Screen
+        name="ShippingAddressScreen"
+        component={ShippingAddressScreen}
+      />
+      <Stack.Screen
+        name="PaymentMethodScreen"
+        component={PaymentMethodScreen}
+      />
       <Stack.Screen name="OrderSuccessScreen" component={OrderSuccessScreen} />
+      <Stack.Screen name="OrderConfirmScreen" component={OrderConfirmScreen} />
       <Stack.Screen name="TrackOrderScreen" component={TrackOrderScreen} />
       <Stack.Screen name="LogOutScreen" component={LogOutScreen} />
     </Stack.Navigator>

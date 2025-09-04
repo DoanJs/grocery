@@ -7,6 +7,7 @@ import SwiperScreen from './auth/SwiperScreen';
 import VerifyNumberScreen from './auth/VerifyNumberScreen';
 import CartScreen from './cart/CartScreen';
 import EmptyScreen from './cart/EmptyScreen';
+import OrderConfirmScreen from './cart/OrderConfirmScreen';
 import OrderSuccessScreen from './cart/OrderSuccessScreen';
 import PaymentMethodScreen from './cart/PaymentMethodScreen';
 import ShippingAddressScreen from './cart/ShippingAddressScreen';
@@ -32,15 +33,37 @@ import TransactionsScreen from './profile/TransactionsScreen';
 import SplashScreen from './SplashScreen';
 
 export {
-  AboutMeScreen, AddAdressScreen, AddCardScreen, AddressScreen,
-  AuthHomeScreen, CartScreen, OrderSuccessScreen,
-  CategoriesScreen,TrackOrderScreen,
-  CategoryProductScreen, EmptyScreen, FilterScreen,
+  AboutMeScreen,
+  AddAdressScreen,
+  AddCardScreen,
+  AddressScreen,
+  AuthHomeScreen,
+  CartScreen,
+  CategoriesScreen,
+  CategoryProductScreen,
+  EmptyScreen,
+  FilterScreen,
   ForgotPasswordScreen,
-  HeartScreen, HomeScreen, Login, MyCardScreen, MyOrderScreen,
+  HeartScreen,
+  HomeScreen,
+  Login,
+  MyCardScreen,
+  MyOrderScreen,
   NotificationsScreen,
-  OTPScreen, PaymentMethodScreen, ProductDetailsScreen,
+  OrderSuccessScreen,
+  OTPScreen,
+  PaymentMethodScreen,
+  ProductDetailsScreen,
   ProfileScreen,
-  Register, ReviewsScreen, ShippingAddressScreen, ShippingMethodScreen, SplashScreen, SwiperScreen, TransactionsScreen, VerifyNumberScreen, WriteReviewScreen
+  Register,
+  ReviewsScreen,
+  ShippingAddressScreen,
+  ShippingMethodScreen,
+  SplashScreen,
+  SwiperScreen,
+  TrackOrderScreen,
+  TransactionsScreen,
+  VerifyNumberScreen,
+  WriteReviewScreen,
+  OrderConfirmScreen
 };
-

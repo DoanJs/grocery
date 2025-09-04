@@ -50,7 +50,7 @@ const CartScreen = ({ navigation }: any) => {
       });
     }
 
-    return subTotal;
+    return subTotal
   };
 
   return (

@@ -1,55 +1,85 @@
-import { serverTimestamp, where } from '@react-native-firebase/firestore'
-import { Apple, ArrowDown2, ArrowUp2, Calendar, Card, Lock1, Paypal, TickCircle, User } from 'iconsax-react-native'
-import React, { useEffect, useState } from 'react'
-import { Image, ImageBackground, ScrollView, TouchableOpacity, View } from 'react-native'
-import { Shadow } from 'react-native-shadow-2'
-import cardPhysical from '../../assests/images/cardPhysical.png'
-import { BtnShadowLinearComponent, CheckedButtonComponent, Container, InputComponent, ProgressShippingComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
-import { addDocData } from '../../constants/addDocData'
-import { colors } from '../../constants/colors'
-import { fontFamillies } from '../../constants/fontFamilies'
-import { getDocsData } from '../../constants/getDocsData'
-import { setDocData } from '../../constants/setDocData'
-import { sizes } from '../../constants/sizes'
-import { typeCards } from '../../constants/typeCards'
-import { CardModel } from '../../models/CardModel'
-import useCardStore from '../../zustand/store/useCardStore'
-import useShippingSettingStore from '../../zustand/store/useShippingSetting'
-import useUserStore from '../../zustand/store/useUserStore'
+import { serverTimestamp, where } from '@react-native-firebase/firestore';
+import {
+  Apple,
+  ArrowDown2,
+  ArrowUp2,
+  Calendar,
+  Card,
+  Lock1,
+  Paypal,
+  TickCircle,
+  User,
+} from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Image,
+  ImageBackground,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Shadow } from 'react-native-shadow-2';
+import cardPhysical from '../../assests/images/cardPhysical.png';
+import {
+  BtnShadowLinearComponent,
+  CheckedButtonComponent,
+  Container,
+  InputComponent,
+  ProgressShippingComponent,
+  RowComponent,
+  SectionComponent,
+  SpaceComponent,
+  TextComponent,
+} from '../../components';
+import { addDocData } from '../../constants/addDocData';
+import { colors } from '../../constants/colors';
+import { deleteDocData } from '../../constants/deleteDocData';
+import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocsData } from '../../constants/getDocsData';
+import { setDocData } from '../../constants/setDocData';
+import { sizes } from '../../constants/sizes';
+import { typeCards } from '../../constants/typeCards';
+import { CardModel } from '../../models/CardModel';
+import useAddressStore from '../../zustand/store/useAddressStore';
+import useCardStore from '../../zustand/store/useCardStore';
+import useCartStore from '../../zustand/store/useCartStore';
+import useOrderStore from '../../zustand/store/useOrderStore';
+import useShippingSettingStore from '../../zustand/store/useShippingSetting';
+import useUserStore from '../../zustand/store/useUserStore';
 const data1 = [
   {
     title: '1',
     status: 'success',
-    description: 'DELIVERY'
+    description: 'DELIVERY',
   },
   {
     title: '2',
     status: 'success',
-    description: 'ADDRESS'
+    description: 'ADDRESS',
   },
   {
     title: '3',
     status: 'pending',
-    description: 'PAYMENT'
+    description: 'PAYMENT',
   },
-]
+];
 const data2 = [
   {
-    icon: <Paypal size={30} color={colors.text} variant='Bold' />,
-    iconActive: <Paypal size={30} color={colors.background} variant='Bold' />,
-    title: '    Paypal    '
+    icon: <Paypal size={30} color={colors.text} variant="Bold" />,
+    iconActive: <Paypal size={30} color={colors.background} variant="Bold" />,
+    title: '    Paypal    ',
   },
   {
-    icon: <Calendar size={30} color={colors.text} variant='Bold' />,
-    iconActive: <Calendar size={30} color={colors.background} variant='Bold' />,
-    title: 'Credit Card'
+    icon: <Calendar size={30} color={colors.text} variant="Bold" />,
+    iconActive: <Calendar size={30} color={colors.background} variant="Bold" />,
+    title: 'Credit Card',
   },
   {
-    icon: <Apple size={30} color={colors.text} variant='Bold' />,
-    iconActive: <Apple size={30} color={colors.background} variant='Bold' />,
-    title: 'Apple pay'
+    icon: <Apple size={30} color={colors.text} variant="Bold" />,
+    iconActive: <Apple size={30} color={colors.background} variant="Bold" />,
+    title: 'Apple pay',
   },
-]
+];
 const initialCard = {
   type: 'Master Card',
   name: '',
@@ -59,34 +89,36 @@ const initialCard = {
   url: typeCards[0].url,
 };
 const PaymentMethodScreen = ({ navigation }: any) => {
-  const { user } = useUserStore()
+  const { user } = useUserStore();
   const [infoCard, setInfoCard] = useState(initialCard);
   const [saved, setSaved] = useState(false);
   const [selectedType, setSelectedType] = useState('Credit Card');
   const [typeCard, setTypeCard] = useState('Add new card');
   const [disable, setDisable] = useState(true);
-  const { cards, addCard, setCards, editCard } = useCardStore()
+  const { cards, addCard, setCards, editCard } = useCardStore();
+  const { carts, setCarts } = useCartStore();
+  const { addOrder } = useOrderStore();
+  const { addresses } = useAddressStore();
   const [cardDefault, setCardDefault] = useState<CardModel>();
   const [showTypes, setShowTypes] = useState(false);
-  const { shippingSetting, setShippingSetting } = useShippingSettingStore()
-
+  const { shippingSetting, setShippingSetting } = useShippingSettingStore();
 
   useEffect(() => {
     if (user) {
       getDocsData({
         nameCollect: 'cards',
         condition: [where('userId', '==', user.id)],
-        setData: setCards
-      })
+        setData: setCards,
+      });
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
     if (cards) {
-      const index = cards.findIndex((card: CardModel) => card.default)
-      setCardDefault(cards[index])
+      const index = cards.findIndex((card: CardModel) => card.default);
+      setCardDefault(cards[index]);
     }
-  }, [cards])
+  }, [cards]);
 
   useEffect(() => {
     if (
@@ -101,7 +133,6 @@ const PaymentMethodScreen = ({ navigation }: any) => {
       setDisable(true);
     }
   }, [infoCard, typeCard, selectedType]);
-
 
   const handlePaymentMethod = () => {
     if (typeCard === 'Add new card') {
@@ -135,7 +166,7 @@ const PaymentMethodScreen = ({ navigation }: any) => {
           id: result.id,
           default: isDefault,
           userId: user?.id as string,
-        })
+        });
         setShippingSetting({
           ...shippingSetting,
           payment: {
@@ -143,107 +174,137 @@ const PaymentMethodScreen = ({ navigation }: any) => {
             id: result.id,
             default: isDefault,
             userId: user?.id as string,
-          }
-        })
+          },
+        });
       });
-
-      navigation.navigate('OrderSuccessScreen')
+      navigation.navigate('OrderConfirmScreen');
     } else {
-      navigation.navigate('OrderSuccessScreen')
+      navigation.navigate('OrderConfirmScreen');
     }
-  }
+  };
 
   return (
-    <Container bg={colors.background} back title='Payment Method'>
-      <View style={{
-        backgroundColor: colors.background1,
-        flex: 1,
-        paddingTop: 16
-      }}>
-        <SectionComponent styles={{
-          flex: 1
-        }}>
-          <View style={{
-            paddingHorizontal: 30,
-            paddingVertical: 10
-          }}>
-            <RowComponent justify='space-around'>
-              {
-                data1.map((_, index) =>
-                  <ProgressShippingComponent key={index}
-                    index={index}
-                    status={_.status}
-                    title={_.title}
-                    description={_.description}
-                  />
-                )
-              }
+    <Container bg={colors.background} back title="Payment Method">
+      <View
+        style={{
+          backgroundColor: colors.background1,
+          flex: 1,
+          paddingTop: 16,
+        }}
+      >
+        <SectionComponent
+          styles={{
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 30,
+              paddingVertical: 10,
+            }}
+          >
+            <RowComponent justify="space-around">
+              {data1.map((_, index) => (
+                <ProgressShippingComponent
+                  key={index}
+                  index={index}
+                  status={_.status}
+                  title={_.title}
+                  description={_.description}
+                />
+              ))}
             </RowComponent>
           </View>
 
-          <RowComponent justify='space-between' styles={{
-            marginVertical: 10
-          }}>
-            {
-              data2.map((_, index) =>
-                <Shadow
-                  key={index}
-                  distance={5}
-                  startColor={`${colors.border}d8`}
-                  endColor={`${colors.border}10`}
-                  offset={[0, 4]}
+          <RowComponent
+            justify="space-between"
+            styles={{
+              marginVertical: 10,
+            }}
+          >
+            {data2.map((_, index) => (
+              <Shadow
+                key={index}
+                distance={5}
+                startColor={`${colors.border}d8`}
+                endColor={`${colors.border}10`}
+                offset={[0, 4]}
+                style={{
+                  width: '100%',
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setSelectedType(_.title)}
                   style={{
-                    width: '100%',
+                    backgroundColor:
+                      selectedType === _.title
+                        ? colors.primary
+                        : colors.background,
+                    paddingVertical: 20,
+                    paddingHorizontal: 26,
+                    borderRadius: 5,
+                    alignItems: 'center',
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() => setSelectedType(_.title)}
-                    style={{
-                      backgroundColor: selectedType === _.title ? colors.primary : colors.background,
-                      paddingVertical: 20,
-                      paddingHorizontal: 26,
-                      borderRadius: 5,
-                      alignItems: 'center',
-                    }}>
-                    {selectedType === _.title ? _.iconActive : _.icon}
-                    <SpaceComponent height={10} />
-                    <TextComponent
-                      text={_.title}
-                      color={selectedType === _.title ? colors.background : colors.text}
-                    />
-                  </TouchableOpacity>
-                </Shadow>)
-            }
-
-          </RowComponent>
-          {
-            selectedType === 'Credit Card' &&
-            <>
-              <RowComponent justify='space-around' styles={{
-                marginVertical: 16
-              }}>
-                <TouchableOpacity
-                  onPress={() => setTypeCard('Add new card')}>
-                  <TextComponent text='Add new card'
-                    font={typeCard === 'Add new card' ? fontFamillies.poppinsBold : fontFamillies.poppinsRegular}
-                    color={typeCard === 'Add new card' ? colors.primary : colors.text}
+                  {selectedType === _.title ? _.iconActive : _.icon}
+                  <SpaceComponent height={10} />
+                  <TextComponent
+                    text={_.title}
+                    color={
+                      selectedType === _.title ? colors.background : colors.text
+                    }
                   />
                 </TouchableOpacity>
-                <View style={{
-                  width: 2,
-                  backgroundColor: colors.background,
-                  height: '100%'
-                }} />
+              </Shadow>
+            ))}
+          </RowComponent>
+          {selectedType === 'Credit Card' && (
+            <>
+              <RowComponent
+                justify="space-around"
+                styles={{
+                  marginVertical: 16,
+                }}
+              >
+                <TouchableOpacity onPress={() => setTypeCard('Add new card')}>
+                  <TextComponent
+                    text="Add new card"
+                    font={
+                      typeCard === 'Add new card'
+                        ? fontFamillies.poppinsBold
+                        : fontFamillies.poppinsRegular
+                    }
+                    color={
+                      typeCard === 'Add new card' ? colors.primary : colors.text
+                    }
+                  />
+                </TouchableOpacity>
+                <View
+                  style={{
+                    width: 2,
+                    backgroundColor: colors.background,
+                    height: '100%',
+                  }}
+                />
                 <TouchableOpacity
-                  onPress={() => setTypeCard('Use card default')}>
-                  <TextComponent text='Use card default'
-                    font={typeCard === 'Use card default' ? fontFamillies.poppinsBold : fontFamillies.poppinsRegular}
-                    color={typeCard === 'Use card default' ? colors.primary : colors.text}
+                  onPress={() => setTypeCard('Use card default')}
+                >
+                  <TextComponent
+                    text="Use card default"
+                    font={
+                      typeCard === 'Use card default'
+                        ? fontFamillies.poppinsBold
+                        : fontFamillies.poppinsRegular
+                    }
+                    color={
+                      typeCard === 'Use card default'
+                        ? colors.primary
+                        : colors.text
+                    }
                   />
                 </TouchableOpacity>
               </RowComponent>
-              {
-                typeCard === 'Add new card' &&
+              {typeCard === 'Add new card' && (
                 <ScrollView showsVerticalScrollIndicator={false}>
                   <View
                     style={{
@@ -251,75 +312,107 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                       height: 200,
                       width: '100%',
                       borderRadius: 10,
-                      marginBottom: 20
-                    }}>
-                    <ImageBackground source={cardPhysical} imageStyle={{
-                      height: 200,
-                      width: '100%',
-                    }}>
+                      marginBottom: 20,
+                    }}
+                  >
+                    <ImageBackground
+                      source={cardPhysical}
+                      imageStyle={{
+                        height: 200,
+                        width: '100%',
+                      }}
+                    >
                       <SectionComponent>
-                        <RowComponent justify='space-between' styles={{
-                          paddingRight: 24
-                        }}>
+                        <RowComponent
+                          justify="space-between"
+                          styles={{
+                            paddingRight: 24,
+                          }}
+                        >
                           <View>
-                            <Image source={{ uri: infoCard.url }} style={{
-                              height: 80,
-                              width: 80,
-                              resizeMode: 'contain'
-                            }} />
+                            <Image
+                              source={{ uri: infoCard.url }}
+                              style={{
+                                height: 80,
+                                width: 80,
+                                resizeMode: 'contain',
+                              }}
+                            />
                             <TextComponent
-                              text={infoCard.number !== '' ? infoCard.number : 'XXXX XXXX XXXX 8790'}
+                              text={
+                                infoCard.number !== ''
+                                  ? infoCard.number
+                                  : 'XXXX XXXX XXXX 8790'
+                              }
                               font={fontFamillies.poppinsMedium}
                               size={sizes.thinTitle}
                               color={colors.background}
                             />
                           </View>
-                          <View style={{
-                            height: 12,
-                            width: 12,
-                            backgroundColor: colors.red,
-                            transform: [{ rotate: '45deg' }]
-                          }} />
+                          <View
+                            style={{
+                              height: 12,
+                              width: 12,
+                              backgroundColor: colors.red,
+                              transform: [{ rotate: '45deg' }],
+                            }}
+                          />
                         </RowComponent>
 
                         <SpaceComponent height={40} />
 
-                        <RowComponent justify='space-between' styles={{
-                          paddingBottom: 20
-                        }}>
+                        <RowComponent
+                          justify="space-between"
+                          styles={{
+                            paddingBottom: 20,
+                          }}
+                        >
                           <View>
                             <TextComponent
-                              text='CARD HOLDER'
+                              text="CARD HOLDER"
                               font={fontFamillies.poppinsMedium}
                               size={sizes.smallText}
                               color={colors.background}
                             />
-                            <TextComponent text={infoCard.name !== '' ? infoCard.name : 'Russell austin'}
+                            <TextComponent
+                              text={
+                                infoCard.name !== ''
+                                  ? infoCard.name
+                                  : 'Russell austin'
+                              }
                               font={fontFamillies.poppinsSemiBold}
                               color={colors.background}
                             />
                           </View>
-                          <RowComponent styles={{
-                            alignItems: 'flex-start'
-                          }}>
+                          <RowComponent
+                            styles={{
+                              alignItems: 'flex-start',
+                            }}
+                          >
                             <View>
-                              <TextComponent text='EXPRIES'
+                              <TextComponent
+                                text="EXPRIES"
                                 font={fontFamillies.poppinsMedium}
                                 size={sizes.smallText}
                                 color={colors.background}
                               />
-                              <TextComponent text={infoCard.exp !== '' ? infoCard.exp : '01/22'}
+                              <TextComponent
+                                text={
+                                  infoCard.exp !== '' ? infoCard.exp : '01/22'
+                                }
                                 font={fontFamillies.poppinsSemiBold}
                                 color={colors.background}
                               />
                             </View>
                             <SpaceComponent width={10} />
-                            <View style={{
-                              height: 12,
-                              width: 12,
-                              backgroundColor: colors.orange3,
-                              transform: [{ rotate: '45deg' }]
-                            }} />
+                            <View
+                              style={{
+                                height: 12,
+                                width: 12,
+                                backgroundColor: colors.orange3,
+                                transform: [{ rotate: '45deg' }],
+                              }}
+                            />
                           </RowComponent>
                         </RowComponent>
                       </SectionComponent>
@@ -372,7 +465,11 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                           key={index}
                           onPress={() => {
                             setShowTypes(false);
-                            setInfoCard({ ...infoCard, type: _.type, url: _.url });
+                            setInfoCard({
+                              ...infoCard,
+                              type: _.type,
+                              url: _.url,
+                            });
                           }}
                           styles={{
                             borderTopWidth: 1,
@@ -407,12 +504,14 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                     color={colors.background}
                     value={infoCard.name}
                     allowClear
-                    placeholder='Name on the card'
+                    placeholder="Name on the card"
                     placeholderTextColor={colors.text}
                     textStyles={{
                       color: colors.text,
                     }}
-                    onChange={val => setInfoCard({ ...infoCard, name: val.toUpperCase() })}
+                    onChange={val =>
+                      setInfoCard({ ...infoCard, name: val.toUpperCase() })
+                    }
                   />
                   <InputComponent
                     styles={{
@@ -425,27 +524,29 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                     color={colors.background}
                     value={infoCard.number}
                     allowClear
-                    placeholder='Card number'
+                    placeholder="Card number"
                     placeholderTextColor={colors.text}
                     textStyles={{
                       color: colors.text,
                     }}
-                    onChange={val => setInfoCard({ ...infoCard, number: val.toUpperCase() })}
+                    onChange={val =>
+                      setInfoCard({ ...infoCard, number: val.toUpperCase() })
+                    }
                   />
-                  <RowComponent justify='space-between'>
+                  <RowComponent justify="space-between">
                     <InputComponent
                       styles={{
                         backgroundColor: colors.background,
                         paddingVertical: 16,
                         paddingHorizontal: 26,
                         borderRadius: 5,
-                        flex: 1
+                        flex: 1,
                       }}
                       prefix={<Calendar color={colors.text} size={26} />}
                       color={colors.background}
                       value={infoCard.exp}
                       allowClear
-                      placeholder='Month / Year'
+                      placeholder="Month / Year"
                       placeholderTextColor={colors.text}
                       textStyles={{
                         color: colors.text,
@@ -459,12 +560,12 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                         paddingVertical: 16,
                         paddingHorizontal: 26,
                         borderRadius: 5,
-                        flex: 1
+                        flex: 1,
                       }}
                       prefix={<Lock1 color={colors.text} size={26} />}
                       color={colors.background}
                       value={infoCard.cvv}
-                      placeholder='CVV'
+                      placeholder="CVV"
                       isPassword
                       placeholderTextColor={colors.text}
                       textStyles={{
@@ -472,31 +573,35 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                       }}
                       onChange={val => setInfoCard({ ...infoCard, cvv: val })}
                     />
-
                   </RowComponent>
 
                   <SectionComponent>
                     <SectionComponent>
                       <CheckedButtonComponent
-                        title='Save this card'
+                        title="Save this card"
                         value={saved}
                         onPress={(val: boolean) => setSaved(val)}
                       />
                     </SectionComponent>
                   </SectionComponent>
                 </ScrollView>
-              }
+              )}
 
-              {
-                typeCard === 'Use card default' && cardDefault &&
+              {typeCard === 'Use card default' && cardDefault && (
                 <>
-                  <RowComponent justify="flex-start"
+                  <RowComponent
+                    justify="flex-start"
                     styles={{
                       borderBottomWidth: 1,
                       borderBottomColor: colors.border,
-                      paddingBottom: 10
-                    }}>
-                    <TickCircle size={24} color={colors.primary} variant='Bold' />
+                      paddingBottom: 10,
+                    }}
+                  >
+                    <TickCircle
+                      size={24}
+                      color={colors.primary}
+                      variant="Bold"
+                    />
                     <View
                       style={{
                         backgroundColor: colors.background,
@@ -527,7 +632,10 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                       />
                       <RowComponent>
                         <RowComponent>
-                          <TextComponent text="Expiry: " size={sizes.smallText} />
+                          <TextComponent
+                            text="Expiry: "
+                            size={sizes.smallText}
+                          />
                           <TextComponent
                             text={cardDefault.exp}
                             font={fontFamillies.poppinsSemiBold}
@@ -549,7 +657,7 @@ const PaymentMethodScreen = ({ navigation }: any) => {
 
                   <TouchableOpacity
                     style={{
-                      paddingVertical: 16
+                      paddingVertical: 16,
                     }}
                     onPress={() => navigation.navigate('MyCardScreen')}
                   >
@@ -557,28 +665,27 @@ const PaymentMethodScreen = ({ navigation }: any) => {
                       styles={{
                         textAlign: 'center',
                       }}
-                      text='Change card default'
+                      text="Change card default"
                       font={fontFamillies.poppinsSemiBold}
                       color={colors.text2}
                     />
                   </TouchableOpacity>
                 </>
-              }
-
+              )}
             </>
-          }
+          )}
         </SectionComponent>
 
         <SectionComponent>
           <BtnShadowLinearComponent
             disable={disable}
-            title='Make a payment'
+            title="Make a payment"
             onPress={handlePaymentMethod}
           />
         </SectionComponent>
       </View>
     </Container>
-  )
-}
+  );
+};
 
-export default PaymentMethodScreen
+export default PaymentMethodScreen;
