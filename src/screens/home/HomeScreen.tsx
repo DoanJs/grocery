@@ -150,8 +150,8 @@ const HomeScreen = ({ navigation, route }: any) => {
         }}
       >
         <Swiper
-          // autoplay
-          // autoplayTimeout={10}
+          autoplay
+          autoplayTimeout={10}
           loop={true}
           onIndexChanged={num => setIndex(num)}
           index={index}

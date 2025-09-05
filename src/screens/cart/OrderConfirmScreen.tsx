@@ -20,6 +20,7 @@ import { CardModel } from '../../models/CardModel';
 import useAddressStore from '../../zustand/store/useAddressStore';
 import useCardStore from '../../zustand/store/useCardStore';
 import useCartStore from '../../zustand/store/useCartStore';
+import useFulfillmentStore from '../../zustand/store/useFulfillmentStore';
 import useOrderStore from '../../zustand/store/useOrderStore';
 import useProductStore from '../../zustand/store/useProductStore';
 import useShippingSettingStore from '../../zustand/store/useShippingSetting';
@@ -35,6 +36,7 @@ const OrderConfirmScreen = ({ navigation }: any) => {
   const [address, setAddress] = useState<AddressModel>();
   const [card, setCard] = useState<CardModel>();
   const { addOrder } = useOrderStore();
+  const { setFulfillment } = useFulfillmentStore()
 
   useEffect(() => {
     if (shippingSetting) {
@@ -102,15 +104,20 @@ const OrderConfirmScreen = ({ navigation }: any) => {
           shipped: serverTimestamp(),
           delivery: serverTimestamp(),
           delivered: serverTimestamp(),
-
-          createAt: serverTimestamp(),
-          updateAt: serverTimestamp(),
         };
 
         addDocData({
           nameCollect: 'fulfillments',
-          value: fullfilment
-        });//chua add fulfillment vao zustand
+          value: {
+            ...fullfilment,
+            createAt: serverTimestamp(),
+            updateAt: serverTimestamp(),
+          }
+
+        }).then(res => setFulfillment({
+          ...fullfilment,
+          id: res.id
+        }));
       });
 
       navigation.replace('OrderSuccessScreen');

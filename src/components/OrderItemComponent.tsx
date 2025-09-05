@@ -17,6 +17,7 @@ import { getDocsData } from '../constants/getDocsData';
 import { sizes } from '../constants/sizes';
 import { FulfillmentModel } from '../models/FulfillmentModel';
 import { OrderModel } from '../models/OrderModel';
+import useFulfillmentStore from '../zustand/store/useFulfillmentStore';
 import useProductStore from '../zustand/store/useProductStore';
 
 interface Props {
@@ -56,7 +57,14 @@ const OrderItemComponent = (props: Props) => {
   const { products } = useProductStore();
   const { order, notMore } = props;
   const [isShow, setIsShow] = useState(false);
-  const [fulfillments, setFulfillments] = useState<FulfillmentModel>();
+  const [fulfillments, setFulfillments] = useState<FulfillmentModel[]>([]);
+  const { setFulfillment } = useFulfillmentStore()
+
+  useEffect(() => {
+    if (fulfillments) {
+      setFulfillment(fulfillments[0])
+    }
+  }, [fulfillments])
 
   useEffect(() => {
     if (order) {
@@ -68,7 +76,25 @@ const OrderItemComponent = (props: Props) => {
     }
   }, [order]);
 
-  console.log(fulfillments)
+  const showTime = (title: string) => {
+    let time: any
+    switch (title) {
+      case 'Order placed':
+        time = fulfillments[0].placed
+      case 'Order confirmed':
+        time = fulfillments[0].confirmed
+      case 'Order shipped':
+        time = fulfillments[0].shipped
+      case 'Order delivery':
+        time = fulfillments[0].delivery
+      default:
+        time = fulfillments[0].delivered
+    }
+
+    return (title === 'Order delivery' && fulfillments[0].delivery === fulfillments[0].placed)
+      || (title === 'Order delivered' && fulfillments[0].delivered === fulfillments[0].placed)
+      ? 'Pending' : moment(time.toDate()).format('MMM D YYYY')
+  }
 
   const handleCalculate = () => {
     let subTotal: number = 0;
@@ -121,11 +147,10 @@ const OrderItemComponent = (props: Props) => {
           }}
         >
           <TextComponent
-            text={`Order #${
-              order.id.length > 10
-                ? order.id.substring(0, 10) + '...'
-                : order.id
-            }`}
+            text={`Order #${order.id.length > 10
+              ? order.id.substring(0, 10) + '...'
+              : order.id
+              }`}
             size={sizes.bigText}
             font={fontFamillies.poppinsSemiBold}
           />
@@ -150,10 +175,9 @@ const OrderItemComponent = (props: Props) => {
             <RowComponent>
               <TextComponent text="Price: " size={sizes.smallText} />
               <TextComponent
-                text={`${
-                  handleCalculate() +
+                text={`${handleCalculate() +
                   (order.method === 'Next Day Delivery' ? 5 : 3)
-                }`}
+                  }`}
                 size={sizes.smallText}
                 font={fontFamillies.poppinsSemiBold}
               />
@@ -220,7 +244,10 @@ const OrderItemComponent = (props: Props) => {
                     text={_.title}
                     font={fontFamillies.poppinsSemiBold}
                   />
-                  <TextComponent text={_.description} color={colors.text} />
+                  <TextComponent
+                    text={`${showTime(`Order ${_.title}`)}`}
+                    color={colors.text}
+                  />
                 </RowComponent>
                 {index > 0 && (
                   <View

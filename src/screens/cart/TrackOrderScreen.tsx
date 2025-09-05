@@ -1,16 +1,19 @@
 import { Box, Diagram, Driving, ShieldTick, Xrp } from 'iconsax-react-native';
-import React from 'react';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import {
   Container,
-  OrderItemComponent,
   RowComponent,
   SectionComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamillies } from '../../constants/fontFamilies';
+import { getDocData } from '../../constants/getDocData';
 import { sizes } from '../../constants/sizes';
+import { FulfillmentModel } from '../../models/FulfillmentModel';
+import useFulfillmentStore from '../../zustand/store/useFulfillmentStore';
 
 const data = [
   {
@@ -50,6 +53,42 @@ const data = [
   },
 ];
 const TrackOrderScreen = ({ navigation }: any) => {
+  const { fulfillment } = useFulfillmentStore()
+
+
+  const [fulfillmentFully, setFulfillmentFully] = useState<FulfillmentModel>();
+
+  useEffect(() => {
+    if (fulfillment) {
+      getDocData({
+        id: fulfillment.id,
+        nameCollect: 'fulfillments',
+        setData: setFulfillmentFully
+      })
+    }
+  }, [fulfillment])
+
+  const showTime = (title: string) => {
+    if (fulfillmentFully) {
+      let time: any
+      switch (title) {
+        case 'Order placed':
+          time = fulfillmentFully.placed
+        case 'Order confirmed':
+          time = fulfillmentFully.confirmed
+        case 'Order shipped':
+          time = fulfillmentFully.shipped
+        case 'Order delivery':
+          time = fulfillmentFully.delivery
+        default:
+          time = fulfillmentFully.delivered
+      }
+
+      return (title === 'Order delivery' && fulfillmentFully.delivery === fulfillmentFully.placed)
+        || (title === 'Order delivered' && fulfillmentFully.delivered === fulfillmentFully.placed)
+        ? 'Pending' : moment(time.toDate()).format('MMM D YYYY')
+    }
+  }
   return (
     <Container bg={colors.background} back title="Track Order">
       <SectionComponent
@@ -59,7 +98,6 @@ const TrackOrderScreen = ({ navigation }: any) => {
           marginBottom: 0,
         }}
       >
-        {/* <OrderItemComponent code="Order #34534" notMore={true} /> */}
 
         <View
           style={{
@@ -114,7 +152,7 @@ const TrackOrderScreen = ({ navigation }: any) => {
                   font={fontFamillies.poppinsSemiBold}
                 />
                 <TextComponent
-                  text={_.description}
+                  text={`${showTime(`Order ${_.title}`)}`}
                   size={sizes.smallText}
                   color={colors.text}
                   font={fontFamillies.poppinsMedium}

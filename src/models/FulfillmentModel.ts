@@ -1,11 +1,13 @@
+import { FieldValue } from "@react-native-firebase/firestore";
+
 export interface FulfillmentModel {
   id: string;
   orderId: string;
-  placed: TimeAt;
-  confirmed: TimeAt;
-  shipped: TimeAt;
-  delivery: TimeAt;
-  delivered: TimeAt;
+  placed: TimeAt | FieldValue;
+  confirmed: TimeAt | FieldValue;
+  shipped: TimeAt | FieldValue;
+  delivery: TimeAt | FieldValue;
+  delivered: TimeAt | FieldValue;
 
   createAt?: CreateAt;
   updateAt?: UpdateAt;
