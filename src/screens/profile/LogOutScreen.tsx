@@ -1,3 +1,4 @@
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import React, { useState } from 'react';
 import { auth, signOut } from '../../../firebase.config';
 import {
@@ -9,10 +10,12 @@ import { colors } from '../../constants/colors';
 
 const LogOutScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
+
   const handleLogout = async () => {
     setIsLoading(true);
-    
+
     await signOut(auth);
+    await GoogleSignin.signOut();
     setIsLoading(false);
   };
   return (
