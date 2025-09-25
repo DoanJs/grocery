@@ -42,9 +42,10 @@ const MyOrderScreen = () => {
         }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          {orders.map((order, index) => (
-            <OrderItemComponent key={index} order={order} />
-          ))}
+          {orders.sort((a, b) => (b?.createAt?._seconds as number) - (a?.createAt?._seconds as number))
+            .map((order, index) => (
+              <OrderItemComponent key={index} order={order} />
+            ))}
         </ScrollView>
       </SectionComponent>
     </Container>

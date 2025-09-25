@@ -67,7 +67,7 @@ const TrackOrderScreen = ({ navigation }: any) => {
       })
     }
   }, [fulfillment])
-
+  
   const showTime = (title: string) => {
     if (fulfillmentFully) {
       let time: any

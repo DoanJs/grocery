@@ -3,6 +3,7 @@ import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -45,6 +46,7 @@ const HomeScreen = ({ navigation, route }: any) => {
   const { products, setProducts } = useProductStore();
   const { hearts, setHearts } = useHeartStore();
   const { carts, setCarts } = useCartStore();
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -182,7 +184,11 @@ const HomeScreen = ({ navigation, route }: any) => {
         </View>
       </SectionComponent>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={() => console.log('refreshed')} />
+      }
+      >
         <SectionComponent>
           <RowComponent justify="space-between">
             <TextComponent

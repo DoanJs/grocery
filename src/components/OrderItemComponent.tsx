@@ -25,33 +25,6 @@ interface Props {
   notMore?: boolean;
 }
 
-const data = [
-  {
-    title: 'Order placed',
-    description: 'Oct 19 2021',
-    status: true,
-  },
-  {
-    title: 'Order confirmed',
-    description: 'Oct 20 2021',
-    status: true,
-  },
-  {
-    title: 'Order shipped',
-    description: 'Oct 20 2021',
-    status: true,
-  },
-  {
-    title: 'Out for delivery',
-    description: 'pending',
-    status: false,
-  },
-  {
-    title: 'Order delivered',
-    description: 'pending',
-    status: false,
-  },
-];
 const OrderItemComponent = (props: Props) => {
   const navigation: any = useNavigation();
   const { products } = useProductStore();
@@ -81,19 +54,35 @@ const OrderItemComponent = (props: Props) => {
     switch (title) {
       case 'Order placed':
         time = fulfillments[0].placed
+        break
       case 'Order confirmed':
         time = fulfillments[0].confirmed
+        break
       case 'Order shipped':
         time = fulfillments[0].shipped
-      case 'Order delivery':
+        break
+      case 'Out for delivery':
         time = fulfillments[0].delivery
+        break
       default:
         time = fulfillments[0].delivered
+        break
     }
+    return title !== 'Order placed' && 
+    (convertTimeStamp(time).milliseconds === convertTimeStamp(fulfillments[0].placed).milliseconds
+    || convertTimeStamp(time).milliseconds > Date.now())
+      ? 'Pending' : convertTimeStamp(time, 'MMM D YYYY').timeDate
+  }
 
-    return (title === 'Order delivery' && fulfillments[0].delivery === fulfillments[0].placed)
-      || (title === 'Order delivered' && fulfillments[0].delivered === fulfillments[0].placed)
-      ? 'Pending' : moment(time.toDate()).format('MMM D YYYY')
+  const convertTimeStamp = (timestamp: any, formatMoment: string = 'MMMM DD YYYY') => {
+    const timeDate = moment(((timestamp._seconds as number) * 1000 + (timestamp._nanoseconds as number) / 1e6)).format(
+      formatMoment,
+    )
+    const milliseconds = (timestamp._seconds as number) * 1000 + ((timestamp._nanoseconds as number) / 1e6)
+    return {
+      timeDate,
+      milliseconds
+    }
   }
 
   const handleCalculate = () => {
@@ -155,9 +144,7 @@ const OrderItemComponent = (props: Props) => {
             font={fontFamillies.poppinsSemiBold}
           />
           <TextComponent
-            text={`Placed on ${moment(order?.createAt?.toDate()).format(
-              'MMMM D YYYY',
-            )}`}
+            text={`Placed on ${convertTimeStamp(order.createAt, 'MMMM D YYYY').timeDate}`}
             size={sizes.text}
             color={colors.text}
             font={fontFamillies.poppinsMedium}
@@ -220,7 +207,8 @@ const OrderItemComponent = (props: Props) => {
               padding: 20,
             }}
           >
-            {data.map((_, index) => (
+            {['Order placed', 'Order confirmed', 'Order shipped', 'Out of delivery', 'Order delivered']
+            .map((_, index) => (
               <View
                 key={index}
                 style={{
@@ -233,19 +221,19 @@ const OrderItemComponent = (props: Props) => {
                       height: 10,
                       width: 10,
                       borderRadius: 100,
-                      backgroundColor: _.status
-                        ? colors.primary
-                        : colors.border,
+                      backgroundColor: showTime(_) === 'Pending'
+                      ? colors.border
+                      : colors.primary,
                       marginRight: 10,
                     }}
                   />
                   <TextComponent
                     flex={1}
-                    text={_.title}
+                    text={_}
                     font={fontFamillies.poppinsSemiBold}
                   />
                   <TextComponent
-                    text={`${showTime(`Order ${_.title}`)}`}
+                    text={showTime(`${_}`)}
                     color={colors.text}
                   />
                 </RowComponent>
@@ -254,9 +242,9 @@ const OrderItemComponent = (props: Props) => {
                     style={{
                       height: 26,
                       width: 2,
-                      backgroundColor: _.status
-                        ? colors.primary
-                        : colors.border,
+                      backgroundColor: showTime(_) === 'Pending'
+                      ? colors.border
+                      : colors.primary,
                       position: 'absolute',
                       top: -14,
                       left: 4,
