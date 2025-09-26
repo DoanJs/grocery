@@ -16,6 +16,7 @@ const LogOutScreen = () => {
 
     await signOut(auth);
     await GoogleSignin.signOut();
+    await GoogleSignin.revokeAccess()
     setIsLoading(false);
   };
   return (

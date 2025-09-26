@@ -37,6 +37,13 @@
             {
               "client_id": "225425706491-qd8o8iftv938l2c9onale56v0p4crm7c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "225425706491-crtd9f5jcpjj8j8m08a56ke9mah1ce49.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.Grocery"
+              }
             }
           ]
         }

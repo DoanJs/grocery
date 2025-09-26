@@ -23,7 +23,7 @@ const signInWithGoogle = async () => {
     // await signOut(auth);
 
     // // B2: đảm bảo Google Play Services ok
-    // await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
   // Step 1 - Google sign in (OAuth)
   const userInfo: SignInResponse = await GoogleSignin.signIn();
