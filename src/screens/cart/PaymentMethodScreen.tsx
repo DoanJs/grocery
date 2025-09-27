@@ -19,7 +19,7 @@ import {
   View,
 } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
-import cardPhysical from '../../assests/images/cardPhysical.png';
+import cardPhysical from '../../assets/images/cardPhysical.png';
 import {
   BtnShadowLinearComponent,
   CheckedButtonComponent,

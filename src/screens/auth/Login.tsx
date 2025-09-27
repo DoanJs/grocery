@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ImageBackground, TouchableOpacity, View } from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { auth, signInWithEmailAndPassword } from '../../../firebase.config';
-import welcomeBackPng from '../../assests/images/welcomeBack.png';
+import welcomeBackPng from '../../assets/images/welcomeBack.png';
 import {
   BtnShadowLinearComponent,
   CheckedButtonComponent,

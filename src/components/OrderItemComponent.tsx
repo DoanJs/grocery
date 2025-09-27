@@ -10,7 +10,7 @@ import {
   SpaceComponent,
   TextComponent,
 } from '.';
-import myOrder from '../assests/images/myOrder.png';
+import myOrder from '../assets/images/myOrder.png';
 import { colors } from '../constants/colors';
 import { fontFamillies } from '../constants/fontFamilies';
 import { getDocsData } from '../constants/getDocsData';

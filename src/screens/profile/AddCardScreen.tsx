@@ -8,7 +8,7 @@ import {
 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, View } from 'react-native';
-import cardPhysical from '../../assests/images/cardPhysical.png';
+import cardPhysical from '../../assets/images/cardPhysical.png';
 import {
   BtnShadowLinearComponent,
   CheckedButtonComponent,

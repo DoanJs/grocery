@@ -1,9 +1,9 @@
 import { ArrowLeft } from 'iconsax-react-native';
 import React from 'react';
 import { Image, ImageBackground, TouchableOpacity, View } from 'react-native';
-import googlePng from '../../assests/images/google.png';
-import userPng from '../../assests/images/user.png';
-import welcomeImg from '../../assests/images/welcome.png';
+import googlePng from '../../assets/images/google.png';
+import userPng from '../../assets/images/user.png';
+import welcomeImg from '../../assets/images/welcome.png';
 import {
   BtnShadowLinearComponent,
   ButtonComponent,

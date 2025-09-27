@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { auth } from '../../../firebase.config';
-import swiper01Png from '../../assests/images/swiper01.png';
-import swiper02Png from '../../assests/images/swiper02.png';
-import swiper03Png from '../../assests/images/swiper03.png';
-import swiper04Png from '../../assests/images/swiper04.png';
+import swiper01Png from '../../assets/images/swiper01.png';
+import swiper02Png from '../../assets/images/swiper02.png';
+import swiper03Png from '../../assets/images/swiper03.png';
+import swiper04Png from '../../assets/images/swiper04.png';
 import {
   CategoryItem,
   Container,

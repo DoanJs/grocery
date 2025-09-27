@@ -13,7 +13,7 @@ import {
   createUserWithEmailAndPassword,
   db,
 } from '../../../firebase.config';
-import createAccountPng from '../../assests/images/createAccount.png';
+import createAccountPng from '../../assets/images/createAccount.png';
 import {
   BtnShadowLinearComponent,
   InputComponent,

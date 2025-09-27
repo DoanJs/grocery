@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-swiper';
-import appleImg from '../../assests/images/apple.png';
-import bigCartImg from '../../assests/images/bigCart.png';
-import breadImg from '../../assests/images/bread.png';
-import cookImg from '../../assests/images/cook.png';
-import eggImg from '../../assests/images/egg.png';
-import lemonImg from '../../assests/images/lemon.png';
-import milkImg from '../../assests/images/milk.png';
-import motobikeImg from '../../assests/images/motobike.png';
-import orangeImg from '../../assests/images/orange.png';
-import phoneImg from '../../assests/images/phone.png';
-import shrimpImg from '../../assests/images/shrimp.png';
-import vegetableImg from '../../assests/images/vegetable.png';
+import appleImg from '../../assets/images/apple.png';
+import bigCartImg from '../../assets/images/bigCart.png';
+import breadImg from '../../assets/images/bread.png';
+import cookImg from '../../assets/images/cook.png';
+import eggImg from '../../assets/images/egg.png';
+import lemonImg from '../../assets/images/lemon.png';
+import milkImg from '../../assets/images/milk.png';
+import motobikeImg from '../../assets/images/motobike.png';
+import orangeImg from '../../assets/images/orange.png';
+import phoneImg from '../../assets/images/phone.png';
+import shrimpImg from '../../assets/images/shrimp.png';
+import vegetableImg from '../../assets/images/vegetable.png';
 import {
   BtnShadowLinearComponent,
   RowComponent,

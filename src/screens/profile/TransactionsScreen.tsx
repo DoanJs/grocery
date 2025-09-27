@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, View } from 'react-native';
-import masterCard from '../../assests/images/masterCard.png';
-import paypalCard from '../../assests/images/paypalCard.png';
-import visaCard from '../../assests/images/visaCard.png';
+import masterCard from '../../assets/images/masterCard.png';
+import paypalCard from '../../assets/images/paypalCard.png';
+import visaCard from '../../assets/images/visaCard.png';
 import {
   Container,
   RowComponent,
