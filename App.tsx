@@ -1,9 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { auth, getFCMToken, onAuthStateChanged, requestUserPermission } from './firebase.config';
+import Toast from 'react-native-toast-message';
+import { auth, checkInitialNotification, getFCMToken, listenForegroundMessages, listenNotificationOpenedApp, onAuthStateChanged, requestUserPermission } from './firebase.config';
 import AuthNavigator from './src/router/AuthNavigator';
 import MainNavigator from './src/router/MainNavigator';
 import SplashScreen from './src/screens/SplashScreen';
+import { createAndroidChannel } from './src/constants/channelNotifee';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,18 +19,19 @@ const App = () => {
     return () => clearTimeout(timeout);
   }, []);
 
- useEffect(() => {
+  useEffect(() => {
     async function initMessaging() {
       const granted = await requestUserPermission();
       if (granted) {
         await getFCMToken();
       }
-      // listenForegroundMessages();
+      listenForegroundMessages();
       // listenNotificationOpenedApp();
       // checkInitialNotification();
     }
 
     initMessaging();
+    createAndroidChannel()
   }, []);
 
   useEffect(() => {
@@ -50,6 +53,8 @@ const App = () => {
       ) : (
         <AuthNavigator />
       )}
+
+      <Toast />
     </NavigationContainer>
   );
 };

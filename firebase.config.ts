@@ -25,6 +25,7 @@ import {
   SignInResponse,
 } from '@react-native-google-signin/google-signin';
 import { Alert, PermissionsAndroid, Platform } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -91,11 +92,13 @@ const getFCMToken = async () => {
       await AsyncStorage.setItem('fcmtoken', token);
       updateToken(token)
     }
-    console.log('🔑 FCM Token:', token);
     return token;
   }
 };
 
+/**
+ * Update FCM Token của thiết bị vào user
+ */
 const updateToken = async (token: string) => {
   const user = auth.currentUser;
 
@@ -120,10 +123,16 @@ const updateToken = async (token: string) => {
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
     console.log('📩 Foreground notification:', remoteMessage);
-    Alert.alert(
-      remoteMessage.notification?.title ?? 'Thông báo',
-      remoteMessage.notification?.body ?? '',
-    );
+    // Alert.alert(
+    //   remoteMessage.notification?.title ?? 'Thông báo',
+    //   remoteMessage.notification?.body ?? '',
+    // );
+    Toast.show({
+      type: 'success',
+      text1: 'Hello',
+      text2: 'This is listenForegroundMessages 👋'
+    });
+    
   });
 };
 
@@ -160,7 +169,10 @@ export {
   getFCMToken,
   onAuthStateChanged,
   requestUserPermission,
+  listenForegroundMessages,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
+  listenNotificationOpenedApp,
+  checkInitialNotification
 };
