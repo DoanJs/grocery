@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { auth, onAuthStateChanged } from './firebase.config';
+import { auth, getFCMToken, onAuthStateChanged, requestUserPermission } from './firebase.config';
 import AuthNavigator from './src/router/AuthNavigator';
 import MainNavigator from './src/router/MainNavigator';
 import SplashScreen from './src/screens/SplashScreen';
@@ -15,6 +15,20 @@ const App = () => {
     }, 1500);
 
     return () => clearTimeout(timeout);
+  }, []);
+
+ useEffect(() => {
+    async function initMessaging() {
+      const granted = await requestUserPermission();
+      if (granted) {
+        await getFCMToken();
+      }
+      // listenForegroundMessages();
+      // listenNotificationOpenedApp();
+      // checkInitialNotification();
+    }
+
+    initMessaging();
   }, []);
 
   useEffect(() => {

@@ -43,6 +43,7 @@ const ReviewsScreen = ({ navigation, route }: any) => {
     }
   }, [comments, users]);
 
+
   return (
     <Container
       bg={colors.background}

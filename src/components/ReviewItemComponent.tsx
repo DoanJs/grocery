@@ -19,6 +19,7 @@ interface Props {
 
 const ReviewItemComponent = (props: Props) => {
   const { user, comment } = props;
+
   return (
     <SectionComponent
       styles={{

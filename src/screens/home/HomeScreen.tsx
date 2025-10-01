@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { where } from '@react-native-firebase/firestore';
 import { ArrowRight2, SearchNormal1, Setting5 } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
@@ -134,6 +135,12 @@ const HomeScreen = ({ navigation, route }: any) => {
               size={sizes.bigText}
             />
           </RowComponent>
+
+          {/*  */}
+          <RowComponent onPress={async () => await AsyncStorage.clear()}>
+            <TextComponent text="Reset Asyncstorage" />
+          </RowComponent>
+          {/*  */}
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('FilterScreen', {
@@ -184,10 +191,14 @@ const HomeScreen = ({ navigation, route }: any) => {
         </View>
       </SectionComponent>
 
-      <ScrollView showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={() => console.log('refreshed')} />
-      }
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => console.log('refreshed')}
+          />
+        }
       >
         <SectionComponent>
           <RowComponent justify="space-between">
