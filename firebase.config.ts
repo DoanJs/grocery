@@ -1,3 +1,4 @@
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp } from '@react-native-firebase/app';
 import {
@@ -9,7 +10,13 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from '@react-native-firebase/auth';
-import { arrayUnion, doc, getDoc, getFirestore, updateDoc } from '@react-native-firebase/firestore';
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+} from '@react-native-firebase/firestore';
 import {
   AuthorizationStatus,
   getInitialNotification,
@@ -24,8 +31,7 @@ import {
   GoogleSignin,
   SignInResponse,
 } from '@react-native-google-signin/google-signin';
-import { Alert, PermissionsAndroid, Platform } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -85,12 +91,12 @@ const requestUserPermission = async () => {
  */
 const getFCMToken = async () => {
   const fcmtoken = await AsyncStorage.getItem('fcmtoken');
-  
+
   if (!fcmtoken) {
     const token = await getToken(messaging);
     if (token) {
       await AsyncStorage.setItem('fcmtoken', token);
-      updateToken(token)
+      updateToken(token);
     }
     return token;
   }
@@ -107,12 +113,9 @@ const updateToken = async (token: string) => {
     const data = docSnap.data();
 
     if (!data?.tokens || !data?.tokens.includes(token)) {
-      await updateDoc(
-        doc(db, 'users', user?.uid as string),
-        {
-          tokens: arrayUnion(token)
-        }
-      );
+      await updateDoc(doc(db, 'users', user?.uid as string), {
+        tokens: arrayUnion(token),
+      });
     }
   }
 };
@@ -122,17 +125,22 @@ const updateToken = async (token: string) => {
  */
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
-    console.log('📩 Foreground notification:', remoteMessage);
-    // Alert.alert(
-    //   remoteMessage.notification?.title ?? 'Thông báo',
-    //   remoteMessage.notification?.body ?? '',
-    // );
-    Toast.show({
-      type: 'success',
-      text1: 'Hello',
-      text2: 'This is listenForegroundMessages 👋'
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH,
     });
-    
+    // Hiển thị thông báo
+    await notifee.displayNotification({
+      title: 'Thông báo',
+      body: remoteMessage.notification?.body ?? '',
+      android: {
+        channelId,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
   });
 };
 
@@ -140,8 +148,24 @@ const listenForegroundMessages = async () => {
  * Khi user click thông báo lúc app đang background
  */
 const listenNotificationOpenedApp = async () => {
-  onNotificationOpenedApp(messaging, remoteMessage => {
-    console.log('📩 Opened from background:', remoteMessage.notification);
+  onNotificationOpenedApp(messaging, async remoteMessage => {
+    // const channelId = await notifee.createChannel({
+    //   id: 'default',
+    //   name: 'Default Channel',
+    //   importance: AndroidImportance.HIGH,
+    // });
+    // // Hiển thị thông báo
+    // await notifee.displayNotification({
+    //   title: 'Background',
+    //   body: remoteMessage.notification?.body ?? '',
+    //   android: {
+    //     channelId,
+    //     pressAction: {
+    //       id: 'default',
+    //     },
+    //   },
+    // });
+    console.log('background');
   });
 };
 
@@ -151,7 +175,23 @@ const listenNotificationOpenedApp = async () => {
 const checkInitialNotification = async () => {
   const remoteMessage = await getInitialNotification(messaging);
   if (remoteMessage) {
-    console.log('📩 Opened from quit:', remoteMessage.notification);
+    // const channelId = await notifee.createChannel({
+    //   id: 'default',
+    //   name: 'Default Channel',
+    //   importance: AndroidImportance.HIGH,
+    // });
+    // // Hiển thị thông báo
+    // await notifee.displayNotification({
+    //   title: 'Kill',
+    //   body: remoteMessage.notification?.body ?? '',
+    //   android: {
+    //     channelId,
+    //     pressAction: {
+    //       id: 'default',
+    //     },
+    //   },
+    // });
+    console.log('Kill');
   }
 };
 
@@ -160,19 +200,35 @@ const checkInitialNotification = async () => {
  */
 setBackgroundMessageHandler(messaging, async remoteMessage => {
   console.log('📩 Background notification:', remoteMessage);
+  // const channelId = await notifee.createChannel({
+  //   id: 'default',
+  //   name: 'Default Channel',
+  //   importance: AndroidImportance.HIGH,
+  // });
+  // // Hiển thị thông báo
+  // await notifee.displayNotification({
+  //   title: 'background && Kill',
+  //   body: remoteMessage.notification?.body ?? '',
+  //   android: {
+  //     channelId,
+  //     pressAction: {
+  //       id: 'default',
+  //     },
+  //   },
+  // });
 });
 
 export {
   auth,
+  checkInitialNotification,
   createUserWithEmailAndPassword,
   db,
   getFCMToken,
+  listenForegroundMessages,
+  listenNotificationOpenedApp,
   onAuthStateChanged,
   requestUserPermission,
-  listenForegroundMessages,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
-  listenNotificationOpenedApp,
-  checkInitialNotification
 };
