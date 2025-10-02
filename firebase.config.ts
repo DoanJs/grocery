@@ -126,7 +126,7 @@ const updateToken = async (token: string) => {
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
     const channelId = await notifee.createChannel({
-      id: 'default',
+      id: `default - ${Date.now()}`,
       name: 'Default Channel',
       importance: AndroidImportance.HIGH,
     });
@@ -139,6 +139,7 @@ const listenForegroundMessages = async () => {
         pressAction: {
           id: 'default',
         },
+        // smallIcon: 'default', 
       },
     });
   });

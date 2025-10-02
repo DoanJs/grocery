@@ -1,4 +1,3 @@
-import notifee, { EventType } from '@notifee/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,6 +9,7 @@ import {
   onAuthStateChanged,
   requestUserPermission,
 } from './firebase.config';
+import linking from './src/linking';
 import AuthNavigator from './src/router/AuthNavigator';
 import MainNavigator from './src/router/MainNavigator';
 import SplashScreen from './src/screens/SplashScreen';
@@ -33,20 +33,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = notifee.onForegroundEvent(({ type, detail }) => {
-      console.log('Foreground Event:', type, detail);
-
-      if (type === EventType.PRESS) {
-        console.log('User pressed notification (foreground)');
-      }
-    });
-
-    return () => {
-      unsubscribe(); // cleanup
-    };
-  }, []);
-
-  useEffect(() => {
     const timeout = setTimeout(() => {
       setIsWellcome(false);
     }, 1500);
@@ -65,7 +51,7 @@ const App = () => {
   }, [isLoading]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {isWellcome ? (
         <SplashScreen />
       ) : isLoading ? (

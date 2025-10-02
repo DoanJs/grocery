@@ -7,7 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { auth } from '../../../firebase.config';
@@ -147,6 +147,13 @@ const HomeScreen = ({ navigation, route }: any) => {
         </RowComponent>
       </SectionComponent>
 
+      {/* <RowComponent onPress={ () => {
+        Linking.openURL('grocery://product/6tY45jzpCJqoihWlopR0')
+        console.log('linking')
+      }}>
+        <TextComponent text='linking' />
+      </RowComponent> */}
+
       <SectionComponent
         styles={{
           height: '30%',
@@ -234,7 +241,7 @@ const HomeScreen = ({ navigation, route }: any) => {
               font={fontFamillies.poppinsBold}
               size={sizes.thinTitle}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <ArrowRight2 size={sizes.thinTitle} color={colors.text} />
             </TouchableOpacity>
           </RowComponent>
