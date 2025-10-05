@@ -5,7 +5,6 @@ import {
   checkInitialNotification,
   getFCMToken,
   listenForegroundMessages,
-  listenNotificationOpenedApp,
   onAuthStateChanged,
   requestUserPermission,
 } from './firebase.config';
@@ -25,7 +24,6 @@ const App = () => {
         await getFCMToken();
       }
       listenForegroundMessages();
-      listenNotificationOpenedApp();
       checkInitialNotification();
     }
 
