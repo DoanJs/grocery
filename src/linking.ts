@@ -3,8 +3,8 @@ const linking = {
   prefixes: ['grocery://'],
   config: {
     screens: {
-      ProductDetailsScreen: 'product/:productId',
-      
+      // ProductDetailsScreen: 'product/:productId',
+      ReviewsScreen:'product/review/:productId'
     },
   },
 };

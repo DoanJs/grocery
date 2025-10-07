@@ -31,7 +31,7 @@ import {
   GoogleSignin,
   SignInResponse,
 } from '@react-native-google-signin/google-signin';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Linking, PermissionsAndroid, Platform } from 'react-native';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -125,99 +125,38 @@ const updateToken = async (token: string) => {
  */
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
+    const { title, body, id, type }: any = remoteMessage.data;
     const channelId = await notifee.createChannel({
-      id: `default - ${Date.now()}`,
+      id: `default`,
       name: 'Default Channel',
       importance: AndroidImportance.HIGH,
     });
     // Hiển thị thông báo
     await notifee.displayNotification({
-      title: 'Thông báo',
-      body: remoteMessage.notification?.body ?? '',
+      title: title ?? 'Thông báo',
+      body: body ?? '',
+      data: remoteMessage.data ?? {},
       android: {
         channelId,
         pressAction: {
           id: 'default',
         },
-        // smallIcon: 'default', 
       },
     });
   });
 };
-
-/**
- * Khi user click thông báo lúc app đang background
- */
-const listenNotificationOpenedApp = async () => {
-  onNotificationOpenedApp(messaging, async remoteMessage => {
-    // const channelId = await notifee.createChannel({
-    //   id: 'default',
-    //   name: 'Default Channel',
-    //   importance: AndroidImportance.HIGH,
-    // });
-    // // Hiển thị thông báo
-    // await notifee.displayNotification({
-    //   title: 'Background',
-    //   body: remoteMessage.notification?.body ?? '',
-    //   android: {
-    //     channelId,
-    //     pressAction: {
-    //       id: 'default',
-    //     },
-    //   },
-    // });
-    console.log('background');
-  });
-};
-
 /**
  * Khi user click thông báo lúc app đang quit
  */
 const checkInitialNotification = async () => {
   const remoteMessage = await getInitialNotification(messaging);
   if (remoteMessage) {
-    // const channelId = await notifee.createChannel({
-    //   id: 'default',
-    //   name: 'Default Channel',
-    //   importance: AndroidImportance.HIGH,
-    // });
-    // // Hiển thị thông báo
-    // await notifee.displayNotification({
-    //   title: 'Kill',
-    //   body: remoteMessage.notification?.body ?? '',
-    //   android: {
-    //     channelId,
-    //     pressAction: {
-    //       id: 'default',
-    //     },
-    //   },
-    // });
-    console.log('Kill');
+    const { data } = remoteMessage;
+    if (data && data.type === 'review') {
+      Linking.openURL(`grocery://product/review/${data.id}`);
+    }
   }
 };
-
-/**
- * Xử lý thông báo background (Android)
- */
-setBackgroundMessageHandler(messaging, async remoteMessage => {
-  console.log('📩 Background notification:', remoteMessage);
-  // const channelId = await notifee.createChannel({
-  //   id: 'default',
-  //   name: 'Default Channel',
-  //   importance: AndroidImportance.HIGH,
-  // });
-  // // Hiển thị thông báo
-  // await notifee.displayNotification({
-  //   title: 'background && Kill',
-  //   body: remoteMessage.notification?.body ?? '',
-  //   android: {
-  //     channelId,
-  //     pressAction: {
-  //       id: 'default',
-  //     },
-  //   },
-  // });
-});
 
 export {
   auth,
@@ -226,10 +165,10 @@ export {
   db,
   getFCMToken,
   listenForegroundMessages,
-  listenNotificationOpenedApp,
   onAuthStateChanged,
   requestUserPermission,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
+  messaging
 };

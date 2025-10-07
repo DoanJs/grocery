@@ -8,12 +8,12 @@ import {
 } from '../../components';
 import { colors } from '../../constants/colors';
 import { getDocsData } from '../../constants/getDocsData';
+import { CommentModel } from '../../models/CommentModel';
 import { UserModel } from '../../models/UserModel';
-import useCommentStore from '../../zustand/store/useCommentStore';
 
 const ReviewsScreen = ({ navigation, route }: any) => {
   const { productId } = route.params;
-  const { comments } = useCommentStore();
+  const [comments, setComments] = useState<CommentModel[]>([]);
   const [users, setUsers] = useState<UserModel[]>([]);
   const [cmtUsers, setCmtUsers] = useState<any[]>([]);
 
@@ -22,6 +22,10 @@ const ReviewsScreen = ({ navigation, route }: any) => {
       getDocsData({
         nameCollect: 'users',
         setData: setUsers,
+      });
+      getDocsData({
+        nameCollect: 'comments',
+        setData: setComments,
       });
     }
   }, [productId]);

@@ -36,6 +36,8 @@ import useCartStore from '../../zustand/store/useCartStore';
 import useHeartStore from '../../zustand/store/useHeartStore';
 import useProductStore from '../../zustand/store/useProductStore';
 import useUserStore from '../../zustand/store/useUserStore';
+import { getFunctions, httpsCallable } from '@react-native-firebase/functions';
+
 
 const HomeScreen = ({ navigation, route }: any) => {
   const user = auth.currentUser;
@@ -110,6 +112,26 @@ const HomeScreen = ({ navigation, route }: any) => {
       setProducts(result);
     }
   }, [productsData, params]);
+
+  const triggerNotification = async () => {
+    const sendPush = httpsCallable(
+      getFunctions(undefined, 'asia-southeast1'),
+      'sendPushNotification',
+    );
+
+    try {
+      await sendPush({
+        title: 'Xin chào!',
+        body: 'Đây là thông báo thử nghiệm từ Cloud Function v2',
+        token:
+          'eWbHpZfZSg6iCebAVtv4X3:APA91bF-A0v52KWjVDKv9_y1Sr_GzAV9VROfAUcdEAYQfoJTA2zQ9oKTnZN9fF8MhXdsaGHIp0pkdaDe02Lgabembxcdo9XC8RlUWE0DW5AvQvs5n80Y0es',
+        type: 'review',
+        id: '6tY45jzpCJqoihWlopR0',
+      });
+    } catch (error) {
+      console.error('Error calling function:', error);
+    }
+  };
 
   return (
     <Container>
@@ -246,6 +268,10 @@ const HomeScreen = ({ navigation, route }: any) => {
             </TouchableOpacity>
           </RowComponent>
         </SectionComponent>
+
+        <RowComponent justify='center' onPress={triggerNotification}>
+          <TextComponent text='Send' size={32}/>
+        </RowComponent>
 
         <View
           style={{
