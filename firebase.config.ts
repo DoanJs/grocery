@@ -138,6 +138,7 @@ const listenForegroundMessages = async () => {
       data: remoteMessage.data ?? {},
       android: {
         channelId,
+        smallIcon: 'ic_stat_notification', // 👈 tên file bạn đã đặt
         pressAction: {
           id: 'default',
         },
