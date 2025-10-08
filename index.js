@@ -8,6 +8,7 @@ import { AppRegistry, Linking } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 import { messaging } from './firebase.config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 getApp()
 
@@ -60,6 +61,8 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { data } = detail.notification;
   if (type === EventType.PRESS) {
     if (data && data.type === 'review') {
+      await AsyncStorage.setItem('last_notification_data', JSON.stringify(detail.notification.data));
+  
       Linking.openURL(`grocery://product/review/${data.id}`);
     }
   }

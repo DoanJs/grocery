@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { Linking } from 'react-native';
 import {
   auth,
   checkInitialNotification,
@@ -16,6 +18,25 @@ import SplashScreen from './src/screens/SplashScreen';
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isWellcome, setIsWellcome] = useState(false);
+
+  useEffect(() => {
+    const checkNotificationLaunch = async () => {
+      const stored = await AsyncStorage.getItem('last_notification_data');
+      if (stored) {
+        const data = JSON.parse(stored);
+        await AsyncStorage.removeItem('last_notification_data'); // clear sau khi đọc
+
+        // ✅ Điều hướng tới trang chi tiết
+        if (data && data.type === 'review') {
+          setTimeout(() => {
+            Linking.openURL(`grocery://product/review/${data.id}`);
+          }, 500); // delay để đảm bảo NavigationContainer đã mount
+        }
+      }
+    };
+
+    checkNotificationLaunch();
+  }, []);
 
   useEffect(() => {
     async function initMessaging() {
