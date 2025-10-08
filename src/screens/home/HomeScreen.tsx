@@ -37,6 +37,7 @@ import useHeartStore from '../../zustand/store/useHeartStore';
 import useProductStore from '../../zustand/store/useProductStore';
 import useUserStore from '../../zustand/store/useUserStore';
 import { getFunctions, httpsCallable } from '@react-native-firebase/functions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const HomeScreen = ({ navigation, route }: any) => {
@@ -124,7 +125,7 @@ const HomeScreen = ({ navigation, route }: any) => {
         title: 'Xin chào!',
         body: 'Đây là thông báo thử nghiệm từ Cloud Function v2',
         token:
-          'fY1FM3EuToGNUHNiFHBwZ3:APA91bGlcWzgl3ApXXN3xQsilkddHWZi_N1BtV8KR_YC06ZRaRateuJkys9sXsmcgB2tQG6q9e30R2waTtihTMlyJG9CWhAqZ8bR_rCKiLE4znbiT3sNWGE',
+          'disnOxI-Sje0PDQ2DtAGQ-:APA91bHfOI7HqG2QBvodz81cVFuT9uszy1sz-OkFGWUONXooFkiq9fmf8kj7ArTBagl-TN2RTSnU20B5ngdiFEBhuanUGjIRZ5lSrhM4mE2lc4U5-mOIbgI',
         type: 'review',
         id: '6tY45jzpCJqoihWlopR0',
       });
@@ -168,13 +169,6 @@ const HomeScreen = ({ navigation, route }: any) => {
           </TouchableOpacity>
         </RowComponent>
       </SectionComponent>
-
-      {/* <RowComponent onPress={ () => {
-        Linking.openURL('grocery://product/6tY45jzpCJqoihWlopR0')
-        console.log('linking')
-      }}>
-        <TextComponent text='linking' />
-      </RowComponent> */}
 
       <SectionComponent
         styles={{
@@ -270,8 +264,13 @@ const HomeScreen = ({ navigation, route }: any) => {
         </SectionComponent>
 
         <RowComponent justify='center' onPress={triggerNotification}>
-          <TextComponent text='Send' size={32}/>
+          <TextComponent text='Send' size={20}/>
         </RowComponent>
+        {/* <RowComponent justify='center' onPress={async () => {
+          await AsyncStorage.clear()
+        }}>
+          <TextComponent text='Clear Asynstorage' size={20}/>
+        </RowComponent> */}
 
         <View
           style={{

@@ -121,41 +121,17 @@ const updateToken = async (token: string) => {
 };
 
 
-export async function saveMessage(remoteMessage: any) {
-  const oldMessages = JSON.parse(await AsyncStorage.getItem('messages') || '[]');
-
-  const message = {
-    id: remoteMessage.messageId || String(Date.now()),
-    sender: remoteMessage.sender || 'Người lạ',
-    text: remoteMessage.text || '',
-    avatar: remoteMessage.avatar,
-    conversationId: remoteMessage.conversationId || 'default',
-    timestamp: Date.now(),
-  };
-
-  const newMessages = [...oldMessages, message];
-  await AsyncStorage.setItem('messages', JSON.stringify(newMessages));
-  return newMessages;
-}
-
-
 /**
  * Lắng nghe notification khi app foreground
  */
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
     const { title, body, id, type }: any = remoteMessage.data;
-    const messages = await saveMessage(remoteMessage);
-    // Lấy 5 tin nhắn cuối để hiển thị
-    const lines = messages.slice(-5).map(msg => `${msg.sender}: ${msg.text}`);
-    await notifee.cancelAllNotifications()
     // Hiển thị thông báo
     await notifee.displayNotification({
       id: String(Date.now()),
-      // title: title ?? 'Thông báo',
-      // body: body ?? '',
-      title: `${messages.length} tin nhắn mới`,
-      body: lines.join('\n'),
+      title: title ?? 'Thông báo',
+      body: body ?? '',
       data: remoteMessage.data ?? {},
       android: {
         channelId: 'default',
@@ -167,7 +143,6 @@ const listenForegroundMessages = async () => {
         pressAction: {
           id: 'default',
         },
-        style: { type: AndroidStyle.INBOX, lines: lines },
       },
     });
   });
