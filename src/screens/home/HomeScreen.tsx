@@ -124,7 +124,7 @@ const HomeScreen = ({ navigation, route }: any) => {
         title: 'Xin chào!',
         body: 'Đây là thông báo thử nghiệm từ Cloud Function v2',
         token:
-          'eWbHpZfZSg6iCebAVtv4X3:APA91bF-A0v52KWjVDKv9_y1Sr_GzAV9VROfAUcdEAYQfoJTA2zQ9oKTnZN9fF8MhXdsaGHIp0pkdaDe02Lgabembxcdo9XC8RlUWE0DW5AvQvs5n80Y0es',
+          'fY1FM3EuToGNUHNiFHBwZ3:APA91bGlcWzgl3ApXXN3xQsilkddHWZi_N1BtV8KR_YC06ZRaRateuJkys9sXsmcgB2tQG6q9e30R2waTtihTMlyJG9CWhAqZ8bR_rCKiLE4znbiT3sNWGE',
         type: 'review',
         id: '6tY45jzpCJqoihWlopR0',
       });

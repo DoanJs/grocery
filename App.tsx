@@ -14,10 +14,22 @@ import linking from './src/linking';
 import AuthNavigator from './src/router/AuthNavigator';
 import MainNavigator from './src/router/MainNavigator';
 import SplashScreen from './src/screens/SplashScreen';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isWellcome, setIsWellcome] = useState(false);
+
+  // Khi app khởi chạy (ví dụ trong App.tsx)
+  useEffect(() => {
+    notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH, // 👈 cực kỳ quan trọng
+      vibration: true,
+      sound: 'default', // 👈 thêm dòng này để Android cho heads-up popup
+    });
+  }, []);
 
   useEffect(() => {
     const checkNotificationLaunch = async () => {

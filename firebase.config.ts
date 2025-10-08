@@ -1,4 +1,4 @@
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp } from '@react-native-firebase/app';
 import {
@@ -23,15 +23,15 @@ import {
   getMessaging,
   getToken,
   onMessage,
-  onNotificationOpenedApp,
-  requestPermission,
-  setBackgroundMessageHandler,
+  requestPermission
 } from '@react-native-firebase/messaging';
 import {
   GoogleSignin,
   SignInResponse,
 } from '@react-native-google-signin/google-signin';
 import { Linking, PermissionsAndroid, Platform } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
+import Logo from './src/assets/images/logo.png';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -120,28 +120,54 @@ const updateToken = async (token: string) => {
   }
 };
 
+
+export async function saveMessage(remoteMessage: any) {
+  const oldMessages = JSON.parse(await AsyncStorage.getItem('messages') || '[]');
+
+  const message = {
+    id: remoteMessage.messageId || String(Date.now()),
+    sender: remoteMessage.sender || 'Người lạ',
+    text: remoteMessage.text || '',
+    avatar: remoteMessage.avatar,
+    conversationId: remoteMessage.conversationId || 'default',
+    timestamp: Date.now(),
+  };
+
+  const newMessages = [...oldMessages, message];
+  await AsyncStorage.setItem('messages', JSON.stringify(newMessages));
+  return newMessages;
+}
+
+
 /**
  * Lắng nghe notification khi app foreground
  */
 const listenForegroundMessages = async () => {
   onMessage(messaging, async remoteMessage => {
     const { title, body, id, type }: any = remoteMessage.data;
-    const channelId = await notifee.createChannel({
-      id: `default`,
-      name: 'Default Channel',
-      importance: AndroidImportance.HIGH,
-    });
+    const messages = await saveMessage(remoteMessage);
+    // Lấy 5 tin nhắn cuối để hiển thị
+    const lines = messages.slice(-5).map(msg => `${msg.sender}: ${msg.text}`);
+    await notifee.cancelAllNotifications()
     // Hiển thị thông báo
     await notifee.displayNotification({
-      title: title ?? 'Thông báo',
-      body: body ?? '',
+      id: String(Date.now()),
+      // title: title ?? 'Thông báo',
+      // body: body ?? '',
+      title: `${messages.length} tin nhắn mới`,
+      body: lines.join('\n'),
       data: remoteMessage.data ?? {},
       android: {
-        channelId,
-        smallIcon: 'ic_stat_notification', // 👈 tên file bạn đã đặt
+        channelId: 'default',
+        smallIcon: 'ic_notification_transparent', // 👈 tên file bạn đã đặt
+        color: '#FF0000', // 👈 đổi màu accent (màu nền của icon)
+        importance: AndroidImportance.HIGH, // vẫn giữ
+        largeIcon: Logo, // logo app, hiển thị to bên phải
+        sound: 'default',
         pressAction: {
           id: 'default',
         },
+        style: { type: AndroidStyle.INBOX, lines: lines },
       },
     });
   });
@@ -165,11 +191,10 @@ export {
   createUserWithEmailAndPassword,
   db,
   getFCMToken,
-  listenForegroundMessages,
-  onAuthStateChanged,
+  listenForegroundMessages, messaging, onAuthStateChanged,
   requestUserPermission,
   signInWithEmailAndPassword,
   signInWithGoogle,
-  signOut,
-  messaging
+  signOut
 };
+
