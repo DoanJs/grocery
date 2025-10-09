@@ -7,6 +7,7 @@ import {
   SectionComponent,
 } from '../../components';
 import { colors } from '../../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LogOutScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,7 @@ const LogOutScreen = () => {
     await signOut(auth);
     await GoogleSignin.signOut();
     await GoogleSignin.revokeAccess()
+    await AsyncStorage.clear();
     setIsLoading(false);
   };
   return (

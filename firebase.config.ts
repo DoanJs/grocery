@@ -1,4 +1,4 @@
-import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp } from '@react-native-firebase/app';
 import {
@@ -23,14 +23,13 @@ import {
   getMessaging,
   getToken,
   onMessage,
-  requestPermission
+  requestPermission,
 } from '@react-native-firebase/messaging';
 import {
   GoogleSignin,
   SignInResponse,
 } from '@react-native-google-signin/google-signin';
 import { Linking, PermissionsAndroid, Platform } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
 import Logo from './src/assets/images/logo.png';
 
 const auth = getAuth();
@@ -90,16 +89,25 @@ const requestUserPermission = async () => {
  * Lấy FCM Token của thiết bị
  */
 const getFCMToken = async () => {
-  const fcmtoken = await AsyncStorage.getItem('fcmtoken');
-  console.log(fcmtoken)
+  // const fcmtoken = await AsyncStorage.getItem('fcmtoken');
+  // console.log(fcmtoken);
+  // if (!fcmtoken) {
+  //   const token = await getToken(messaging);
+  //   if (token) {
+  //     await AsyncStorage.setItem('fcmtoken', token);
+  //     updateToken(token);
+  //   }
+  //   return token;
+  // }
+  let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+  console.log(fcmtoken);
   if (!fcmtoken) {
-    const token = await getToken(messaging);
-    if (token) {
-      await AsyncStorage.setItem('fcmtoken', token);
-      updateToken(token);
-    }
-    return token;
+    fcmtoken = await getToken(messaging);
   }
+
+  await AsyncStorage.setItem('fcmtoken', fcmtoken);
+  updateToken(fcmtoken);
+  return fcmtoken;
 };
 
 /**
@@ -116,10 +124,10 @@ const updateToken = async (token: string) => {
       await updateDoc(doc(db, 'users', user?.uid as string), {
         tokens: arrayUnion(token),
       });
+      console.log('da update token new')
     }
   }
 };
-
 
 /**
  * Lắng nghe notification khi app foreground
@@ -166,10 +174,11 @@ export {
   createUserWithEmailAndPassword,
   db,
   getFCMToken,
-  listenForegroundMessages, messaging, onAuthStateChanged,
+  listenForegroundMessages,
+  messaging,
+  onAuthStateChanged,
   requestUserPermission,
   signInWithEmailAndPassword,
   signInWithGoogle,
-  signOut
+  signOut,
 };
-

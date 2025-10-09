@@ -61,7 +61,7 @@ const App = () => {
     }
 
     initMessaging();
-  }, []);
+  }, [auth.currentUser]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

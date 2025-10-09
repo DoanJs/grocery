@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "225425706491-6nueuddf8v4g8od32pueguqp04uer26k.apps.googleusercontent.com",
+          "client_id": "225425706491-kvrnj29s7outv0111vhq0jtup2rurei5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.grocery",
-            "certificate_hash": "072253c24f2126e27b7dc4278d0605fb4899e1b1"
+            "certificate_hash": "05d01e4a495485927b5978fe7416d0da71fa0e24"
           }
         },
         {
