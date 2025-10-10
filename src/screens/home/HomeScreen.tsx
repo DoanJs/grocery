@@ -125,7 +125,8 @@ const HomeScreen = ({ navigation, route }: any) => {
         title: 'Xin chào!',
         body: 'Đây là thông báo thử nghiệm từ Cloud Function v2',
         token:
-          'c1cKPH_pTA-LjCfUW3pMzD:APA91bGzrI4IkFD5HxGjbj0kZFv8UmE2XYlaNzmeA7UkIZpMiEjrT3PDWF0fJABc49fHyEWWQVxrmHPbiJdShmN2G8yGX0ZIccZE2aALGNGZpN6mdH7mO08',
+        'fY1FM3EuToGNUHNiFHBwZ3:APA91bGlcWzgl3ApXXN3xQsilkddHWZi_N1BtV8KR_YC06ZRaRateuJkys9sXsmcgB2tQG6q9e30R2waTtihTMlyJG9CWhAqZ8bR_rCKiLE4znbiT3sNWGE',
+          // 'c1cKPH_pTA-LjCfUW3pMzD:APA91bGzrI4IkFD5HxGjbj0kZFv8UmE2XYlaNzmeA7UkIZpMiEjrT3PDWF0fJABc49fHyEWWQVxrmHPbiJdShmN2G8yGX0ZIccZE2aALGNGZpN6mdH7mO08',
         type: 'review',
         id: '6tY45jzpCJqoihWlopR0',
       });
@@ -266,11 +267,11 @@ const HomeScreen = ({ navigation, route }: any) => {
         <RowComponent justify='center' onPress={triggerNotification}>
           <TextComponent text='Send' size={20}/>
         </RowComponent>
-        <RowComponent justify='center' onPress={async () => {
+        {/* <RowComponent justify='center' onPress={async () => {
           await AsyncStorage.clear()
         }}>
           <TextComponent text='Clear Asynstorage' size={20}/>
-        </RowComponent>
+        </RowComponent> */}
 
         <View
           style={{
